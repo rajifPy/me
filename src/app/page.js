@@ -1,0 +1,61 @@
+'use client'
+
+import { useState } from 'react'
+import { useTheme } from '@/context/ThemeContext'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import Sidebar from '@/components/layout/Sidebar'
+import HelloSection from '@/components/sections/HelloSection'
+import AboutSection from '@/components/sections/AboutSection'
+import ProjectsSection from '@/components/sections/ProjectsSection'
+import ContactSection from '@/components/sections/ContactSection'
+
+export default function Home() {
+  const [activeSection, setActiveSection] = useState('hello')
+  const [activeTab, setActiveTab] = useState(null)
+  const { theme } = useTheme()
+
+  const showSidebar = activeSection === 'about-me' || activeSection === 'projects'
+
+  return (
+    <div className={`min-h-screen font-mono flex flex-col ${
+      theme === 'dark' 
+        ? 'bg-dark-bg text-dark-text' 
+        : 'bg-light-bg text-light-text'
+    }`}>
+      <Header activeSection={activeSection} setActiveSection={setActiveSection} />
+      
+      <div className="flex flex-1 overflow-hidden">
+        {showSidebar && (
+          <Sidebar 
+            activeSection={activeSection} 
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        )}
+
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {activeTab && activeSection === 'about-me' && (
+            <div className={`border-b ${theme === 'dark' ? 'border-dark-border' : 'border-light-border'} flex items-center h-10 flex-shrink-0`}>
+              <div className={`flex items-center gap-2 px-4 border-r ${theme === 'dark' ? 'border-dark-border bg-dark-secondary' : 'border-light-border bg-light-secondary'} h-full`}>
+                <span className="text-sm">{activeTab}</span>
+                <button onClick={() => setActiveTab(null)} className="hover:text-accent-teal">
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex-1 overflow-y-auto p-12">
+            {activeSection === 'hello' && <HelloSection />}
+            {activeSection === 'about-me' && <AboutSection activeTab={activeTab} />}
+            {activeSection === 'projects' && <ProjectsSection />}
+            {activeSection === 'contact-me' && <ContactSection />}
+          </div>
+        </main>
+      </div>
+
+      <Footer />
+    </div>
+  )
+}
