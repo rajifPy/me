@@ -82,9 +82,9 @@ export default function AboutSection({ activeTab }) {
         </div>
       ) : (
         <div className={`p-4 border rounded ${theme === 'dark' ? 'border-dark-border' : 'border-light-border'}`}>
-          <h3 className="text-accent-teal font-semibold">SMA N 1 Driyorejo</h3>
+          <h3 className="text-accent-teal font-semibold">MAS Hasyim Asy'ari</h3>
           <p className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>Science Major</p>
-          <p className="text-sm text-accent-blue">2017 - 2020 • Gresik, Indonesia</p>
+          <p className="text-sm text-accent-blue">2017 - 2020 • Jepara, Indonesia</p>
           <ul className="mt-4 space-y-2">
             <li>• Mathematics & Science focus</li>
             <li>• Active in extracurricular activities</li>
@@ -103,3 +103,4 @@ export default function AboutSection({ activeTab }) {
     </div>
   )
 }
+
