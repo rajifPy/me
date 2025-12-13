@@ -2,12 +2,15 @@
 
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
   const { theme } = useTheme()
-  const [openFolders, setOpenFolders] = useState({ 'personal-info': true, 'education': true })
+  const [openFolders, setOpenFolders] = useState({ 
+    'personal-info': true, 
+    'education': true 
+  })
   const [selectedFilters, setSelectedFilters] = useState([])
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -22,6 +25,12 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
   }
 
   const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+  const bgClass = theme === 'dark' ? 'bg-dark-bg' : 'bg-light-bg'
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab)
+    setMobileOpen(false)
+  }
 
   const sidebarContent = (
     <>
@@ -40,11 +49,10 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
             {openFolders['personal-info'] && (
               <div className="ml-6 mt-2 space-y-2">
                 <button
-                  onClick={() => {
-                    setActiveTab('bio')
-                    setMobileOpen(false)
-                  }}
-                  className={`flex items-center gap-2 transition-colors text-sm ${activeTab === 'bio' ? 'text-white' : 'hover:text-white'}`}
+                  onClick={() => handleTabClick('bio')}
+                  className={`flex items-center gap-2 transition-colors text-sm ${
+                    activeTab === 'bio' ? 'text-white' : 'hover:text-white'
+                  }`}
                 >
                   <Folder size={14} className="text-accent-pink" />
                   <span>bio</span>
@@ -63,21 +71,19 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
                   {openFolders['education'] && (
                     <div className="ml-6 mt-1 space-y-1">
                       <button
-                        onClick={() => {
-                          setActiveTab('university')
-                          setMobileOpen(false)
-                        }}
-                        className={`flex items-center gap-2 text-xs transition-colors ${activeTab === 'university' ? 'text-white' : 'hover:text-white'}`}
+                        onClick={() => handleTabClick('university')}
+                        className={`flex items-center gap-2 text-xs transition-colors ${
+                          activeTab === 'university' ? 'text-white' : 'hover:text-white'
+                        }`}
                       >
                         <FileText size={12} />
                         <span>university</span>
                       </button>
                       <button
-                        onClick={() => {
-                          setActiveTab('high-school')
-                          setMobileOpen(false)
-                        }}
-                        className={`flex items-center gap-2 text-xs transition-colors ${activeTab === 'high-school' ? 'text-white' : 'hover:text-white'}`}
+                        onClick={() => handleTabClick('high-school')}
+                        className={`flex items-center gap-2 text-xs transition-colors ${
+                          activeTab === 'high-school' ? 'text-white' : 'hover:text-white'
+                        }`}
                       >
                         <FileText size={12} />
                         <span>high-school</span>
@@ -95,11 +101,17 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
               <span className="text-sm">contacts</span>
             </div>
             <div className="ml-6 space-y-2">
-              <a href="mailto:mrajifalfarikhi@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors text-sm">
+              <a 
+                href="mailto:mrajifalfarikhi@gmail.com" 
+                className="flex items-center gap-2 hover:text-white transition-colors text-sm"
+              >
                 <Mail size={14} />
                 <span>email</span>
               </a>
-              <a href="tel:081460326800" className="flex items-center gap-2 hover:text-white transition-colors text-sm">
+              <a 
+                href="tel:081460326800" 
+                className="flex items-center gap-2 hover:text-white transition-colors text-sm"
+              >
                 <Phone size={14} />
                 <span>phone</span>
               </a>
@@ -116,7 +128,10 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
           </div>
           <div className="space-y-2">
             {techFilters.map((filter) => (
-              <label key={filter.name} className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
+              <label 
+                key={filter.name} 
+                className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"
+              >
                 <input
                   type="checkbox"
                   checked={selectedFilters.includes(filter.name)}
@@ -140,6 +155,7 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
         className={`md:hidden fixed bottom-4 right-4 z-50 p-3 rounded-full shadow-lg ${
           theme === 'dark' ? 'bg-accent-teal text-dark-bg' : 'bg-accent-blue text-white'
         }`}
+        aria-label="Toggle sidebar"
       >
         {mobileOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
@@ -156,9 +172,7 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
             className="absolute inset-0 bg-black/50"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className={`absolute left-0 top-0 bottom-0 w-64 border-r ${borderClass} ${
-            theme === 'dark' ? 'bg-dark-bg' : 'bg-light-bg'
-          } overflow-y-auto`}>
+          <aside className={`absolute left-0 top-0 bottom-0 w-64 border-r ${borderClass} ${bgClass} overflow-y-auto shadow-xl`}>
             {sidebarContent}
           </aside>
         </div>
