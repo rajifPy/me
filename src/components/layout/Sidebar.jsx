@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu } from 'lucide-react'
 import { techFilters } from '@/data/projects'
+
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
   const { theme } = useTheme()
