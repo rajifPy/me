@@ -24,57 +24,191 @@ export default function CodeSnippet({ snippet }) {
     return colors[language] || '#43D9AD'
   }
 
+  // Improved syntax highlighting untuk Python
   const highlightPython = (code) => {
-    let highlighted = code.replace(
-      /\b(def|class|import|from|return|if|else|elif|for|while|in|as|with|try|except|finally|raise|pass|break|continue|yield|lambda|and|or|not|is|None|True|False)\b/g,
-      '<span class="text-[#C586C0]">$1</span>'
-    )
+    const lines = code.split('\n')
     
-    highlighted = highlighted.replace(
-      /(["'`])(.*?)\1/g,
-      '<span class="text-[#CE9178]">$1$2$1</span>'
-    )
-    
-    highlighted = highlighted.replace(
-      /(#.*$)/gm,
-      '<span class="text-[#6A9955]">$1</span>'
-    )
-    
-    highlighted = highlighted.replace(
-      /\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g,
-      '<span class="text-[#DCDCAA]">$1</span>('
-    )
-    
-    highlighted = highlighted.replace(
-      /\b(\d+\.?\d*)\b/g,
-      '<span class="text-[#B5CEA8]">$1</span>'
-    )
-    
-    return highlighted
+    return lines.map((line, lineIndex) => {
+      let highlightedLine = line
+      
+      // Comments (prioritas tinggi)
+      if (line.trim().startsWith('#')) {
+        return (
+          <div key={lineIndex} className="text-green-500">
+            {line}
+          </div>
+        )
+      }
+      
+      // Strings - detect and highlight
+      const stringRegex = /(["'`])((?:(?!\1)[^\\]|\\.)*)\1/g
+      const parts = []
+      let lastIndex = 0
+      let match
+      
+      while ((match = stringRegex.exec(line)) !== null) {
+        // Add text before string
+        if (match.index > lastIndex) {
+          parts.push(
+            <span key={`${lineIndex}-text-${lastIndex}`}>
+              {highlightKeywords(line.substring(lastIndex, match.index))}
+            </span>
+          )
+        }
+        
+        // Add string
+        parts.push(
+          <span key={`${lineIndex}-string-${match.index}`} className="text-orange-300">
+            {match[0]}
+          </span>
+        )
+        
+        lastIndex = match.index + match[0].length
+      }
+      
+      // Add remaining text
+      if (lastIndex < line.length) {
+        parts.push(
+          <span key={`${lineIndex}-text-${lastIndex}`}>
+            {highlightKeywords(line.substring(lastIndex))}
+          </span>
+        )
+      }
+      
+      return (
+        <div key={lineIndex}>
+          {parts.length > 0 ? parts : highlightKeywords(line)}
+        </div>
+      )
+    })
   }
 
+  // Helper function untuk highlight keywords
+  const highlightKeywords = (text) => {
+    const keywords = ['def', 'class', 'import', 'from', 'return', 'if', 'else', 'elif', 
+                      'for', 'while', 'in', 'as', 'with', 'try', 'except', 'finally', 
+                      'raise', 'pass', 'break', 'continue', 'yield', 'lambda', 'and', 
+                      'or', 'not', 'is', 'None', 'True', 'False']
+    
+    const parts = []
+    const words = text.split(/(\s+|[()[\]{},.:=+\-*/<>!])/)
+    
+    words.forEach((word, i) => {
+      if (keywords.includes(word)) {
+        parts.push(
+          <span key={i} className="text-purple-400 font-semibold">
+            {word}
+          </span>
+        )
+      } else if (/^\d+\.?\d*$/.test(word)) {
+        // Numbers
+        parts.push(
+          <span key={i} className="text-blue-300">
+            {word}
+          </span>
+        )
+      } else if (/^[a-zA-Z_][a-zA-Z0-9_]*(?=\()/.test(word)) {
+        // Functions
+        parts.push(
+          <span key={i} className="text-yellow-300">
+            {word}
+          </span>
+        )
+      } else {
+        parts.push(<span key={i}>{word}</span>)
+      }
+    })
+    
+    return parts
+  }
+
+  // Improved syntax highlighting untuk SQL
   const highlightSQL = (code) => {
-    let highlighted = code.replace(
-      /\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|GROUP BY|ORDER BY|HAVING|AS|WITH|CASE|WHEN|THEN|ELSE|END|AND|OR|NOT|IN|EXISTS|DISTINCT|COUNT|SUM|AVG|MAX|MIN|OVER|PARTITION BY|NTILE)\b/gi,
-      '<span class="text-[#569CD6]">$&</span>'
-    )
+    const lines = code.split('\n')
     
-    highlighted = highlighted.replace(
-      /(["'`])(.*?)\1/g,
-      '<span class="text-[#CE9178]">$1$2$1</span>'
-    )
+    return lines.map((line, lineIndex) => {
+      // Comments
+      if (line.trim().startsWith('--')) {
+        return (
+          <div key={lineIndex} className="text-green-500">
+            {line}
+          </div>
+        )
+      }
+      
+      let highlightedLine = line
+      
+      // SQL Keywords
+      const keywords = ['SELECT', 'FROM', 'WHERE', 'JOIN', 'LEFT', 'RIGHT', 'INNER', 
+                       'OUTER', 'ON', 'GROUP BY', 'ORDER BY', 'HAVING', 'AS', 'WITH', 
+                       'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'AND', 'OR', 'NOT', 
+                       'IN', 'EXISTS', 'DISTINCT', 'COUNT', 'SUM', 'AVG', 'MAX', 
+                       'MIN', 'OVER', 'PARTITION BY', 'NTILE']
+      
+      const parts = []
+      let remainingLine = line
+      
+      // Check for strings first
+      const stringMatch = remainingLine.match(/(["'`])(.*?)\1/)
+      if (stringMatch) {
+        const beforeString = remainingLine.substring(0, stringMatch.index)
+        const afterString = remainingLine.substring(stringMatch.index + stringMatch[0].length)
+        
+        parts.push(
+          <span key={`${lineIndex}-before`}>
+            {highlightSQLKeywords(beforeString, keywords)}
+          </span>
+        )
+        parts.push(
+          <span key={`${lineIndex}-string`} className="text-orange-300">
+            {stringMatch[0]}
+          </span>
+        )
+        parts.push(
+          <span key={`${lineIndex}-after`}>
+            {highlightSQLKeywords(afterString, keywords)}
+          </span>
+        )
+        
+        return <div key={lineIndex}>{parts}</div>
+      }
+      
+      return (
+        <div key={lineIndex}>
+          {highlightSQLKeywords(line, keywords)}
+        </div>
+      )
+    })
+  }
+
+  const highlightSQLKeywords = (text, keywords) => {
+    const parts = []
+    let currentText = text
     
-    highlighted = highlighted.replace(
-      /(--.*$)/gm,
-      '<span class="text-[#6A9955]">$1</span>'
-    )
+    keywords.forEach(keyword => {
+      const regex = new RegExp(`\\b${keyword}\\b`, 'gi')
+      const newParts = []
+      
+      if (typeof currentText === 'string') {
+        const splits = currentText.split(regex)
+        const matches = currentText.match(regex) || []
+        
+        splits.forEach((split, i) => {
+          newParts.push(split)
+          if (matches[i]) {
+            newParts.push(
+              <span className="text-blue-400 font-semibold">
+                {matches[i]}
+              </span>
+            )
+          }
+        })
+        
+        currentText = newParts
+      }
+    })
     
-    highlighted = highlighted.replace(
-      /\b(\d+)\b/g,
-      '<span class="text-[#B5CEA8]">$1</span>'
-    )
-    
-    return highlighted
+    return currentText
   }
 
   const getHighlightedCode = () => {
@@ -83,14 +217,14 @@ export default function CodeSnippet({ snippet }) {
     } else if (snippet.language === 'sql') {
       return highlightSQL(snippet.code)
     }
-    return snippet.code
+    return snippet.code.split('\n').map((line, i) => <div key={i}>{line}</div>)
   }
 
   return (
     <div className={`border rounded-lg overflow-hidden ${
       theme === 'dark' ? 'border-dark-border' : 'border-light-border'
     }`}>
-      {/* Header - IMPROVED RESPONSIVE */}
+      {/* Header */}
       <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-3 sm:px-4 py-3 border-b ${
         theme === 'dark' 
           ? 'bg-dark-secondary border-dark-border' 
@@ -135,22 +269,18 @@ export default function CodeSnippet({ snippet }) {
         </div>
       </div>
 
-      {/* Code Block - IMPROVED RESPONSIVE */}
+      {/* Code Block */}
       <div className={`p-3 sm:p-4 overflow-x-auto ${
         theme === 'dark' ? 'bg-[#1E1E1E]' : 'bg-gray-50'
       }`}>
-        {/* Wrapper untuk horizontal scroll di mobile */}
-        <div className="min-w-max sm:min-w-0">
-          <pre className="text-xs sm:text-sm">
-            <code 
-              dangerouslySetInnerHTML={{ __html: getHighlightedCode() }}
-              className={`font-mono ${theme === 'dark' ? 'text-[#D4D4D4]' : 'text-gray-800'}`}
-            />
-          </pre>
-        </div>
+        <pre className="text-xs sm:text-sm font-mono">
+          <code className={theme === 'dark' ? 'text-gray-300' : 'text-gray-800'}>
+            {getHighlightedCode()}
+          </code>
+        </pre>
       </div>
 
-      {/* Footer - IMPROVED RESPONSIVE */}
+      {/* Footer */}
       <div className={`px-3 sm:px-4 py-2 text-xs flex items-center gap-2 ${
         theme === 'dark' ? 'bg-dark-secondary' : 'bg-light-secondary'
       }`}>
