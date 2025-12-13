@@ -5,13 +5,12 @@ import { useTheme } from '@/context/ThemeContext'
 import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 
-export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
+export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
   const { theme } = useTheme()
   const [openFolders, setOpenFolders] = useState({ 
     'personal-info': true, 
     'education': true 
   })
-  const [selectedFilters, setSelectedFilters] = useState([])
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const toggleFolder = (folder) => {
@@ -22,6 +21,10 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
     setSelectedFilters(prev => 
       prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
     )
+  }
+
+  const clearAllFilters = () => {
+    setSelectedFilters([])
   }
 
   const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
@@ -122,25 +125,62 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab }) {
 
       {activeSection === 'projects' && (
         <div className="p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <ChevronRight size={16} />
-            <span className="text-sm">projects</span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <ChevronDown size={16} />
+              <span className="text-sm font-semibold">projects</span>
+            </div>
+            {selectedFilters.length > 0 && (
+              <button
+                onClick={clearAllFilters}
+                className="text-xs text-accent-orange hover:text-accent-orange/80 transition-colors"
+              >
+                clear all
+              </button>
+            )}
           </div>
+          
+          {/* Selected count */}
+          {selectedFilters.length > 0 && (
+            <div className="mb-3 text-xs text-accent-blue">
+              {selectedFilters.length} {selectedFilters.length === 1 ? 'filter' : 'filters'} selected
+            </div>
+          )}
+
           <div className="space-y-2">
             {techFilters.map((filter) => (
               <label 
                 key={filter.name} 
-                className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"
+                className={`flex items-center gap-2 cursor-pointer transition-colors p-2 rounded ${
+                  selectedFilters.includes(filter.name)
+                    ? theme === 'dark' 
+                      ? 'bg-accent-teal/10 text-white' 
+                      : 'bg-accent-blue/10 text-gray-900'
+                    : 'hover:text-white'
+                }`}
               >
                 <input
                   type="checkbox"
                   checked={selectedFilters.includes(filter.name)}
                   onChange={() => toggleFilter(filter.name)}
-                  className="w-4 h-4 rounded"
+                  className={`w-4 h-4 rounded cursor-pointer ${
+                    theme === 'dark'
+                      ? 'accent-accent-teal'
+                      : 'accent-accent-blue'
+                  }`}
                 />
-                <span className="text-xs">{filter.icon} {filter.name}</span>
+                <span className="text-xs flex-1">{filter.icon} {filter.name}</span>
+                {selectedFilters.includes(filter.name) && (
+                  <span className="text-xs text-accent-teal">✓</span>
+                )}
               </label>
             ))}
+          </div>
+
+          {/* Filter Tips */}
+          <div className="mt-4 pt-4 border-t border-dark-border">
+            <p className="text-xs text-accent-blue mb-2">// filter tips:</p>
+            <p className="text-xs opacity-60">Select multiple filters to see projects that use any of the selected technologies</p>
           </div>
         </div>
       )}
