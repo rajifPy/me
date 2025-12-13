@@ -5,7 +5,8 @@ export const projects = [
     tech: ['SQL', 'PostgreSQL'],
     description: 'Database optimization & cleaning for UNAIR health service system.',
     image: '/images/project-1.svg',
-    link: 'https://github.com/rajfiPy'
+    link: 'https://github.com/rajfiPy',
+    repo: 'https://github.com/rajfiPy'
   },
   {
     id: 21,
@@ -13,7 +14,8 @@ export const projects = [
     tech: ['Python', 'Machine Learning'],
     description: 'Machine Learning capstone project from Bangkit Academy certification.',
     image: '/images/project-2.svg',
-    link: 'https://github.com/fact-check-capstone'
+    link: 'https://github.com/fact-check-capstone',
+    repo: 'https://github.com/rajfiPy'
   },
   {
     id: 31,
@@ -21,7 +23,8 @@ export const projects = [
     tech: ['Tableau', 'Analytics'],
     description: 'Social media analytics dashboard with 50% growth metrics.',
     image: '/images/project-3.svg',
-    link: 'https://github.com/rajfiPy'
+    link: 'https://github.com/rajfiPy',
+    repo: 'https://github.com/rajfiPy'
   },
   {
     id: 41,
@@ -29,7 +32,8 @@ export const projects = [
     tech: ['Python', 'Data Science'],
     description: 'National Data Science Competition finalist project.',
     image: '/images/project-4.svg',
-    link: 'https://github.com/rajfiPy'
+    link: 'https://github.com/rajfiPy',
+    repo: 'https://github.com/rajfiPy'
   },
   {
     id: 51,
@@ -37,7 +41,8 @@ export const projects = [
     tech: ['Python', 'Pandas'],
     description: 'Exploratory Data Analysis portfolio with various datasets.',
     image: '/images/project-5.svg',
-    link: 'https://github.com/rajfiPy'
+    link: 'https://github.com/rajfiPy',
+    repo: 'https://github.com/rajfiPy'
   },
   {
     id: 61,
@@ -45,7 +50,8 @@ export const projects = [
     tech: ['Tableau', 'Data Visualization'],
     description: 'Interactive data visualization dashboards for business insights.',
     image: '/images/project-6.svg',
-    link: 'https://github.com/rajfiPy'
+    link: 'https://github.com/rajfiPy',
+    repo: 'https://github.com/rajfiPy'
   },
   {
     id: 71,
@@ -53,7 +59,8 @@ export const projects = [
     tech: ['React', 'PostreSQL'],
     description: 'Creating templates to simplify the management of boarding house or rental property businesses.',
     image: '/images/web-kost.png',
-    link: 'https://github.com/rajifPy/kostmanager'
+    link: 'https://kostmanagerv1.vercel.app/',
+    repo: 'https://github.com/rajifPy/kostmanager'
   },
   {
     id: 81,
@@ -61,7 +68,8 @@ export const projects = [
     tech: ['Flask', 'NLP', 'Python'],
     description: 'A web application that helps users learn and practice regular expressions through interactive exercises and real-time feedback',
     image: '/images/regex.png',
-    link: 'https://github.com/rajifPy/loveregex'
+    link: 'https://loveregex.vercel.app/',
+    repo: 'https://github.com/rajifPy/loveregex'
   }
 ]
 
