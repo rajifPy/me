@@ -47,6 +47,14 @@ export const projects = [
     image: '/images/project-6.svg',
     link: 'https://github.com/rajfiPy'
   }
+  {
+    id: 71,
+    name: 'Web Kost Managemennt',
+    tech: ['React', 'PostreSQL'],
+    description: 'Creating templates to simplify the management of boarding house or rental property businesses.',
+    image: 'web-kost.png',
+    link: 'https://github.com/rajifPy/kostmanager'
+  }
 ]
 
 export const techFilters = [
@@ -55,5 +63,6 @@ export const techFilters = [
   { name: 'Tableau', icon: '📊' },
   { name: 'Machine Learning', icon: '🤖' },
   { name: 'Data Science', icon: '📈' },
-  { name: 'Analytics', icon: '📉' }
+  { name: 'Analytics', icon: '📉' },
+  { name: 'React', icon: '🌐' }
 ]
