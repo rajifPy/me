@@ -57,7 +57,7 @@ export default function Header({ activeSection, setActiveSection }) {
 
         {/* Desktop Contact */}
         <a 
-          href="https://github.com/rajfiPy" 
+          href="https://wa.me/6281460326800" 
           target="_blank" 
           rel="noopener noreferrer" 
           className="hidden md:block hover:text-accent-teal transition-colors text-sm"
