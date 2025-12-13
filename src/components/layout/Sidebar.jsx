@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2 } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
@@ -72,6 +72,17 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                 >
                   <Code2 size={14} className="text-accent-teal" />
                   <span>code-samples</span>
+                </button>
+
+                {/* Certifications Button - NEW */}
+                <button
+                  onClick={() => handleTabClick('certifications')}
+                  className={`flex items-center gap-2 transition-colors text-sm ${
+                    activeTab === 'certifications' ? 'text-white' : 'hover:text-white'
+                  }`}
+                >
+                  <Award size={14} className="text-accent-orange" />
+                  <span>certifications</span>
                 </button>
                 
                 <div>
