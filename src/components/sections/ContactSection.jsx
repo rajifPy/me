@@ -1,4 +1,13 @@
-return (
+'use client'
+
+import { useTheme } from '@/context/ThemeContext'
+import { Mail, Phone, Linkedin, Github } from 'lucide-react'
+
+export default function ContactSection() {
+  const { theme } = useTheme()
+  const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+
+  return (
     <div className="max-w-4xl mx-auto">
       <h2 className={`text-xl md:text-2xl mb-6 md:mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
         <span>//</span> Get In Touch
