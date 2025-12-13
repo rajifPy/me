@@ -13,7 +13,7 @@ export const projects = [
     tech: ['Python', 'Machine Learning'],
     description: 'Machine Learning capstone project from Bangkit Academy certification.',
     image: '/images/project-2.svg',
-    link: 'https://github.com/rajfiPy'
+    link: 'https://github.com/fact-check-capstone'
   },
   {
     id: 31,
