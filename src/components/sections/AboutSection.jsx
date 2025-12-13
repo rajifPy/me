@@ -7,19 +7,19 @@ export default function AboutSection({ activeTab }) {
   const { theme } = useTheme()
 
   const renderBio = () => (
-    <div className="space-y-6">
-      <h2 className={`text-2xl mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+    <div className="space-y-4 md:space-y-6">
+      <h2 className={`text-xl md:text-2xl mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
         <span className="text-accent-blue">//</span> About Me
       </h2>
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4 text-sm md:text-base">
         <p>
           <span className="text-accent-blue">const</span>{' '}
           <span className="text-accent-teal">bio</span>{' '}
           <span className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>=</span>{' '}
           {'{'}
         </p>
-        <div className="pl-8 space-y-2">
-          <p>
+        <div className="pl-4 md:pl-8 space-y-2">
+          <p className="break-words">
             <span className="text-accent-teal">name</span>:{' '}
             <span className="text-accent-pink">"Muhammad Rajif Al Farikhi"</span>,
           </p>
@@ -31,7 +31,7 @@ export default function AboutSection({ activeTab }) {
             <span className="text-accent-teal">location</span>:{' '}
             <span className="text-accent-pink">"Surabaya, Indonesia"</span>,
           </p>
-          <p>
+          <p className="break-words">
             <span className="text-accent-teal">interests</span>: [
             <span className="text-accent-pink">"Data Analysis"</span>,{' '}
             <span className="text-accent-pink">"Machine Learning"</span>,{' '}
@@ -41,17 +41,17 @@ export default function AboutSection({ activeTab }) {
         <p>{'}'}</p>
       </div>
 
-      <div className="mt-8">
-        <h3 className={`text-xl mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Experience</h3>
-        <div className="space-y-6">
+      <div className="mt-6 md:mt-8">
+        <h3 className={`text-lg md:text-xl mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Experience</h3>
+        <div className="space-y-4 md:space-y-6">
           {experiences.map((exp, index) => (
-            <div key={index} className={`p-4 border rounded ${theme === 'dark' ? 'border-dark-border' : 'border-light-border'}`}>
-              <h4 className="text-accent-teal font-semibold">{exp.title}</h4>
-              <p className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>{exp.company}</p>
-              <p className="text-sm text-accent-blue">{exp.period} • {exp.location}</p>
-              <p className="mt-2">{exp.description}</p>
+            <div key={index} className={`p-3 md:p-4 border rounded ${theme === 'dark' ? 'border-dark-border' : 'border-light-border'}`}>
+              <h4 className="text-accent-teal font-semibold text-sm md:text-base">{exp.title}</h4>
+              <p className={`text-sm md:text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{exp.company}</p>
+              <p className="text-xs md:text-sm text-accent-blue">{exp.period} • {exp.location}</p>
+              <p className="mt-2 text-sm md:text-base">{exp.description}</p>
               {exp.achievements && (
-                <ul className="mt-2 list-disc list-inside space-y-1 text-sm">
+                <ul className="mt-2 list-disc list-inside space-y-1 text-xs md:text-sm">
                   {exp.achievements.map((achievement, i) => (
                     <li key={i}>{achievement}</li>
                   ))}
