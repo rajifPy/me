@@ -48,6 +48,18 @@ export default function ProjectCard({ project }) {
         >
           view-project
         </a>
+        <a 
+          href={repo.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`inline-block px-4 py-2 rounded text-sm transition-colors ${
+            theme === 'dark'
+              ? 'bg-dark-border text-white hover:bg-accent-teal/20'
+              : 'bg-light-border text-gray-900 hover:bg-accent-blue/20'
+          }`}
+        >
+          repo-project
+        </a>
       </div>
     </div>
   )
