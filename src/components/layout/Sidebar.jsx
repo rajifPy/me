@@ -1,15 +1,17 @@
+// src/components/layout/Sidebar.jsx
 'use client'
 
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2 } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
   const { theme } = useTheme()
   const [openFolders, setOpenFolders] = useState({ 
     'personal-info': true, 
-    'education': true 
+    'education': true,
+    'professional': true 
   })
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -57,8 +59,19 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                     activeTab === 'bio' ? 'text-white' : 'hover:text-white'
                   }`}
                 >
-                  <Folder size={14} className="text-accent-pink" />
+                  <FileText size={14} />
                   <span>bio</span>
+                </button>
+
+                {/* Code Samples Button */}
+                <button
+                  onClick={() => handleTabClick('code-samples')}
+                  className={`flex items-center gap-2 transition-colors text-sm ${
+                    activeTab === 'code-samples' ? 'text-white' : 'hover:text-white'
+                  }`}
+                >
+                  <Code2 size={14} className="text-accent-teal" />
+                  <span>code-samples</span>
                 </button>
                 
                 <div>
