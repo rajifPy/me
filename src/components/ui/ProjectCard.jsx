@@ -16,7 +16,10 @@ export default function ProjectCard({ project }) {
       'Data Science': '📈',
       'Analytics': '📉',
       'Pandas': '🐼',
-      'Data Visualization': '📊'
+      'Data Visualization': '📊',
+      'React': '⚛️',
+      'NLP': '🗣️',
+      'Flask': '🌶️'
     }
     return icons[tech] || '⚡'
   }
@@ -36,30 +39,32 @@ export default function ProjectCard({ project }) {
           <span className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>Project {project.id}</span> // {project.name}
         </h3>
         <p className="text-sm mb-4">{project.description}</p>
-        <a 
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`inline-block px-4 py-2 rounded text-sm transition-colors ${
-            theme === 'dark'
-              ? 'bg-dark-border text-white hover:bg-accent-teal/20'
-              : 'bg-light-border text-gray-900 hover:bg-accent-blue/20'
-          }`}
-        >
-          view-project
-        </a>
-        <a 
-          href={repo.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`inline-block px-4 py-2 rounded text-sm transition-colors ${
-            theme === 'dark'
-              ? 'bg-dark-border text-white hover:bg-accent-teal/20'
-              : 'bg-light-border text-gray-900 hover:bg-accent-blue/20'
-          }`}
-        >
-          repo-project
-        </a>
+        <div className="flex gap-2">
+          <a 
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-block px-4 py-2 rounded text-sm transition-colors ${
+              theme === 'dark'
+                ? 'bg-dark-border text-white hover:bg-accent-teal/20'
+                : 'bg-light-border text-gray-900 hover:bg-accent-blue/20'
+            }`}
+          >
+            view-project
+          </a>
+          <a 
+            href={project.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-block px-4 py-2 rounded text-sm transition-colors ${
+              theme === 'dark'
+                ? 'bg-dark-border text-white hover:bg-accent-teal/20'
+                : 'bg-light-border text-gray-900 hover:bg-accent-blue/20'
+            }`}
+          >
+            repo-project
+          </a>
+        </div>
       </div>
     </div>
   )
