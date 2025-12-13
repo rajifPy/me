@@ -4,8 +4,10 @@
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import { experiences } from '@/data/experience'
+import { certifications } from '@/data/certifications'
 import { codeSnippets, snippetCategories } from '@/data/codeSnippets'
 import CodeSnippet from '@/components/ui/CodeSnippet'
+import CertificationBadges from '@/components/ui/CertificationBadges'
 
 export default function AboutSection({ activeTab }) {
   const { theme } = useTheme()
@@ -155,6 +157,15 @@ export default function AboutSection({ activeTab }) {
     )
   }
 
+  const renderCertifications = () => (
+    <div className="space-y-6">
+      <h2 className={`text-xl md:text-2xl mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+        <span className="text-accent-blue">//</span> Professional Certifications
+      </h2>
+      <CertificationBadges certifications={certifications} />
+    </div>
+  )
+
   return (
     <div className="max-w-4xl">
       {!activeTab && renderBio()}
@@ -162,6 +173,7 @@ export default function AboutSection({ activeTab }) {
       {activeTab === 'university' && renderEducation('university')}
       {activeTab === 'high-school' && renderEducation('high-school')}
       {activeTab === 'code-samples' && renderCodeSnippets()}
+      {activeTab === 'certifications' && renderCertifications()}
     </div>
   )
 }
