@@ -52,7 +52,7 @@ export const projects = [
     name: 'Web Kost Managemennt',
     tech: ['React', 'PostreSQL'],
     description: 'Creating templates to simplify the management of boarding house or rental property businesses.',
-    image: 'web-kost.png',
+    image: '/images/web-kost.png',
     link: 'https://github.com/rajifPy/kostmanager'
   }
 ]
