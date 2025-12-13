@@ -1,10 +1,15 @@
+// src/components/sections/AboutSection.jsx
 'use client'
 
+import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import { experiences } from '@/data/experience'
+import { codeSnippets, snippetCategories } from '@/data/codeSnippets'
+import CodeSnippet from '@/components/ui/CodeSnippet'
 
 export default function AboutSection({ activeTab }) {
   const { theme } = useTheme()
+  const [selectedCategory, setSelectedCategory] = useState('All')
 
   const renderBio = () => (
     <div className="space-y-4 md:space-y-6">
@@ -94,14 +99,69 @@ export default function AboutSection({ activeTab }) {
     </div>
   )
 
+  const renderCodeSnippets = () => {
+    const filteredSnippets = selectedCategory === 'All' 
+      ? codeSnippets 
+      : codeSnippets.filter(snippet => snippet.category === selectedCategory)
+
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h2 className={`text-xl md:text-2xl ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+            <span className="text-accent-blue">//</span> Code Samples
+          </h2>
+          
+          {/* Category Filter */}
+          <div className="flex flex-wrap gap-2">
+            {snippetCategories.map(category => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-3 py-1 rounded text-xs transition-colors ${
+                  selectedCategory === category
+                    ? theme === 'dark'
+                      ? 'bg-accent-teal text-dark-bg'
+                      : 'bg-accent-blue text-white'
+                    : theme === 'dark'
+                      ? 'bg-dark-border text-white hover:bg-dark-border/80'
+                      : 'bg-light-border text-gray-900 hover:bg-light-border/80'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="text-sm text-accent-blue mb-4">
+          // Showing {filteredSnippets.length} snippet{filteredSnippets.length !== 1 ? 's' : ''}
+        </div>
+
+        <div className="space-y-6">
+          {filteredSnippets.map(snippet => (
+            <CodeSnippet key={snippet.id} snippet={snippet} />
+          ))}
+        </div>
+
+        {filteredSnippets.length === 0 && (
+          <div className={`text-center py-12 border rounded ${
+            theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+          }`}>
+            <p className="text-lg mb-2">No code snippets found</p>
+            <p className="text-sm text-accent-blue">Try selecting a different category</p>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-4xl">
       {!activeTab && renderBio()}
       {activeTab === 'bio' && renderBio()}
       {activeTab === 'university' && renderEducation('university')}
       {activeTab === 'high-school' && renderEducation('high-school')}
+      {activeTab === 'code-samples' && renderCodeSnippets()}
     </div>
   )
 }
-
-
