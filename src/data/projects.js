@@ -46,7 +46,7 @@ export const projects = [
     description: 'Interactive data visualization dashboards for business insights.',
     image: '/images/project-6.svg',
     link: 'https://github.com/rajfiPy'
-  }
+  },
   {
     id: 71,
     name: 'Web Kost Managemennt',
