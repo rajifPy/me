@@ -54,6 +54,14 @@ export const projects = [
     description: 'Creating templates to simplify the management of boarding house or rental property businesses.',
     image: '/images/web-kost.png',
     link: 'https://github.com/rajifPy/kostmanager'
+  },
+  {
+    id: 81,
+    name: 'LoveRegex',
+    tech: ['Flask', 'NLP', 'Python'],
+    description: 'A web application that helps users learn and practice regular expressions through interactive exercises and real-time feedback',
+    image: '/images/regex.png',
+    link: 'https://github.com/rajifPy/loveregex'
   }
 ]
 
@@ -64,5 +72,6 @@ export const techFilters = [
   { name: 'Machine Learning', icon: '🤖' },
   { name: 'Data Science', icon: '📈' },
   { name: 'Analytics', icon: '📉' },
-  { name: 'React', icon: '🌐' }
+  { name: 'React', icon: '🌐' },
+  { name: 'NLP', icon: '🐍' }
 ]
