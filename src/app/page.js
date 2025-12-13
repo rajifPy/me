@@ -18,17 +18,16 @@ export default function Home() {
   const showSidebar = activeSection === 'about-me' || activeSection === 'projects'
 
   return (
-    <div className={`min-h-screen font-mono flex flex-col ${
-      theme === 'dark' 
-        ? 'bg-dark-bg text-dark-text' 
+    <div className={`min-h-screen font-mono flex flex-col ${theme === 'dark'
+        ? 'bg-dark-bg text-dark-text'
         : 'bg-light-bg text-light-text'
-    }`}>
+      }`}>
       <Header activeSection={activeSection} setActiveSection={setActiveSection} />
-      
+
       <div className="flex flex-1 overflow-hidden">
         {showSidebar && (
-          <Sidebar 
-            activeSection={activeSection} 
+          <Sidebar
+            activeSection={activeSection}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
@@ -37,16 +36,16 @@ export default function Home() {
         <main className="flex-1 flex flex-col overflow-hidden">
           {activeTab && activeSection === 'about-me' && (
             <div className={`border-b ${theme === 'dark' ? 'border-dark-border' : 'border-light-border'} flex items-center h-10 flex-shrink-0`}>
-              <div className={`flex items-center gap-2 px-4 border-r ${theme === 'dark' ? 'border-dark-border bg-dark-secondary' : 'border-light-border bg-light-secondary'} h-full`}>
-                <span className="text-sm">{activeTab}</span>
-                <button onClick={() => setActiveTab(null)} className="hover:text-accent-teal">
+              <div className={`flex items-center gap-2 px-3 md:px-4 border-r ${theme === 'dark' ? 'border-dark-border bg-dark-secondary' : 'border-light-border bg-light-secondary'} h-full`}>
+                <span className="text-xs md:text-sm truncate max-w-[120px] md:max-w-none">{activeTab}</span>
+                <button onClick={() => setActiveTab(null)} className="hover:text-accent-teal flex-shrink-0">
                   ✕
                 </button>
               </div>
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto p-12">
+          <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12">
             {activeSection === 'hello' && <HelloSection />}
             {activeSection === 'about-me' && <AboutSection activeTab={activeTab} />}
             {activeSection === 'projects' && <ProjectsSection />}
