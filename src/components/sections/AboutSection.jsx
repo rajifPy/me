@@ -75,7 +75,7 @@ export default function AboutSection({ activeTab }) {
           <p className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>Bachelor of Information Systems</p>
           <p className="text-sm text-accent-blue">2020 - 2024 • Surabaya, Indonesia</p>
           <ul className="mt-4 space-y-2">
-            <li>• GPA: 3.7/4.0</li>
+            <li>• GPA: 3.3/4.0</li>
             <li>• Focus: Data Analytics & Information Systems</li>
             <li>• Active in academic competitions</li>
           </ul>
@@ -103,4 +103,5 @@ export default function AboutSection({ activeTab }) {
     </div>
   )
 }
+
 
