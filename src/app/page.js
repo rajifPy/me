@@ -13,12 +13,20 @@ import ContactSection from '@/components/sections/ContactSection'
 export default function Home() {
   const [activeSection, setActiveSection] = useState('hello')
   const [activeTab, setActiveTab] = useState(null)
+  const [selectedFilters, setSelectedFilters] = useState([])
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Reset filters when changing sections
+  useEffect(() => {
+    if (activeSection !== 'projects') {
+      setSelectedFilters([])
+    }
+  }, [activeSection])
 
   const showSidebar = activeSection === 'about-me' || activeSection === 'projects'
 
@@ -43,6 +51,8 @@ export default function Home() {
             activeSection={activeSection} 
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            selectedFilters={selectedFilters}
+            setSelectedFilters={setSelectedFilters}
           />
         )}
 
@@ -69,7 +79,9 @@ export default function Home() {
           <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12">
             {activeSection === 'hello' && <HelloSection />}
             {activeSection === 'about-me' && <AboutSection activeTab={activeTab} />}
-            {activeSection === 'projects' && <ProjectsSection />}
+            {activeSection === 'projects' && (
+              <ProjectsSection selectedFilters={selectedFilters} />
+            )}
             {activeSection === 'contact-me' && <ContactSection />}
           </div>
         </main>
