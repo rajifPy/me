@@ -1,50 +1,76 @@
+// src/data/photos.js
+
 export const photos = [
   {
     id: 1,
     url: '/12358.png',
-    caption: 'Working on data analysis project',
+    caption: 'Working on data projects',
     category: 'Work'
   },
   {
     id: 2,
     url: '/12358.png',
-    caption: 'Team collaboration session',
+    caption: 'Data analysis session',
     category: 'Work'
   },
   {
     id: 3,
     url: '/12358.png',
-    caption: 'Presenting at tech conference',
-    category: 'Events'
+    caption: 'Team collaboration meeting',
+    category: 'Work'
   },
   {
     id: 4,
     url: '/12358.png',
-    caption: 'Bangkit Academy graduation',
+    caption: 'Presenting project results',
     category: 'Events'
   },
   {
     id: 5,
     url: '/12358.png',
-    caption: 'Coffee and code',
-    category: 'Lifestyle'
+    caption: 'Bangkit Academy graduation ceremony',
+    category: 'Events'
   },
   {
     id: 6,
     url: '/12358.png',
-    caption: 'Office workspace setup',
-    category: 'Lifestyle'
+    caption: 'Tech conference participation',
+    category: 'Events'
   },
   {
     id: 7,
     url: '/12358.png',
-    caption: 'University campus',
-    category: 'Education'
+    caption: 'Coffee and coding session',
+    category: 'Lifestyle'
   },
   {
     id: 8,
     url: '/12358.png',
-    caption: 'Study session with friends',
+    caption: 'My workspace setup',
+    category: 'Lifestyle'
+  },
+  {
+    id: 9,
+    url: '/12358.png',
+    caption: 'Daily routine as data enthusiast',
+    category: 'Lifestyle'
+  },
+  {
+    id: 10,
+    url: '/12358.png',
+    caption: 'Universitas Airlangga campus',
+    category: 'Education'
+  },
+  {
+    id: 11,
+    url: '/12358.png',
+    caption: 'Study group with classmates',
+    category: 'Education'
+  },
+  {
+    id: 12,
+    url: '/12358.png',
+    caption: 'Final year project presentation',
     category: 'Education'
   }
 ]
@@ -56,3 +82,18 @@ export const photoCategories = [
   'Lifestyle',
   'Education'
 ]
+
+// Helper function to get photos by category
+export const getPhotosByCategory = (category) => {
+  if (category === 'All') return photos
+  return photos.filter(photo => photo.category === category)
+}
+
+// Helper function to get photo count by category
+export const getPhotoCounts = () => {
+  const counts = { All: photos.length }
+  photoCategories.slice(1).forEach(category => {
+    counts[category] = photos.filter(p => p.category === category).length
+  })
+  return counts
+}
