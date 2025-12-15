@@ -1,9 +1,8 @@
-// src/components/layout/Sidebar.jsx
 'use client'
 
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap, Camera } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
@@ -63,7 +62,6 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                   <span>bio</span>
                 </button>
 
-                {/* Skills Button - NEW */}
                 <button
                   onClick={() => handleTabClick('skills')}
                   className={`flex items-center gap-2 transition-colors text-sm ${
@@ -74,7 +72,6 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                   <span>skills</span>
                 </button>
 
-                {/* Code Samples Button */}
                 <button
                   onClick={() => handleTabClick('code-samples')}
                   className={`flex items-center gap-2 transition-colors text-sm ${
@@ -85,7 +82,6 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                   <span>code-samples</span>
                 </button>
 
-                {/* Certifications Button */}
                 <button
                   onClick={() => handleTabClick('certifications')}
                   className={`flex items-center gap-2 transition-colors text-sm ${
@@ -94,6 +90,17 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                 >
                   <Award size={14} className="text-accent-orange" />
                   <span>certifications</span>
+                </button>
+
+                {/* NEW: Photos Button */}
+                <button
+                  onClick={() => handleTabClick('photos')}
+                  className={`flex items-center gap-2 transition-colors text-sm ${
+                    activeTab === 'photos' ? 'text-white' : 'hover:text-white'
+                  }`}
+                >
+                  <Camera size={14} className="text-accent-pink" />
+                  <span>photos</span>
                 </button>
                 
                 <div>
@@ -175,7 +182,6 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
             )}
           </div>
           
-          {/* Selected count */}
           {selectedFilters.length > 0 && (
             <div className="mb-3 text-xs text-accent-blue">
               {selectedFilters.length} {selectedFilters.length === 1 ? 'filter' : 'filters'} selected
@@ -212,7 +218,6 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
             ))}
           </div>
 
-          {/* Filter Tips */}
           <div className="mt-4 pt-4 border-t border-dark-border">
             <p className="text-xs text-accent-blue mb-2">// filter tips:</p>
             <p className="text-xs opacity-60">Select multiple filters to see projects that use any of the selected technologies</p>
