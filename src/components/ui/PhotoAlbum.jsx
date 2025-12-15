@@ -8,7 +8,7 @@ import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Camera } from 'lucide-re
 const photos = [
   {
     id: 1,
-    url: '/public/12358.png', // Ganti dengan foto Anda
+    url: '/12358.png', // Ganti dengan foto Anda
     caption: 'Working on data projects',
     category: 'Work'
   },
