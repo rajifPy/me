@@ -10,6 +10,7 @@ import { codeSnippets, snippetCategories } from '@/data/codeSnippets'
 import { skillsData, getSkillStats } from '@/data/skills'
 import CodeSnippet from '@/components/ui/CodeSnippet'
 import CertificationBadges from '@/components/ui/CertificationBadges'
+import PhotoAlbum from '@/components/ui/PhotoAlbum'
 
 export default function AboutSection({ activeTab }) {
   const { theme } = useTheme()
@@ -322,6 +323,7 @@ export default function AboutSection({ activeTab }) {
       {activeTab === 'high-school' && renderEducation('high-school')}
       {activeTab === 'code-samples' && renderCodeSnippets()}
       {activeTab === 'certifications' && renderCertifications()}
+      {activeTab === 'photos' && <PhotoAlbum />}
     </div>
   )
 }
@@ -402,3 +404,4 @@ function StatCard({ icon, label, value, theme }) {
     </div>
   )
 }
+
