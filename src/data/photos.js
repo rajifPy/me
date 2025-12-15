@@ -3,19 +3,19 @@
 export const photos = [
   {
     id: 1,
-    url: '/12358.png',
+    url: '/public/images/12358.png',
     caption: 'Working on data projects',
     category: 'Work'
   },
   {
     id: 2,
-    url: '/12358.png',
+    url: '/public/images/12358.png',
     caption: 'Data analysis session',
     category: 'Work'
   },
   {
     id: 3,
-    url: '/12358.png',
+    url: '/public/images/12358.png',
     caption: 'Team collaboration meeting',
     category: 'Work'
   },
