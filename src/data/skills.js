@@ -4,7 +4,7 @@ export const skillsData = {
   'Programming Languages': [
     { 
       name: 'Python', 
-      level: 90, 
+      level: 75, 
       years: 3, 
       projects: 15, 
       icon: '🐍',
@@ -12,7 +12,7 @@ export const skillsData = {
     },
     { 
       name: 'SQL', 
-      level: 85, 
+      level: 75, 
       years: 3, 
       projects: 12, 
       icon: '💾',
@@ -28,7 +28,7 @@ export const skillsData = {
     },
     { 
       name: 'JavaScript', 
-      level: 75, 
+      level: 50, 
       years: 2, 
       projects: 6, 
       icon: '⚡',
@@ -38,7 +38,7 @@ export const skillsData = {
   'Data Science & ML': [
     { 
       name: 'Machine Learning', 
-      level: 85, 
+      level: 60, 
       years: 2, 
       projects: 10, 
       icon: '🤖',
@@ -46,7 +46,7 @@ export const skillsData = {
     },
     { 
       name: 'Data Analysis', 
-      level: 90, 
+      level: 80, 
       years: 3, 
       projects: 20, 
       icon: '📈',
@@ -54,7 +54,7 @@ export const skillsData = {
     },
     { 
       name: 'Deep Learning', 
-      level: 75, 
+      level: 40, 
       years: 1.5, 
       projects: 5, 
       icon: '🧠',
@@ -62,7 +62,7 @@ export const skillsData = {
     },
     { 
       name: 'NLP', 
-      level: 70, 
+      level: 50, 
       years: 1, 
       projects: 4, 
       icon: '🗣️',
@@ -88,7 +88,7 @@ export const skillsData = {
     },
     { 
       name: 'NumPy', 
-      level: 85, 
+      level: 60, 
       years: 3, 
       projects: 15, 
       icon: '🔢',
@@ -96,7 +96,7 @@ export const skillsData = {
     },
     { 
       name: 'Scikit-learn', 
-      level: 85, 
+      level: 75, 
       years: 2, 
       projects: 12, 
       icon: '🔬',
@@ -104,7 +104,7 @@ export const skillsData = {
     },
     { 
       name: 'TensorFlow', 
-      level: 75, 
+      level: 60, 
       years: 1.5, 
       projects: 6, 
       icon: '🔷',
@@ -112,7 +112,7 @@ export const skillsData = {
     },
     { 
       name: 'PyTorch', 
-      level: 70, 
+      level: 50, 
       years: 1, 
       projects: 4, 
       icon: '🔥',
@@ -120,7 +120,7 @@ export const skillsData = {
     },
     { 
       name: 'Jupyter', 
-      level: 90, 
+      level: 75, 
       years: 3, 
       projects: 20, 
       icon: '📓',
@@ -130,7 +130,7 @@ export const skillsData = {
   'Visualization': [
     { 
       name: 'Tableau', 
-      level: 85, 
+      level: 50, 
       years: 2, 
       projects: 10, 
       icon: '📊',
@@ -138,7 +138,7 @@ export const skillsData = {
     },
     { 
       name: 'Matplotlib', 
-      level: 80, 
+      level: 75, 
       years: 2, 
       projects: 15, 
       icon: '📈',
@@ -146,7 +146,7 @@ export const skillsData = {
     },
     { 
       name: 'Seaborn', 
-      level: 80, 
+      level: 75, 
       years: 2, 
       projects: 15, 
       icon: '🌊',
@@ -162,7 +162,7 @@ export const skillsData = {
     },
     { 
       name: 'Power BI', 
-      level: 70, 
+      level: 50, 
       years: 1, 
       projects: 5, 
       icon: '📊',
@@ -172,7 +172,7 @@ export const skillsData = {
   'Database & Big Data': [
     { 
       name: 'PostgreSQL', 
-      level: 85, 
+      level: 75, 
       years: 2, 
       projects: 10, 
       icon: '🐘',
@@ -180,7 +180,7 @@ export const skillsData = {
     },
     { 
       name: 'MySQL', 
-      level: 80, 
+      level: 75, 
       years: 2, 
       projects: 8, 
       icon: '💾',
@@ -188,7 +188,7 @@ export const skillsData = {
     },
     { 
       name: 'MongoDB', 
-      level: 70, 
+      level: 50, 
       years: 1, 
       projects: 4, 
       icon: '🍃',
@@ -196,7 +196,7 @@ export const skillsData = {
     },
     { 
       name: 'Apache Spark', 
-      level: 65, 
+      level: 45, 
       years: 0.5, 
       projects: 2, 
       icon: '⚡',
@@ -206,7 +206,7 @@ export const skillsData = {
   'Other Skills': [
     { 
       name: 'Git & GitHub', 
-      level: 85, 
+      level: 75, 
       years: 3, 
       projects: 20, 
       icon: '🔧',
@@ -214,7 +214,7 @@ export const skillsData = {
     },
     { 
       name: 'Docker', 
-      level: 70, 
+      level: 45, 
       years: 1, 
       projects: 4, 
       icon: '🐳',
@@ -222,7 +222,7 @@ export const skillsData = {
     },
     { 
       name: 'Excel', 
-      level: 90, 
+      level: 75, 
       years: 4, 
       projects: 25, 
       icon: '📑',
@@ -230,7 +230,7 @@ export const skillsData = {
     },
     { 
       name: 'Statistics', 
-      level: 85, 
+      level: 75, 
       years: 3, 
       projects: 15, 
       icon: '📊',
