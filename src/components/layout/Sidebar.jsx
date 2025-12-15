@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
@@ -63,6 +63,17 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                   <span>bio</span>
                 </button>
 
+                {/* Skills Button - NEW */}
+                <button
+                  onClick={() => handleTabClick('skills')}
+                  className={`flex items-center gap-2 transition-colors text-sm ${
+                    activeTab === 'skills' ? 'text-white' : 'hover:text-white'
+                  }`}
+                >
+                  <Zap size={14} className="text-accent-teal" />
+                  <span>skills</span>
+                </button>
+
                 {/* Code Samples Button */}
                 <button
                   onClick={() => handleTabClick('code-samples')}
@@ -70,11 +81,11 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                     activeTab === 'code-samples' ? 'text-white' : 'hover:text-white'
                   }`}
                 >
-                  <Code2 size={14} className="text-accent-teal" />
+                  <Code2 size={14} className="text-accent-blue" />
                   <span>code-samples</span>
                 </button>
 
-                {/* Certifications Button - NEW */}
+                {/* Certifications Button */}
                 <button
                   onClick={() => handleTabClick('certifications')}
                   className={`flex items-center gap-2 transition-colors text-sm ${
