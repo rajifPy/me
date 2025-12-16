@@ -323,8 +323,7 @@ export default function AboutSection({ activeTab }) {
       {activeTab === 'high-school' && renderEducation('high-school')}
       {activeTab === 'code-samples' && renderCodeSnippets()}
       {activeTab === 'certifications' && renderCertifications()}
-      {/* FIXED: Pass theme prop to PhotoAlbum */}
-      {activeTab === 'photos' && <PhotoAlbum theme={theme} />}
+      {activeTab === 'photos' && <PhotoAlbum />}
     </div>
   )
 }
