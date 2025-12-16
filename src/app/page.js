@@ -9,6 +9,7 @@ import HelloSection from '@/components/sections/HelloSection'
 import AboutSection from '@/components/sections/AboutSection'
 import ProjectsSection from '@/components/sections/ProjectsSection'
 import ContactSection from '@/components/sections/ContactSection'
+import AIChatbot from '@/components/ui/AIChatbot'
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('hello')
@@ -88,6 +89,7 @@ export default function Home() {
       </div>
 
       <Footer />
+      <AIChatbot />
     </div>
   )
 }
