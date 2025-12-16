@@ -1,33 +1,37 @@
-import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
+'use client'
 
-export default function AIChatbot({ theme = 'dark' }) {
-  const [isOpen, setIsOpen] = useState(false);
+import { useState, useRef, useEffect } from 'react'
+import { useTheme } from '@/context/ThemeContext'
+import { MessageCircle, X, Send, Bot, User, Loader2, Sparkles } from 'lucide-react'
+
+export default function AIChatbot() {
+  const { theme } = useTheme()
+  const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
       content: 'Hi! I\'m Rajif\'s AI assistant. I can answer questions about his skills, projects, experience, and more. How can I help you today?',
       timestamp: new Date()
     }
-  ]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
+  ])
+  const [inputMessage, setInputMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const messagesEndRef = useRef(null)
+  const inputRef = useRef(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    scrollToBottom()
+  }, [messages])
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.focus()
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   const systemPrompt = `You are an AI assistant for Muhammad Rajif Al Farikhi's portfolio website. You help visitors learn about Rajif's background, skills, and experience.
 
@@ -47,32 +51,42 @@ Notable Projects:
 2. ML Bangkit Project - Machine Learning capstone from Bangkit Academy
 3. Social Analytics - Social media analytics dashboard with 50% growth metrics
 4. LoveRegex - NLP web app for learning regular expressions
+5. Web Kost Management - Template for boarding house management with React & PostgreSQL
 
 Experience:
-- Data Analyst at UNAIR (Jan 2025 - Feb 2025)
-- ML Student at Bangkit Academy (Feb 2021 - Dec 2022)
-- Head of Media & Information at UKMKI UNAIR (Feb 2022 - Dec 2022)
+- Data Analyst at UNAIR (Jan 2025 - Feb 2025) - Database repair and normalization
+- ML Student at Bangkit Academy (Feb 2021 - Dec 2022) - Completed ML fundamentals to advanced AI
+- Head of Media & Information at UKMKI UNAIR (Feb 2022 - Dec 2022) - Led social media strategy, 50% follower growth
 
 Certifications:
 - Data Science Fundamentals (Bangkit Academy)
 - Machine Learning Path (Bangkit Academy)
 - SQL for Data Analysis (DataCamp)
 - Data Visualization with Tableau
+- Python for Data Science (IBM)
+- Google Analytics Certification
 
-Please provide helpful, concise, and friendly responses. If asked about specific technical details, reference his actual skills and projects. Keep responses under 150 words unless more detail is specifically requested.`;
+Technical Skills:
+- Programming: Python (75%), SQL (75%), R (70%), JavaScript (50%)
+- Data Science: Machine Learning (60%), Data Analysis (80%), Deep Learning (40%), NLP (50%)
+- Tools: Pandas (90%), NumPy (60%), Scikit-learn (75%), TensorFlow (60%)
+- Visualization: Tableau (50%), Matplotlib (75%), Seaborn (75%), Plotly (75%)
+- Database: PostgreSQL (75%), MySQL (75%), MongoDB (50%)
+
+Please provide helpful, concise, and friendly responses. If asked about specific technical details, reference his actual skills and projects. Keep responses under 150 words unless more detail is specifically requested. Always be encouraging and professional.`
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return;
+    if (!inputMessage.trim() || isLoading) return
 
     const userMessage = {
       role: 'user',
       content: inputMessage,
       timestamp: new Date()
-    };
+    }
 
-    setMessages(prev => [...prev, userMessage]);
-    setInputMessage('');
-    setIsLoading(true);
+    setMessages(prev => [...prev, userMessage])
+    setInputMessage('')
+    setIsLoading(true)
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -92,55 +106,57 @@ Please provide helpful, concise, and friendly responses. If asked about specific
             }))
             .concat([{ role: 'user', content: inputMessage }])
         })
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
       
       if (data.content && data.content[0]) {
         const assistantMessage = {
           role: 'assistant',
           content: data.content[0].text,
           timestamp: new Date()
-        };
-        setMessages(prev => [...prev, assistantMessage]);
+        }
+        setMessages(prev => [...prev, assistantMessage])
+      } else {
+        throw new Error('Invalid response format')
       }
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Chat error:', error)
       const errorMessage = {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: 'Sorry, I encountered an error. Please try again or contact Rajif directly at mrajifalfarikhi@gmail.com',
         timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      }
+      setMessages(prev => [...prev, errorMessage])
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
+      e.preventDefault()
+      handleSendMessage()
     }
-  };
+  }
 
   const quickQuestions = [
     "What are Rajif's technical skills?",
     "Tell me about his projects",
     "What's his educational background?",
     "How can I contact him?"
-  ];
+  ]
 
   const handleQuickQuestion = (question) => {
-    setInputMessage(question);
-    inputRef.current?.focus();
-  };
+    setInputMessage(question)
+    if (inputRef.current) {
+      inputRef.current.focus()
+    }
+  }
 
-  const bgPrimary = theme === 'dark' ? 'bg-gray-900' : 'bg-white';
-  const bgSecondary = theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100';
-  const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
-  const textPrimary = theme === 'dark' ? 'text-white' : 'text-gray-900';
-  const textSecondary = theme === 'dark' ? 'text-gray-400' : 'text-gray-600';
+  const bgPrimary = theme === 'dark' ? 'bg-dark-bg' : 'bg-light-bg'
+  const bgSecondary = theme === 'dark' ? 'bg-dark-secondary' : 'bg-light-secondary'
+  const borderColor = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
 
   return (
     <>
@@ -148,27 +164,19 @@ Please provide helpful, concise, and friendly responses. If asked about specific
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`fixed bottom-6 right-6 p-4 rounded-full shadow-lg transition-all hover:scale-110 z-50 ${
-            theme === 'dark'
-              ? 'bg-gradient-to-r from-teal-500 to-blue-500 text-white'
-              : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-          }`}
-          aria-label="Open chat"
+          className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg transition-all hover:scale-110 z-50 bg-gradient-to-r from-accent-teal to-accent-blue text-white"
+          aria-label="Open AI chat assistant"
         >
           <MessageCircle size={24} />
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+          <span className="absolute -top-1 -right-1 w-3 h-3 bg-accent-orange rounded-full animate-pulse" />
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <div className={`fixed bottom-6 right-6 w-[380px] h-[600px] rounded-2xl shadow-2xl flex flex-col z-50 border-2 ${borderColor} ${bgPrimary}`}>
+        <div className={`fixed bottom-6 right-6 w-[95vw] sm:w-[380px] h-[90vh] sm:h-[600px] rounded-2xl shadow-2xl flex flex-col z-50 border-2 ${borderColor} ${bgPrimary}`}>
           {/* Header */}
-          <div className={`flex items-center justify-between p-4 border-b ${borderColor} ${
-            theme === 'dark'
-              ? 'bg-gradient-to-r from-teal-600 to-blue-600'
-              : 'bg-gradient-to-r from-blue-500 to-purple-500'
-          } text-white rounded-t-2xl`}>
+          <div className="flex items-center justify-between p-4 border-b border-dark-border bg-gradient-to-r from-accent-teal to-accent-blue text-white rounded-t-2xl">
             <div className="flex items-center gap-3">
               <div className="relative">
                 <Bot size={24} />
@@ -196,9 +204,7 @@ Please provide helpful, concise, and friendly responses. If asked about specific
                 className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {message.role === 'assistant' && (
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    theme === 'dark' ? 'bg-teal-500/20 text-teal-400' : 'bg-blue-100 text-blue-600'
-                  }`}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-accent-teal/20 text-accent-teal">
                     <Bot size={18} />
                   </div>
                 )}
@@ -206,26 +212,22 @@ Please provide helpful, concise, and friendly responses. If asked about specific
                 <div
                   className={`max-w-[75%] rounded-2xl px-4 py-2 ${
                     message.role === 'user'
-                      ? theme === 'dark'
-                        ? 'bg-teal-600 text-white'
-                        : 'bg-blue-600 text-white'
-                      : theme === 'dark'
-                        ? 'bg-gray-700 text-white'
-                        : 'bg-white text-gray-900 border border-gray-200'
+                      ? 'bg-accent-teal text-white'
+                      : theme === 'dark' 
+                        ? 'bg-dark-border text-white' 
+                        : 'bg-white text-gray-900 border border-light-border'
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                   <p className={`text-xs mt-1 ${
-                    message.role === 'user' ? 'text-white/70' : textSecondary
+                    message.role === 'user' ? 'text-white/70' : 'text-accent-blue'
                   }`}>
                     {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
 
                 {message.role === 'user' && (
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    theme === 'dark' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-600'
-                  }`}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-accent-blue/20 text-accent-blue">
                     <User size={18} />
                   </div>
                 )}
@@ -234,15 +236,13 @@ Please provide helpful, concise, and friendly responses. If asked about specific
 
             {isLoading && (
               <div className="flex gap-2 justify-start">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  theme === 'dark' ? 'bg-teal-500/20 text-teal-400' : 'bg-blue-100 text-blue-600'
-                }`}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-accent-teal/20 text-accent-teal">
                   <Bot size={18} />
                 </div>
                 <div className={`rounded-2xl px-4 py-2 ${
-                  theme === 'dark' ? 'bg-gray-700' : 'bg-white border border-gray-200'
+                  theme === 'dark' ? 'bg-dark-border' : 'bg-white border border-light-border'
                 }`}>
-                  <Loader2 size={18} className="animate-spin text-teal-400" />
+                  <Loader2 size={18} className="animate-spin text-accent-teal" />
                 </div>
               </div>
             )}
@@ -253,7 +253,7 @@ Please provide helpful, concise, and friendly responses. If asked about specific
           {/* Quick Questions */}
           {messages.length <= 2 && (
             <div className={`px-4 py-2 border-t ${borderColor} ${bgPrimary}`}>
-              <p className={`text-xs mb-2 flex items-center gap-1 ${textSecondary}`}>
+              <p className="text-xs mb-2 flex items-center gap-1 text-accent-blue">
                 <Sparkles size={12} />
                 Quick questions:
               </p>
@@ -264,8 +264,8 @@ Please provide helpful, concise, and friendly responses. If asked about specific
                     onClick={() => handleQuickQuestion(question)}
                     className={`text-xs px-2 py-1 rounded-full transition-colors ${
                       theme === 'dark'
-                        ? 'bg-gray-700 hover:bg-teal-500/20 text-gray-300'
-                        : 'bg-gray-100 hover:bg-blue-100 text-gray-700'
+                        ? 'bg-dark-border hover:bg-accent-teal/20 text-gray-300'
+                        : 'bg-light-border hover:bg-accent-blue/20 text-gray-700'
                     }`}
                   >
                     {question}
@@ -285,24 +285,20 @@ Please provide helpful, concise, and friendly responses. If asked about specific
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask me anything about Rajif..."
-                className={`flex-1 px-4 py-2 rounded-full border ${borderColor} focus:outline-none focus:ring-2 ${
-                  theme === 'dark'
-                    ? 'bg-gray-800 text-white focus:ring-teal-500'
-                    : 'bg-white text-gray-900 focus:ring-blue-500'
+                className={`flex-1 px-4 py-2 rounded-full border ${borderColor} focus:outline-none focus:ring-2 focus:ring-accent-teal ${
+                  theme === 'dark' 
+                    ? 'bg-dark-secondary text-white placeholder-gray-500' 
+                    : 'bg-white text-gray-900 placeholder-gray-400'
                 }`}
                 disabled={isLoading}
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim() || isLoading}
-                className={`p-2 rounded-full transition-all ${
-                  !inputMessage.trim() || isLoading
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:scale-110'
-                } ${
-                  theme === 'dark'
-                    ? 'bg-teal-600 text-white'
-                    : 'bg-blue-600 text-white'
+                className={`p-2 rounded-full transition-all bg-accent-teal text-white ${
+                  !inputMessage.trim() || isLoading 
+                    ? 'opacity-50 cursor-not-allowed' 
+                    : 'hover:scale-110 hover:shadow-lg'
                 }`}
                 aria-label="Send message"
               >
@@ -313,12 +309,12 @@ Please provide helpful, concise, and friendly responses. If asked about specific
                 )}
               </button>
             </div>
-            <p className={`text-xs mt-2 text-center ${textSecondary}`}>
+            <p className="text-xs mt-2 text-center text-accent-blue">
               Powered by Claude AI
             </p>
           </div>
         </div>
       )}
     </>
-  );
+  )
 }
