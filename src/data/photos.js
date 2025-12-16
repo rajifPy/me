@@ -58,13 +58,13 @@ export const photos = [
   {
     id: 10,
     url: '/images/IMG-20250706-WA0074.jpg',
-    caption: 'Universitas Airlangga campus - KKN',
+    caption: 'Universitas Airlangga campus',
     category: 'Education'
   },
   {
     id: 11,
-    url: '/images/12358.png',
-    caption: 'Study group with classmates',
+    url: '/images/IMG_2713.jpg',
+    caption: 'KKN',
     category: 'Education'
   },
   {
