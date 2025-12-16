@@ -22,7 +22,7 @@ export const researchPapers = [
     category: 'Data Visualization',
     abstract: 'An in-depth analysis of modern data visualization techniques and their impact on business intelligence decision-making. This paper presents case studies from various industries.',
     keywords: ['Data Visualization', 'Business Intelligence', 'Tableau', 'Dashboard Design'],
-    pdfUrl: '/research/data-viz-bi.pdf',
+    pdfUrl: '/research/UTS.pdf',
     pages: 38,
     published: 'Journal of Data Science',
     doi: '10.1234/example.2023.002'
