@@ -51,7 +51,8 @@ PROJECTS:
 5. LoveRegex - Flask, NLP, Python
 `;
 
-export default function AIChatbot() {
+// MODIFIED: Add activeSection prop
+export default function AIChatbot({ activeSection }) {
   const { theme } = useTheme()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
@@ -68,6 +69,18 @@ export default function AIChatbot() {
   
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
+
+  // ADDED: Close chatbot when leaving hello section
+  useEffect(() => {
+    if (activeSection !== 'hello' && isOpen) {
+      setIsOpen(false)
+    }
+  }, [activeSection, isOpen])
+
+  // MODIFIED: Only render if in hello section
+  if (activeSection !== 'hello') {
+    return null
+  }
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -97,7 +110,6 @@ export default function AIChatbot() {
     setIsLoading(true)
 
     try {
-      // Simulate AI response with portfolio context
       const response = await generateAIResponse(inputMessage, portfolioContext)
       
       const assistantMessage = {
@@ -120,65 +132,52 @@ export default function AIChatbot() {
   }
 
   const generateAIResponse = async (query, context) => {
-    // Simple keyword-based response system
     const lowerQuery = query.toLowerCase()
     
-    // Skills queries
     if (lowerQuery.includes('skill') || lowerQuery.includes('technology')) {
       return `Rajif has strong skills in:\n\n**Programming Languages:**\n- Python (75%) - 3 years, 15+ projects\n- SQL (75%) - 3 years, 12+ projects\n- R (70%) - 2 years, 8+ projects\n\n**Data Science & ML:**\n- Data Analysis (80%) - 20+ projects\n- Machine Learning (60%) - 10+ projects\n- Time Series (75%) - 6+ projects\n\n**Tools:**\n- Pandas (90%) - Expert level\n- Tableau (50%) - 10+ dashboards\n- TensorFlow (60%) - Deep learning projects\n\nWould you like to know more about any specific skill?`
     }
     
-    // Experience queries
     if (lowerQuery.includes('experience') || lowerQuery.includes('work') || lowerQuery.includes('job')) {
       return `**Rajif's Professional Experience:**\n\n**1. Data Analyst** at UNAIR (Jan 2025 - Feb 2025)\n- Database repairs and optimization for health service system\n- Data cleaning and normalization\n\n**2. Machine Learning Student** at Bangkit Academy (Feb 2021 - Dec 2022)\n- Partnership with Google, Tokopedia, Gojek, Traveloka\n- Completed intensive ML training program\n\n**3. Head Division Media & Information** at UKMKI UNAIR (Feb 2022 - Dec 2022)\n- Led social media strategy\n- Increased followers by 50%\n- Awarded Best Staff\n\nWould you like details about any specific role?`
     }
     
-    // Education queries
     if (lowerQuery.includes('education') || lowerQuery.includes('university') || lowerQuery.includes('study')) {
       return `**Education Background:**\n\n**Universitas Airlangga** (2020-2024)\n- Bachelor of Information Systems\n- GPA: 3.3/4.0\n- Focus: Data Analytics & Information Systems\n- Active in academic competitions\n\n**MAS Hasyim Asy'ari** (2017-2020)\n- Science Major\n- Mathematics & Science focus\n\nHe also completed Bangkit Academy's Machine Learning program with certifications in Data Science and ML.`
     }
     
-    // Projects queries
     if (lowerQuery.includes('project')) {
       return `**Notable Projects:**\n\n1. **Healthcare Database** (SQL, PostgreSQL)\n   - Database optimization for UNAIR health service\n   - Data cleaning and normalization\n\n2. **ML Bangkit Project** (Python, ML)\n   - Capstone project from Bangkit Academy\n   - Fact-checking system using NLP\n\n3. **Social Analytics Dashboard** (Tableau)\n   - Achieved 50% growth in metrics\n   - Interactive visualizations\n\n4. **Web Kost Management** (React, PostgreSQL)\n   - Property management system\n   - Full-stack development\n\n5. **LoveRegex** (Flask, NLP, Python)\n   - Interactive regex learning platform\n   - Real-time feedback system\n\nWould you like more details about any project?`
     }
     
-    // Certifications queries
     if (lowerQuery.includes('certification') || lowerQuery.includes('certificate')) {
       return `**Professional Certifications:**\n\n✓ Data Science Fundamentals (Bangkit Academy, 2022)\n✓ Machine Learning Path (Bangkit Academy, 2022)\n✓ SQL for Data Analysis (DataCamp, 2023)\n✓ Data Visualization with Tableau (Tableau, 2023)\n✓ Python for Data Science (IBM, 2023)\n✓ Google Analytics Certification (Google, 2023)\n\nAll certifications are verifiable with credential IDs.`
     }
     
-    // Contact queries
     if (lowerQuery.includes('contact') || lowerQuery.includes('email') || lowerQuery.includes('phone') || lowerQuery.includes('reach')) {
       return `**Contact Information:**\n\n📧 Email: mrajifalfarikhi@gmail.com\n📱 Phone: +6281460326800\n📍 Location: Surabaya, Indonesia\n\n🔗 LinkedIn: linkedin.com/in/muhammadrajifalfarikhi\n💻 GitHub: github.com/rajfiPy\n\nFeel free to reach out for collaboration opportunities or data projects!`
     }
     
-    // Python specific
     if (lowerQuery.includes('python')) {
       return `**Python Expertise:**\n\nRajif has **75% proficiency** in Python with:\n- **3 years** of experience\n- **15+ projects** completed\n\n**Specializations:**\n- Data analysis with Pandas (90% proficiency)\n- Machine learning with Scikit-learn (75%)\n- Deep learning with TensorFlow (60%)\n- Data visualization with Matplotlib & Seaborn\n- Web scraping and automation\n\nHe uses Python daily for data analysis, ML projects, and automation tasks.`
     }
     
-    // SQL specific
     if (lowerQuery.includes('sql') || lowerQuery.includes('database')) {
       return `**Database & SQL Skills:**\n\n**SQL Proficiency:** 75% (3 years, 12+ projects)\n\n**Databases:**\n- PostgreSQL (75%) - Advanced queries, optimization\n- MySQL (75%) - Relational database management\n- MongoDB (50%) - NoSQL for unstructured data\n\n**Expertise:**\n- Complex query optimization\n- Database design and normalization\n- Data cleaning and ETL processes\n- Performance tuning\n\nRecent project: Healthcare database repairs at UNAIR.`
     }
     
-    // Machine Learning specific
     if (lowerQuery.includes('machine learning') || lowerQuery.includes('ml ')) {
       return `**Machine Learning Expertise:**\n\n**Proficiency:** 60% (2 years, 10+ projects)\n\n**Skills:**\n- Supervised & unsupervised learning\n- Model optimization and evaluation\n- Feature engineering\n- Scikit-learn (75% proficiency)\n- TensorFlow (60% proficiency)\n\n**Experience:**\n- Completed Bangkit Academy ML Path\n- Built end-to-end ML projects\n- Capstone: Fact-checking system using NLP\n\n**Also skilled in:**\n- Deep Learning (40%)\n- NLP (50%)\n- Time Series Analysis (75%)`
     }
     
-    // Strengths queries
     if (lowerQuery.includes('strength') || lowerQuery.includes('best at')) {
       return `**Rajif's Top Strengths:**\n\n🌟 **Data Analysis** (80%)\n- 3 years experience, 20+ projects\n- Strong statistical foundation\n\n🐼 **Pandas** (90%)\n- Expert-level data manipulation\n- 18+ projects\n\n📊 **Visualization** (75%)\n- Matplotlib, Seaborn, Plotly\n- Tableau dashboards\n\n💾 **SQL** (75%)\n- PostgreSQL, MySQL expertise\n- Database optimization\n\n📈 **Time Series** (75%)\n- Forecasting and analysis\n- 6+ projects\n\nHis analytical mindset and technical skills make him excel in turning data into actionable insights!`
     }
     
-    // General greeting responses
     if (lowerQuery.includes('hi') || lowerQuery.includes('hello') || lowerQuery.includes('hey')) {
       return `Hello! 👋 I'm here to help you learn about Rajif's background and skills.\n\nI can tell you about:\n- His technical skills and proficiency levels\n- Work experience and achievements\n- Education background\n- Projects and portfolio\n- Certifications\n- How to contact him\n\nWhat would you like to know?`
     }
     
-    // Default response
     return `I'd be happy to help you learn about Rajif! Here are some topics I can discuss:\n\n• **Skills & Technologies** - Programming languages, tools, frameworks\n• **Experience** - Work history and achievements\n• **Education** - Academic background and certifications\n• **Projects** - Portfolio and notable work\n• **Contact** - How to reach him\n\nPlease ask me about any of these topics, or ask a specific question!`
   }
 
@@ -206,25 +205,19 @@ export default function AIChatbot() {
   }
 
   const formatMessage = (content) => {
-    // Split by newlines and format
     return content.split('\n').map((line, i) => {
-      // Headers
       if (line.startsWith('**') && line.endsWith('**')) {
         return <div key={i} className="font-bold text-accent-teal mt-2">{line.slice(2, -2)}</div>
       }
-      // Bullet points
       if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
         return <div key={i} className="ml-4 text-sm">{line}</div>
       }
-      // Numbered lists
       if (/^\d+\./.test(line.trim())) {
         return <div key={i} className="ml-4 text-sm">{line}</div>
       }
-      // Empty lines
       if (line.trim() === '') {
         return <div key={i} className="h-2"></div>
       }
-      // Regular text
       return <div key={i} className="text-sm">{line}</div>
     })
   }
@@ -236,7 +229,6 @@ export default function AIChatbot() {
 
   return (
     <>
-      {/* Chat Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -251,12 +243,10 @@ export default function AIChatbot() {
         </button>
       )}
 
-      {/* Chat Window */}
       {isOpen && (
         <div className={`fixed bottom-6 right-6 w-96 h-[600px] rounded-lg shadow-2xl border-2 overflow-hidden flex flex-col z-40 ${
           bgPrimary
         } ${borderClass}`}>
-          {/* Header */}
           <div className={`${bgSecondary} border-b ${borderClass} p-4 flex items-center justify-between`}>
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -295,7 +285,6 @@ export default function AIChatbot() {
             </div>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message, index) => (
               <div
@@ -317,7 +306,6 @@ export default function AIChatbot() {
                     {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                   
-                  {/* Copy button */}
                   {message.role === 'assistant' && (
                     <button
                       onClick={() => copyToClipboard(message.content, index)}
@@ -347,7 +335,6 @@ export default function AIChatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div className={`border-t ${borderClass} p-4`}>
             <div className="flex gap-2">
               <input
@@ -374,7 +361,6 @@ export default function AIChatbot() {
               </button>
             </div>
             
-            {/* Quick suggestions */}
             <div className="mt-3 flex flex-wrap gap-2">
               {['Skills', 'Experience', 'Projects', 'Contact'].map((suggestion) => (
                 <button
