@@ -57,8 +57,8 @@ export const photos = [
   },
   {
     id: 10,
-    url: '/images/12358.png',
-    caption: 'Universitas Airlangga campus',
+    url: '/images/IMG-20250706-WA0074.jpg',
+    caption: 'Universitas Airlangga campus - KKN',
     category: 'Education'
   },
   {
