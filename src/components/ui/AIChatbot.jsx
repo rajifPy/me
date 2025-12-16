@@ -51,7 +51,6 @@ PROJECTS:
 5. LoveRegex - Flask, NLP, Python
 `;
 
-// MODIFIED: Add activeSection prop
 export default function AIChatbot({ activeSection }) {
   const { theme } = useTheme()
   const [isOpen, setIsOpen] = useState(false)
@@ -70,25 +69,25 @@ export default function AIChatbot({ activeSection }) {
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
 
-  // ADDED: Close chatbot when leaving hello section
+  // FIXED: Close chatbot when leaving hello section (with proper cleanup)
   useEffect(() => {
     if (activeSection !== 'hello' && isOpen) {
       setIsOpen(false)
+      // Reset states when closing
+      setShowSettings(false)
+      setInputMessage('')
     }
   }, [activeSection, isOpen])
-
-  // MODIFIED: Only render if in hello section
-  if (activeSection !== 'hello') {
-    return null
-  }
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    if (isOpen) {
+      scrollToBottom()
+    }
+  }, [messages, isOpen])
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -226,6 +225,11 @@ export default function AIChatbot({ activeSection }) {
   const bgSecondary = theme === 'dark' ? 'bg-dark-secondary' : 'bg-light-secondary'
   const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
   const textClass = theme === 'dark' ? 'text-dark-text' : 'text-light-text'
+
+  // FIXED: Don't render anything if not in hello section
+  if (activeSection !== 'hello') {
+    return null
+  }
 
   return (
     <>
