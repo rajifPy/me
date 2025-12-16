@@ -323,7 +323,8 @@ export default function AboutSection({ activeTab }) {
       {activeTab === 'high-school' && renderEducation('high-school')}
       {activeTab === 'code-samples' && renderCodeSnippets()}
       {activeTab === 'certifications' && renderCertifications()}
-      {activeTab === 'photos' && <PhotoAlbum />}
+      {/* FIXED: Pass theme prop to PhotoAlbum */}
+      {activeTab === 'photos' && <PhotoAlbum theme={theme} />}
     </div>
   )
 }
@@ -404,4 +405,3 @@ function StatCard({ icon, label, value, theme }) {
     </div>
   )
 }
-
