@@ -10,10 +10,12 @@ export default function Header({ activeSection, setActiveSection }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
 
+  // UPDATED: Added research menu item
   const navItems = [
     { id: 'hello', label: '_hello' },
     { id: 'about-me', label: '_about-me' },
     { id: 'projects', label: '_projects' },
+    { id: 'research', label: '_research' },
     { id: 'contact-me', label: '_contact-me' }
   ]
 
