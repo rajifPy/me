@@ -8,6 +8,7 @@ import Sidebar from '@/components/layout/Sidebar'
 import HelloSection from '@/components/sections/HelloSection'
 import AboutSection from '@/components/sections/AboutSection'
 import ProjectsSection from '@/components/sections/ProjectsSection'
+import ResearchSection from '@/components/sections/ResearchSection'
 import ContactSection from '@/components/sections/ContactSection'
 import AIChatbot from '@/components/ui/AIChatbot'
 
@@ -83,13 +84,15 @@ export default function Home() {
             {activeSection === 'projects' && (
               <ProjectsSection selectedFilters={selectedFilters} />
             )}
+            {activeSection === 'research' && <ResearchSection />}
             {activeSection === 'contact-me' && <ContactSection />}
           </div>
         </main>
       </div>
 
       <Footer />
-      <AIChatbot />
+      {/* UPDATED: Pass activeSection to AIChatbot */}
+      <AIChatbot activeSection={activeSection} />
     </div>
   )
 }
