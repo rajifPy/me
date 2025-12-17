@@ -217,7 +217,7 @@ Remember: premature optimization is the root of all evil, but knowing when and h
   {
     id: 4,
     date: '2024-09-25',
-    title: 'From Village Roots to Agents of Change',
+    title: 'Boy From Village ',
     content: `When people talk about villages, they often imagine simplicity, tradition, and distance from modern life. Yet behind the rice fields and quiet roads, there are young souls with dreams as vast as the sky.
 
 ## Between Stereotype and Reality
