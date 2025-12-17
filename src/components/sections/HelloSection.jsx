@@ -25,7 +25,7 @@ export default function HelloSection() {
     role: 'Data Enthusiast',
     instruction1: '// complete the game to continue',
     instruction2: '// you can also see it on my Github page',
-    githubLine: 'const githubLink = "https://github.com/rajfiPy"'
+    githubLine: ' "https://github.com/rajfiPy"'
   }
 
   const typewriterSpeed = {
