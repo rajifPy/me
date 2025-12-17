@@ -5,249 +5,88 @@ export const blogThoughts = [
     id: 1,
     date: '2024-12-15',
     title: 'Why Data Cleaning is 80% of the Job',
-    content: `People often think data science is all about fancy algorithms and AI models. But the reality? I spend most of my time cleaning messy data. 
+    content: `People often think data science is all about fancy algorithms and AI models. The reality is quite different from what you see in job descriptions or bootcamp advertisements. I spend most of my time cleaning messy data, and I'm not alone in this experience.
 
-Duplicate records, missing values, inconsistent formats - these are the real challenges. A perfect model trained on dirty data is useless. 
+## The Harsh Reality of Data Work
 
-My advice: Master pandas, learn SQL deeply, and develop a systematic approach to data quality. That's where the magic really happens.`,
-    tags: ['Data Science', 'Best Practices', 'Career'],
-    category: 'Insights',
-    likes: 42,
-    comments: 8,
-    readTime: '2 min'
+When I started my journey as a data enthusiast, I imagined myself building sophisticated neural networks and deploying cutting-edge machine learning models. The reality hit me hard during my first real project at UNAIR's health service unit. I spent three weeks just understanding the database structure, identifying inconsistencies, and cleaning duplicate records before I could even think about analysis.
+
+## Common Data Quality Issues
+
+Let me walk you through the typical problems I encounter:
+
+**1. Duplicate Records**
+In the healthcare database project, I discovered that some patient records were entered multiple times with slight variations in names, dates, or ID numbers. A single patient might have three different IDs in the system. This wasn't malicious – it was human error, system migrations, and lack of validation rules.
+
+**2. Missing Values**
+Not all missing values are created equal. Sometimes NULL means "not applicable," sometimes it means "we forgot to collect this," and sometimes it means "the system crashed during entry." Understanding the context of missing data is crucial before deciding how to handle it.
+
+**3. Inconsistent Formats**
+Dates entered as "12/01/2024," "01-12-2024," or "January 12, 2024." Phone numbers with or without country codes. Names in different cases. These inconsistencies might seem minor, but they can completely derail your analysis if not addressed.
+
+**4. Data Type Mismatches**
+Numbers stored as strings, dates stored as integers, boolean values stored as "Yes"/"No" strings – these issues are more common than you'd think and can cause subtle bugs in your analysis.
+
+## My Systematic Approach
+
+Over time, I've developed a systematic approach to data cleaning that I follow for every project:
+
+**Step 1: Initial Exploration**
+Before touching anything, I spend time understanding the data. What does each column represent? What are the expected value ranges? What business rules should apply? I document everything in a Jupyter notebook.
+
+**Step 2: Define Data Quality Rules**
+Based on business requirements and domain knowledge, I establish clear rules: "Patient IDs should be 8 digits," "Dates should be within the last 50 years," "Email addresses must contain @," etc.
+
+**Step 3: Systematic Cleaning**
+I tackle issues in order of impact: duplicates first (they can skew everything), then missing values, then format inconsistencies, and finally outliers. Each step is documented and reversible.
+
+**Step 4: Validation**
+After cleaning, I validate the results. Do the statistics make sense? Are there unexpected patterns? I often find new issues during validation that require going back to earlier steps.
+
+## Tools and Techniques
+
+My go-to tools for data cleaning:
+
+**Pandas for Python**
+The backbone of my data cleaning work. Functions like `drop_duplicates()`, `fillna()`, `replace()`, and `apply()` are indispensable. I've written custom cleaning functions that I reuse across projects.
+
+**SQL for Database-Level Cleaning**
+Sometimes it's more efficient to clean data at the database level, especially for large datasets. Window functions, CTEs, and proper JOIN operations can identify and fix issues before data even reaches your analysis environment.
+
+**Regular Expressions**
+For text cleaning and standardization, regex is invaluable. I use it for extracting patterns from messy text, validating formats, and standardizing entries.
+
+## Real-World Impact
+
+In the healthcare database project, proper data cleaning revealed that what appeared to be a 50% increase in patient visits was actually just duplicate records. Imagine if we had made decisions based on that uncleaned data – we might have hired unnecessary staff or invested in expansion that wasn't needed.
+
+In another project analyzing social media growth, cleaning the data revealed that apparent engagement spikes were from bot accounts. Removing these fake engagements gave us a true picture of organic growth and helped focus our strategy effectively.
+
+## Why Cleaning Matters More Than Algorithms
+
+Here's a hard truth: a simple linear regression on clean data will outperform a complex neural network on dirty data. Every time.
+
+The fanciest machine learning model is only as good as the data it's trained on. Garbage in, garbage out – this isn't just a saying, it's a fundamental truth of data science.
+
+## My Advice for Aspiring Data Scientists
+
+1. **Master the Basics**: Get really good at pandas, SQL, and data manipulation. This is where you'll spend most of your time.
+
+2. **Develop a Systematic Approach**: Don't clean ad-hoc. Have a repeatable process that you can apply to any dataset.
+
+3. **Document Everything**: Future you (or your teammates) will thank you. Document what you cleaned, why you cleaned it, and what assumptions you made.
+
+4. **Learn the Domain**: Understanding the business context helps you make better decisions about how to handle edge cases in your data.
+
+5. **Validate, Validate, Validate**: Never assume your cleaning worked perfectly. Always validate the results.
+
+## The Underappreciated Skill
+
+Data cleaning is often seen as unglamorous work – the necessary evil before you get to do "real" data science. But in my experience, it's where the real insights come from. Understanding your data at this granular level gives you intuition about patterns, relationships, and potential issues that you'd never discover by jumping straight to modeling.
+
+The next time you see a job posting for a data scientist that emphasizes machine learning and AI, remember that the real job is probably 80% data cleaning. And that's not a bad thing – it's where the magic really happens.
+
+Master the cleaning, and the modeling becomes much easier. Rush to the modeling, and you'll spend twice as long debugging issues that trace back to data quality problems.`,
+    tags: ['Data Science', 'Best Practices', 'Career', 'Data Cleaning'],
+    category: 'Insights'
   },
-  {
-    id: 2,
-    date: '2024-12-10',
-    title: 'The PostgreSQL Query That Saved Me Hours',
-    content: `Discovered window functions in PostgreSQL today and I'm amazed. I was writing complex subqueries to calculate running totals and rankings.
-
-Then I learned about OVER(), PARTITION BY, and ROW_NUMBER(). What took me 50 lines of code now takes 5.
-
-Example that blew my mind:
-SELECT 
-  customer_id,
-  order_date,
-  SUM(amount) OVER (PARTITION BY customer_id ORDER BY order_date) as running_total
-FROM orders;
-
-Sometimes the solution isn't more complex code - it's knowing your tools better.`,
-    tags: ['SQL', 'PostgreSQL', 'Tips'],
-    category: 'Technical',
-    likes: 67,
-    comments: 15,
-    readTime: '3 min'
-  },
-  {
-    id: 3,
-    date: '2024-12-05',
-    title: 'Lessons from Bangkit Academy',
-    content: `Just completed my Machine Learning certification from Bangkit Academy. Here's what I learned beyond the technical skills:
-
-1. Collaboration beats solo work - our capstone project taught me this
-2. Documentation is not optional - future you will thank present you
-3. Deploy early, deploy often - a working prototype beats a perfect plan
-4. Ask questions, even "dumb" ones - they're usually not as dumb as you think
-
-The tech industry rewards those who ship. Start building, start sharing, start learning in public.`,
-    tags: ['Learning', 'Career', 'Machine Learning'],
-    category: 'Personal',
-    likes: 89,
-    comments: 23,
-    readTime: '4 min'
-  },
-  {
-    id: 4,
-    date: '2024-11-28',
-    title: 'Tableau vs Python: When to Use Which?',
-    content: `Hot take: You don't need Python for everything.
-
-Tableau is amazing for:
-- Quick exploratory analysis
-- Interactive dashboards for stakeholders
-- When your audience isn't technical
-
-Python excels at:
-- Reproducible analysis
-- Custom calculations
-- Integration with ML pipelines
-- Version control
-
-I use both. Tableau for communication, Python for computation. Know your tools, use the right one for the job.`,
-    tags: ['Tableau', 'Python', 'Tools'],
-    category: 'Insights',
-    likes: 54,
-    comments: 12,
-    readTime: '2 min'
-  },
-  {
-    id: 5,
-    date: '2024-11-20',
-    title: 'My Data Analysis Workflow',
-    content: `After dozens of projects, here's my battle-tested workflow:
-
-1. Understand the problem (not the data, the PROBLEM)
-2. Get the data, explore it raw
-3. Clean systematically (document what you remove and why)
-4. EDA with visualizations
-5. Statistical testing before jumping to conclusions
-6. Build models if needed (often not needed!)
-7. Communicate insights in plain language
-
-Step 1 and 7 are where most beginners struggle. Technical skills are important, but understanding the business context and communicating effectively separate good analysts from great ones.`,
-    tags: ['Workflow', 'Best Practices', 'Career'],
-    category: 'Insights',
-    likes: 103,
-    comments: 28,
-    readTime: '3 min'
-  },
-  {
-    id: 6,
-    date: '2024-11-15',
-    title: 'Why I Love (and Hate) Jupyter Notebooks',
-    content: `Jupyter notebooks are incredible for exploration and documentation. But they're terrible for production code.
-
-Love:
-- Interactive development
-- Inline visualizations
-- Mix code with markdown
-- Easy sharing
-
-Hate:
-- Hidden state issues
-- Hard to version control
-- Not great for collaboration
-- Temptation to write spaghetti code
-
-My solution: Use notebooks for exploration, refactor to .py files for production. Best of both worlds.`,
-    tags: ['Tools', 'Jupyter', 'Python'],
-    category: 'Technical',
-    likes: 76,
-    comments: 19,
-    readTime: '2 min'
-  },
-  {
-    id: 7,
-    date: '2024-11-08',
-    title: 'Building My First ML Model: Mistakes I Made',
-    content: `My first ML project was a disaster. Here's what I learned:
-
-❌ Started with the model before understanding the data
-❌ Used accuracy as the only metric (terrible idea for imbalanced data)
-❌ Didn't split train/test properly
-❌ Overfitted like crazy
-❌ Ignored business constraints
-
-✅ Now I do:
-- Thorough EDA first
-- Choose metrics that match business goals
-- Proper validation strategy
-- Start simple, add complexity only if needed
-- Talk to stakeholders early and often
-
-The model is the easy part. Everything around it is what matters.`,
-    tags: ['Machine Learning', 'Mistakes', 'Learning'],
-    category: 'Personal',
-    likes: 124,
-    comments: 34,
-    readTime: '4 min'
-  },
-  {
-    id: 8,
-    date: '2024-11-01',
-    title: 'The Power of Good Documentation',
-    content: `I reopened a project from 6 months ago. Took me 5 minutes to understand because I documented everything.
-
-Documentation isn't just comments in code. It's:
-- README with setup instructions
-- Jupyter notebooks explaining the analysis
-- Decision logs (why you chose X over Y)
-- Data dictionary
-- Known issues and limitations
-
-Future you is a different person. Write for them. They'll thank you.`,
-    tags: ['Documentation', 'Best Practices', 'Career'],
-    category: 'Insights',
-    likes: 91,
-    comments: 16,
-    readTime: '2 min'
-  },
-  {
-    id: 9,
-    date: '2024-10-25',
-    title: 'Side Projects That Actually Helped My Career',
-    content: `Not all side projects are created equal. Here's what worked for me:
-
-🚀 Healthcare database optimization
-- Learned PostgreSQL deeply
-- Got my first contract job from this
-
-🚀 Social media analytics dashboard
-- Learned Tableau
-- Built portfolio piece that impressed interviewers
-
-🚀 ML fact-checking system
-- Completed Bangkit Academy
-- Learned to ship ML products
-
-Build things that:
-1. Solve real problems
-2. Use tools you want to learn
-3. You can show to others
-
-Your portfolio is your resume in tech.`,
-    tags: ['Career', 'Projects', 'Learning'],
-    category: 'Personal',
-    likes: 156,
-    comments: 42,
-    readTime: '3 min'
-  },
-  {
-    id: 10,
-    date: '2024-10-18',
-    title: 'Stop Chasing Perfect, Start Shipping',
-    content: `I spent 3 months "perfecting" my first project. Never shipped it. Too scared it wasn't good enough.
-
-Then I built something in 2 weeks and shared it. Got feedback. Improved it. Actually helped someone.
-
-Lesson: Done is better than perfect. Ship it, learn from feedback, iterate.
-
-Your first version will be bad. That's okay. Version 2 will be better. Version 10 will be great.
-
-Just start.`,
-    tags: ['Mindset', 'Career', 'Motivation'],
-    category: 'Personal',
-    likes: 198,
-    comments: 51,
-    readTime: '2 min'
-  }
-];
-
-export const blogCategories = ['All', 'Insights', 'Technical', 'Personal'];
-
-export const getBlogByCategory = (category) => {
-  if (category === 'All') return blogThoughts;
-  return blogThoughts.filter(post => post.category === category);
-};
-
-export const getBlogStats = () => {
-  return {
-    totalPosts: blogThoughts.length,
-    totalLikes: blogThoughts.reduce((sum, post) => sum + post.likes, 0),
-    totalComments: blogThoughts.reduce((sum, post) => sum + post.comments, 0),
-    avgReadTime: (blogThoughts.reduce((sum, post) => 
-      sum + parseInt(post.readTime), 0) / blogThoughts.length).toFixed(1)
-  };
-};
-
-export const getPopularPosts = (limit = 5) => {
-  return [...blogThoughts]
-    .sort((a, b) => b.likes - a.likes)
-    .slice(0, limit);
-};
-
-export const getRecentPosts = (limit = 5) => {
-  return [...blogThoughts]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, limit);
-};
