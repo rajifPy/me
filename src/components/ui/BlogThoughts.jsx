@@ -36,7 +36,7 @@ export default function BlogThoughts() {
 
   const getReadTime = (content) => {
     const words = getWordCount(content)
-    const minutes = Math.ceil(words / 200) // Average reading speed
+    const minutes = Math.ceil(words / 200)
     return `${minutes} min read`
   }
 
@@ -148,3 +148,152 @@ export default function BlogThoughts() {
           </div>
         </div>
       )}
+
+      {/* Category Filter */}
+      <div className="mb-6">
+        <p className="text-xs mb-2 text-accent-blue">// filter by category</p>
+        <div className="flex flex-wrap gap-2">
+          {blogCategories.map(category => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-3 py-1.5 rounded text-xs transition-all ${
+                selectedCategory === category
+                  ? 'bg-accent-teal text-dark-bg font-bold'
+                  : `${bgSecondary} hover:bg-accent-teal/20 border ${borderClass}`
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Blog Posts Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filteredPosts.map(post => (
+          <div
+            key={post.id}
+            onClick={() => setSelectedPost(post)}
+            className={`${bgSecondary} border-2 ${borderClass} rounded-lg p-4 cursor-pointer transition-all hover:border-accent-teal`}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <span className={`${getCategoryColor(post.category)} text-white text-xs px-2 py-1 rounded-full`}>
+                {post.category}
+              </span>
+              <span className="text-xs text-accent-blue">{formatDate(post.date)}</span>
+            </div>
+
+            <h3 className={`font-bold text-lg mb-2 line-clamp-2 ${textClass}`}>
+              {post.title}
+            </h3>
+
+            <p className="text-sm mb-3 line-clamp-3">
+              {post.content.substring(0, 150)}...
+            </p>
+
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <Clock size={14} className="text-accent-orange" />
+                <span>{getReadTime(post.content)}</span>
+              </div>
+              <button className="flex items-center gap-1 text-accent-teal hover:underline">
+                Read more
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Empty State */}
+      {filteredPosts.length === 0 && (
+        <div className={`text-center py-12 border-2 border-dashed ${borderClass} rounded-lg`}>
+          <MessageSquare size={48} className="mx-auto mb-3 opacity-30" />
+          <p className={`text-base mb-1 ${textClass}`}>No posts found</p>
+          <p className="text-xs">Try selecting a different category</p>
+        </div>
+      )}
+
+      {/* Blog Post Modal */}
+      {selectedPost && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className={`${bgPrimary} border-2 border-accent-teal rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto`}>
+            <div className={`sticky top-0 ${bgSecondary} border-b ${borderClass} p-4 flex items-center justify-between z-10`}>
+              <div className="flex items-center gap-3">
+                <span className={`${getCategoryColor(selectedPost.category)} text-white text-xs px-3 py-1 rounded-full`}>
+                  {selectedPost.category}
+                </span>
+                <span className="text-xs text-accent-blue">{formatDate(selectedPost.date)}</span>
+              </div>
+              <button
+                onClick={() => setSelectedPost(null)}
+                className="hover:text-white transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <h1 className={`text-3xl font-bold mb-4 ${textClass}`}>
+                {selectedPost.title}
+              </h1>
+
+              <div className="flex items-center gap-4 mb-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <Clock size={16} className="text-accent-orange" />
+                  <span>{getReadTime(selectedPost.content)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <BookOpen size={16} className="text-accent-blue" />
+                  <span>{getWordCount(selectedPost.content)} words</span>
+                </div>
+              </div>
+
+              <div className={`prose max-w-none ${theme === 'dark' ? 'prose-invert' : ''}`}>
+                {selectedPost.content.split('\n\n').map((paragraph, idx) => {
+                  if (paragraph.startsWith('##')) {
+                    return (
+                      <h2 key={idx} className="text-2xl font-bold mt-6 mb-4 text-accent-teal">
+                        {paragraph.replace('##', '').trim()}
+                      </h2>
+                    )
+                  }
+                  if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
+                    return (
+                      <h3 key={idx} className="text-xl font-bold mt-4 mb-2 text-accent-blue">
+                        {paragraph.replace(/\*\*/g, '').trim()}
+                      </h3>
+                    )
+                  }
+                  return (
+                    <p key={idx} className="mb-4 leading-relaxed">
+                      {paragraph}
+                    </p>
+                  )
+                })}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-dark-border">
+                <div className="flex flex-wrap gap-2">
+                  {selectedPost.tags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className={`text-xs px-3 py-1 rounded-full ${
+                        theme === 'dark'
+                          ? 'bg-dark-border text-accent-teal'
+                          : 'bg-light-border text-accent-blue'
+                      }`}
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
