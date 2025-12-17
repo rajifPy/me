@@ -17,7 +17,10 @@ export default function HelloSection() {
           Al Farikhi
         </h1>
         <p className="text-accent-blue text-lg md:text-xl lg:text-2xl mb-8 md:mb-12 lg:mb-16">
-          <span className="text-accent-teal">&gt;</span> Data Enthusiast
+          <span className="text-accent-teal">&gt;</span>{' '}
+          <span className="inline-block animate-typewriter">
+            Data Enthusiast
+          </span>
         </p>
         
         <div className="space-y-2 mb-6 md:mb-8 text-xs md:text-sm">
