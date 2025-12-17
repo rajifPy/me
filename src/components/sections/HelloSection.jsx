@@ -18,25 +18,22 @@ export default function HelloSection() {
     <div className="max-w-6xl flex flex-col lg:flex-row items-center gap-8 lg:gap-16 w-full">
       <div className="flex-1 min-w-[280px] w-full">
         {/* Greeting text with fade-in */}
-        <p className={`mb-2 md:mb-4 text-sm md:text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'} ${
-          showContent ? 'animate-fade-in' : 'opacity-0'
-        }`}>
+        <p className={`mb-2 md:mb-4 text-sm md:text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'} ${showContent ? 'animate-fade-in' : 'opacity-0'
+          }`}>
           Hi all, I am
         </p>
-        
+
         {/* Name with slide-in and bounce */}
-        <h1 className={`text-3xl md:text-4xl lg:text-5xl mb-1 md:mb-2 font-normal ${theme === 'dark' ? 'text-white' : 'text-gray-900'} ${
-          showContent ? 'animate-slide-bounce' : 'opacity-0'
-        }`} style={{ animationDelay: '0.3s' }}>
+        <h1 className={`text-3xl md:text-4xl lg:text-5xl mb-1 md:mb-2 font-normal ${theme === 'dark' ? 'text-white' : 'text-gray-900'} ${showContent ? 'animate-slide-bounce' : 'opacity-0'
+          }`} style={{ animationDelay: '0.3s' }}>
           Muhammad Rajif
         </h1>
-        
-        <h1 className={`text-3xl md:text-4xl lg:text-5xl mb-4 md:mb-6 font-normal ${theme === 'dark' ? 'text-white' : 'text-gray-900'} ${
-          showContent ? 'animate-slide-bounce' : 'opacity-0'
-        }`} style={{ animationDelay: '0.5s' }}>
+
+        <h1 className={`text-3xl md:text-4xl lg:text-5xl mb-4 md:mb-6 font-normal ${theme === 'dark' ? 'text-white' : 'text-gray-900'} ${showContent ? 'animate-slide-bounce' : 'opacity-0'
+          }`} style={{ animationDelay: '0.5s' }}>
           Al Farikhi
         </h1>
-        
+
         {/* Role with typewriter effect */}
         <p className="text-accent-blue text-lg md:text-xl lg:text-2xl mb-8 md:mb-12 lg:mb-16">
           <span className={`text-accent-teal ${showContent ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: '0.7s' }}>
@@ -46,7 +43,7 @@ export default function HelloSection() {
             Data Enthusiast
           </span>
         </p>
-        
+
         <div className="space-y-2 mb-6 md:mb-8 text-xs md:text-sm">
           <p>// complete the game to continue</p>
           <p>// you can also see it on my Github page</p>
