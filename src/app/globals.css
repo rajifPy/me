@@ -92,3 +92,42 @@ body {
     font-size: 16px;
   }
 }
+
+/* === Typewriter Animation === */
+@keyframes typewriter {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes typewriter-cursor {
+  from {
+    border-right-color: rgba(255, 255, 255, 0.7);
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+
+.typewriter-role {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid rgba(255, 255, 255, 0.7); /* Warna cursor */
+  animation:
+    typewriter 2s steps(40, end) forwards,
+    typewriter-cursor 1s step-end infinite;
+  /* Jika ingin efek fade-in juga, bisa tambahkan fade-in di sini */
+}
+
+/* Optional: jika ingin efek fade-in bersamaan dengan typewriter */
+.typewriter-role.fade-in {
+  animation:
+    typewriter 2s steps(40, end) forwards,
+    typewriter-cursor 1s step-end infinite,
+    fade-in 0.8s ease-out;
+}
