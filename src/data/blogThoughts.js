@@ -48,7 +48,7 @@ After cleaning, I validate the results. Do the statistics make sense? Are there 
 My go-to tools for data cleaning:
 
 **Pandas for Python**
-The backbone of my data cleaning work. Functions like `drop_duplicates()`, `fillna()`, `replace()`, and `apply()` are indispensable. I've written custom cleaning functions that I reuse across projects.
+The backbone of my data cleaning work. Functions like drop_duplicates(), fillna(), replace(), and apply() are indispensable. I've written custom cleaning functions that I reuse across projects.
 
 **SQL for Database-Level Cleaning**
 Sometimes it's more efficient to clean data at the database level, especially for large datasets. Window functions, CTEs, and proper JOIN operations can identify and fix issues before data even reaches your analysis environment.
@@ -70,15 +70,15 @@ The fanciest machine learning model is only as good as the data it's trained on.
 
 ## My Advice for Aspiring Data Scientists
 
-1. **Master the Basics**: Get really good at pandas, SQL, and data manipulation. This is where you'll spend most of your time.
+1. Master the Basics: Get really good at pandas, SQL, and data manipulation. This is where you'll spend most of your time.
 
-2. **Develop a Systematic Approach**: Don't clean ad-hoc. Have a repeatable process that you can apply to any dataset.
+2. Develop a Systematic Approach: Don't clean ad-hoc. Have a repeatable process that you can apply to any dataset.
 
-3. **Document Everything**: Future you (or your teammates) will thank you. Document what you cleaned, why you cleaned it, and what assumptions you made.
+3. Document Everything: Future you (or your teammates) will thank you. Document what you cleaned, why you cleaned it, and what assumptions you made.
 
-4. **Learn the Domain**: Understanding the business context helps you make better decisions about how to handle edge cases in your data.
+4. Learn the Domain: Understanding the business context helps you make better decisions about how to handle edge cases in your data.
 
-5. **Validate, Validate, Validate**: Never assume your cleaning worked perfectly. Always validate the results.
+5. Validate, Validate, Validate: Never assume your cleaning worked perfectly. Always validate the results.
 
 ## The Underappreciated Skill
 
@@ -90,3 +90,154 @@ Master the cleaning, and the modeling becomes much easier. Rush to the modeling,
     tags: ['Data Science', 'Best Practices', 'Career', 'Data Cleaning'],
     category: 'Insights'
   },
+  {
+    id: 2,
+    date: '2024-11-20',
+    title: 'My Journey from Student to Data Analyst',
+    content: `Looking back at my journey from a university student to working as a Data Analyst, I realize how much I've learned not just about data, but about myself and the industry.
+
+## Starting Point
+
+I started my Information Systems degree at Universitas Airlangga in 2020, right when the pandemic hit. This challenging time actually became an opportunity – with everything online, I had more flexibility to explore different learning paths and online courses.
+
+## The Bangkit Academy Experience
+
+Joining Bangkit Academy in 2021 was a turning point. This intensive Machine Learning program, backed by Google, Tokopedia, Gojek, and Traveloka, exposed me to industry-standard practices and real-world applications of data science.
+
+The program wasn't easy. We had to balance university coursework with the intensive Bangkit curriculum. But the hands-on projects and industry mentorship were invaluable. I learned that data science isn't just about knowing algorithms – it's about solving real business problems.
+
+## First Real Project
+
+My first major project was the healthcare database optimization at UNAIR. This wasn't glamorous machine learning – it was hardcore data cleaning and database normalization. But this project taught me more about data engineering than any course could.
+
+I spent weeks understanding the database structure, identifying data quality issues, and implementing solutions. The impact was tangible – we improved query performance and data reliability for the entire health service unit.
+
+## Key Lessons Learned
+
+1. **Technical Skills Are Just the Foundation**: Knowing Python and SQL is important, but understanding the business context and communicating insights is equally crucial.
+
+2. **Start Small, Think Big**: Don't wait for the perfect project. Start with small datasets, practice on Kaggle, contribute to open-source projects.
+
+3. **Build in Public**: Share your learnings, create a portfolio, engage with the community. This visibility helped me land opportunities.
+
+4. **Soft Skills Matter**: Collaboration, communication, and problem-solving abilities are as important as technical expertise.
+
+5. **Never Stop Learning**: The field evolves rapidly. Continuous learning isn't optional – it's necessary.
+
+## Current Focus
+
+Now as I continue my journey, I'm focusing on deepening my expertise in specific areas: time series analysis, advanced SQL optimization, and production-grade ML systems.
+
+## Advice for Aspiring Data Analysts
+
+If you're just starting out:
+- Build a strong foundation in statistics and programming
+- Work on real projects, even if they're personal ones
+- Document your learning journey
+- Connect with the community
+- Don't be afraid to start – imperfect action beats perfect inaction
+
+The journey from student to professional isn't linear. There will be setbacks, rejections, and moments of doubt. But each experience, whether success or failure, teaches you something valuable.
+
+Remember: everyone started somewhere. Your current skill level doesn't define your potential. Keep learning, keep building, and keep pushing forward.`,
+    tags: ['Career', 'Personal', 'Learning', 'Advice'],
+    category: 'Personal'
+  },
+  {
+    id: 3,
+    date: '2024-10-05',
+    title: 'SQL Optimization Techniques I Wish I Knew Earlier',
+    content: `After working with databases for three years, I've learned that writing SQL that works is easy. Writing SQL that works efficiently at scale is an art.
+
+## The Performance Problem
+
+When I first started with SQL, I focused on getting the right results. If a query took 30 seconds, I'd just wait. But in production systems with millions of rows, those 30 seconds become hours, and suddenly your reports aren't just slow – they're impossible.
+
+## Critical Optimization Techniques
+
+**1. Understand Your Execution Plans**
+Before optimizing anything, understand how your database executes queries. Use EXPLAIN or EXPLAIN ANALYZE to see what's actually happening under the hood.
+
+**2. Index Strategically**
+Indexes are powerful but not magic. I learned to index:
+- Columns used in WHERE clauses
+- Columns used in JOIN conditions
+- Columns used in ORDER BY
+But avoid over-indexing – each index slows down write operations.
+
+**3. Avoid SELECT \***
+Only select the columns you need. This reduces data transfer and memory usage. In large tables, this single change can improve performance by 50% or more.
+
+**4. Use Window Functions Instead of Subqueries**
+Window functions like ROW_NUMBER(), RANK(), and LAG() are often more efficient than correlated subqueries and more readable too.
+
+**5. Filter Early, Filter Often**
+Push WHERE clauses as far down as possible in your query. The earlier you reduce the dataset, the less data the database needs to process.
+
+**6. Batch Operations**
+Instead of running thousands of individual INSERT or UPDATE statements, batch them. This reduces transaction overhead dramatically.
+
+**7. Partition Large Tables**
+For tables with millions of rows, partitioning by date or category can make queries orders of magnitude faster.
+
+## Real-World Example
+
+In the healthcare database project, I had a query that was taking 45 seconds. After optimization:
+- Added appropriate indexes: 45s → 12s
+- Rewrote subquery as window function: 12s → 4s
+- Filtered earlier in the query: 4s → 0.8s
+
+The final query was 56 times faster than the original!
+
+## Common Mistakes to Avoid
+
+1. **Using Functions on Indexed Columns**: WHERE YEAR(date_column) = 2024 prevents index usage
+2. **Implicit Conversions**: Comparing string to number forces type conversion
+3. **NOT IN with NULLs**: Can produce unexpected results
+4. **Overusing DISTINCT**: Usually indicates a poorly written query
+5. **Forgetting to ANALYZE**: Database statistics need to be updated regularly
+
+## My SQL Optimization Checklist
+
+Before calling a query "done," I now check:
+- Is it using indexes efficiently?
+- Can I reduce the number of rows earlier?
+- Are there any subqueries that could be CTEs or JOINs?
+- Is it readable and maintainable?
+- Does it handle edge cases (NULLs, duplicates)?
+
+## The Bottom Line
+
+SQL optimization isn't about memorizing tricks – it's about understanding how databases work. Invest time in learning about indexes, execution plans, and query processing. This knowledge will serve you throughout your career.
+
+Remember: premature optimization is the root of all evil, but knowing when and how to optimize is a critical skill. Start with correct queries, then make them fast when needed.`,
+    tags: ['SQL', 'Performance', 'Database', 'Technical'],
+    category: 'Technical'
+  }
+]
+
+export const blogCategories = ['All', 'Insights', 'Technical', 'Personal']
+
+export const getBlogByCategory = (category) => {
+  if (category === 'All') return blogThoughts
+  return blogThoughts.filter(post => post.category === category)
+}
+
+export const getBlogStats = () => {
+  const totalWords = blogThoughts.reduce((sum, post) => {
+    return sum + post.content.split(/\s+/).length
+  }, 0)
+
+  return {
+    totalPosts: blogThoughts.length,
+    totalWords: totalWords,
+    totalCategories: blogCategories.length - 1,
+    latestYear: Math.max(...blogThoughts.map(p => new Date(p.date).getFullYear()))
+  }
+}
+
+export const getPopularPosts = (limit = 3) => {
+  return blogThoughts
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, limit)
+}
