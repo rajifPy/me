@@ -1,8 +1,9 @@
+// src/components/layout/Sidebar.jsx
 'use client'
 
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap, Camera } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap, Camera, MessageCircle } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
@@ -92,7 +93,18 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                   <span>certifications</span>
                 </button>
 
-                {/* NEW: Photos Button */}
+                {/* Blog Button */}
+                <button
+                  onClick={() => handleTabClick('blog')}
+                  className={`flex items-center gap-2 transition-colors text-sm ${
+                    activeTab === 'blog' ? 'text-white' : 'hover:text-white'
+                  }`}
+                >
+                  <MessageCircle size={14} className="text-purple-400" />
+                  <span>blog</span>
+                </button>
+
+                {/* Photos Button */}
                 <button
                   onClick={() => handleTabClick('photos')}
                   className={`flex items-center gap-2 transition-colors text-sm ${
