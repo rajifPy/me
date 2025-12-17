@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react' // ✅ Tambahkan ini
 import { useTheme } from '@/context/ThemeContext'
 import SnakeGame from '@/components/game/SnakeGame'
 
