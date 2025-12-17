@@ -3,7 +3,6 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap');
 
-/* ... existing styles ... */
 * {
   margin: 0;
   padding: 0;
@@ -37,7 +36,6 @@ body {
   @apply bg-accent-teal/50;
 }
 
-/* Light mode scrollbar */
 .light ::-webkit-scrollbar-track {
   @apply bg-light-secondary;
 }
@@ -46,19 +44,16 @@ body {
   @apply bg-light-border;
 }
 
-/* Smooth transitions for theme switching */
 * {
   transition-property: background-color, border-color, color;
   transition-duration: 0.3s;
   transition-timing-function: ease;
 }
 
-/* Prevent transition on page load */
 .no-transition * {
   transition: none !important;
 }
 
-/* Mobile menu animation */
 @keyframes slideIn {
   from {
     transform: translateX(-100%);
@@ -74,60 +69,71 @@ body {
   animation: slideIn 0.3s ease-out;
 }
 
-/* Responsive text sizing */
-@media (max-width: 640px) {
-  html {
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 641px) and (max-width: 1024px) {
-  html {
-    font-size: 15px;
-  }
-}
-
-@media (min-width: 1025px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-/* === Typewriter Animation === */
-@keyframes typewriter {
+/* === ✅ Fade-in Animation (baru ditambahkan) === */
+@keyframes fade-in {
   from {
-    width: 0;
     opacity: 0;
+    transform: translateY(10px);
   }
   to {
-    width: 100%;
     opacity: 1;
+    transform: translateY(0);
   }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+/* === ✅ Slide-Bounce Animation (baru ditambahkan) === */
+@keyframes slide-bounce {
+  0% { opacity: 0; transform: translateX(-30px); }
+  70% { opacity: 1; transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.animate-slide-bounce {
+  animation: slide-bounce 0.8s ease-out forwards;
+}
+
+/* === ✅ Typewriter Animation (diperbaiki: hapus fade-in yang error) === */
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
 }
 
 @keyframes typewriter-cursor {
-  from {
-    border-right-color: rgba(255, 255, 255, 0.7);
-  }
-  to {
-    border-right-color: transparent;
-  }
+  0%, 100% { border-right-color: transparent; }
+  50% { border-right-color: #22c55e; } /* teal-500 — sesuai tailwind accent-teal */
 }
 
 .typewriter-role {
+  display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  border-right: 2px solid rgba(255, 255, 255, 0.7); /* Warna cursor */
+  border-right: 2px solid #22c55e; /* default: teal-500 */
   animation:
-    typewriter 2s steps(40, end) forwards,
-    typewriter-cursor 1s step-end infinite;
-  /* Jika ingin efek fade-in juga, bisa tambahkan fade-in di sini */
+    typewriter 2.2s steps(18, end) forwards,
+    typewriter-cursor 0.7s step-end infinite;
 }
 
-/* Optional: jika ingin efek fade-in bersamaan dengan typewriter */
-.typewriter-role.fade-in {
-  animation:
-    typewriter 2s steps(40, end) forwards,
-    typewriter-cursor 1s step-end infinite,
-    fade-in 0.8s ease-out;
+/* Dark mode cursor */
+.dark .typewriter-role {
+  border-right-color: #22c55e;
+}
+
+/* Light mode — gunakan teal-600 agar kontras */
+.light .typewriter-role {
+  border-right-color: #0d9488;
+}
+
+/* Responsive text */
+@media (max-width: 640px) {
+  html { font-size: 14px; }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+  html { font-size: 15px; }
+}
+@media (min-width: 1025px) {
+  html { font-size: 16px; }
 }
