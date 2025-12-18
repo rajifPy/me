@@ -10,7 +10,7 @@ export const certifications = [
     category: 'Data Science',
     credentialId: 'BGK-DS-2022-001',
     skills: ['Python', 'Machine Learning', 'Statistics', 'Data Analysis'],
-    verificationUrl: 'https://www.coursera.org/account/accomplishments/verify/XXXXX',
+    verificationUrl: 'https://www.coursera.org/account/accomplishments/verify/Q6WY44W7MPGJ',
     description: 'Comprehensive data science program covering ML fundamentals, data analysis, and model deployment. Includes hands-on projects with real-world datasets.',
     logo: '📊'
   },
@@ -23,7 +23,7 @@ export const certifications = [
     category: 'Machine Learning',
     credentialId: 'BGK-ML-2022-002',
     skills: ['TensorFlow', 'Neural Networks', 'Deep Learning', 'Model Deployment'],
-    verificationUrl: 'https://www.dicoding.com/certificates/XXXXX',
+    verificationUrl: 'https://www.coursera.org/account/accomplishments/specialization/HUCZB75Q9P24',
     description: 'Intensive ML training program including supervised/unsupervised learning and deep learning. Completed capstone project on fact-checking system using NLP.',
     logo: '🤖'
   },
