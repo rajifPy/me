@@ -1,6 +1,6 @@
 // src/app/api/stats/route.js
 import { NextResponse } from 'next/server'
-import { kv } from '@vercel/kv'
+import { Redis } from '@upstash/redis'
 
 // Revalidate every 60 seconds so stats feel live
 export const revalidate = 60
@@ -16,14 +16,15 @@ const SECTION_LABELS = {
 
 export async function GET() {
   try {
+    const redis = Redis.fromEnv()
     const today = new Date().toISOString().split('T')[0]
 
     // Fetch total visitors + all section counts in one round-trip
     const sectionKeys = Object.keys(SECTION_LABELS).map(s => `section:${s}`)
     const [total, todayCount, ...sectionCounts] = await Promise.all([
-      kv.get('visitors:total'),
-      kv.get(`visitors:${today}`),
-      ...sectionKeys.map(k => kv.get(k)),
+      redis.get('visitors:total'),
+      redis.get(`visitors:${today}`),
+      ...sectionKeys.map(k => redis.get(k)),
     ])
 
     // Build sections array sorted by count descending
