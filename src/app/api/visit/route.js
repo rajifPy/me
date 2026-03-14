@@ -1,9 +1,10 @@
 // src/app/api/visit/route.js
 import { NextResponse } from 'next/server'
-import { kv } from '@vercel/kv'
+import { Redis } from '@upstash/redis'
 
 export async function POST(request) {
   try {
+    const redis = Redis.fromEnv()
     const body = await request.json()
     const { section } = body
 
@@ -14,12 +15,12 @@ export async function POST(request) {
     // Run all increments in parallel
     await Promise.all([
       // Total all-time visitors
-      kv.incr('visitors:total'),
+      redis.incr('visitors:total'),
       // Today's visitors (expires in 48h as safety buffer)
-      kv.incr(todayKey),
-      kv.expire(todayKey, 172800),
+      redis.incr(todayKey),
+      redis.expire(todayKey, 172800),
       // Section tracking (if provided)
-      section ? kv.incr(`section:${section}`) : Promise.resolve(),
+      section ? redis.incr(`section:${section}`) : Promise.resolve(),
     ])
 
     return NextResponse.json({ ok: true })
