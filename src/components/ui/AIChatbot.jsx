@@ -1,385 +1,700 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { MessageCircle, X, Send, Settings, Loader2, RefreshCw, Copy, Check } from 'lucide-react'
+import {
+  X, Send, RefreshCw, Copy, Check,
+  ChevronDown, Sparkles, Bot, User
+} from 'lucide-react'
 
-// Portfolio data for RAG context
-const portfolioContext = `
-Name: Muhammad Rajif Al Farikhi
-Role: Data Enthusiast & Analyst
-Location: Surabaya, Indonesia
-Email: mrajifalfarikhi@gmail.com
-Phone: +6281460326800
+// ─── Knowledge Base ────────────────────────────────────────────────────────────
+const KB = {
+  name: 'Muhammad Rajif Al Farikhi',
+  role: 'Data Enthusiast & Analyst',
+  location: 'Surabaya, Indonesia',
+  email: 'mrajifalfarikhi@gmail.com',
+  phone: '+6281460326800',
+  github: 'github.com/rajfiPy',
+  linkedin: 'linkedin.com/in/muhammadrajifalfarikhi',
+  education: [
+    {
+      school: 'Universitas Airlangga',
+      degree: 'Bachelor of Information Systems',
+      period: '2020–2024',
+      gpa: '3.3/4.0',
+      focus: 'Data Analytics & Information Systems',
+    },
+    { school: "MAS Hasyim Asy'ari", degree: 'Science Major', period: '2017–2020', location: 'Jepara' },
+  ],
+  experience: [
+    {
+      title: 'Data Analyst',
+      company: 'Information Systems & Digitalization, UNAIR',
+      period: 'Jan–Feb 2025',
+      highlights: ['Repaired and optimized healthcare database systems', 'Heavy data cleaning, deduplication, normalization'],
+    },
+    {
+      title: 'Machine Learning Student',
+      company: 'Bangkit Academy (Google, Tokopedia, Gojek, Traveloka)',
+      period: 'Feb 2021–Dec 2022',
+      highlights: ['Completed the full Machine Learning path', 'Built a capstone NLP fact-checking system'],
+    },
+    {
+      title: 'Head of Media & Information Division',
+      company: 'UKMKI Universitas Airlangga',
+      period: 'Feb–Dec 2022',
+      highlights: ['Grew social media followers by 50%', 'Won Best Staff award'],
+    },
+  ],
+  skills: {
+    top: ['Data Analysis (80%)', 'Pandas (90%)', 'Python (75%)', 'SQL (75%)', 'Time Series (75%)'],
+    programming: ['Python', 'SQL', 'R', 'JavaScript'],
+    ds: ['Data Analysis', 'Machine Learning', 'NLP', 'Deep Learning', 'Time Series'],
+    tools: ['Pandas', 'Scikit-learn', 'TensorFlow', 'NumPy', 'Jupyter'],
+    viz: ['Matplotlib', 'Seaborn', 'Plotly', 'Tableau', 'Power BI'],
+    db: ['PostgreSQL', 'MySQL', 'MongoDB'],
+  },
+  projects: [
+    { name: 'Web Kost Management', tech: 'React + PostgreSQL', desc: 'Property management system for boarding houses', link: 'kostmanagerv1.vercel.app' },
+    { name: 'LoveRegex', tech: 'Flask + Python + NLP', desc: 'Interactive regex learning platform with real-time feedback', link: 'loveregex.vercel.app' },
+    { name: 'ML Bangkit Capstone', tech: 'Python + NLP', desc: 'NLP-based fact-checking system' },
+    { name: 'Healthcare Database', tech: 'SQL + PostgreSQL', desc: 'Database optimization for UNAIR health service' },
+    { name: 'Social Analytics Dashboard', tech: 'Tableau', desc: 'Social media analytics achieving 50% growth metrics' },
+  ],
+  certs: [
+    'Data Science Fundamentals — Bangkit Academy (2022)',
+    'Machine Learning Path — Bangkit/Google (2022)',
+    'SQL for Data Analysis — DataCamp (2023)',
+    'Data Visualization with Tableau — Tableau (2023)',
+    'Python for Data Science — IBM (2023)',
+    'Google Analytics — Google (2023)',
+  ],
+}
 
-EDUCATION:
-- Universitas Airlangga - Bachelor of Information Systems (2020-2024), GPA: 3.3/4.0
-- Focus: Data Analytics & Information Systems
+// ─── Response Generator ────────────────────────────────────────────────────────
+function getResponse(raw) {
+  const q = raw.toLowerCase().trim()
 
-EXPERIENCE:
-1. Data Analyst at Information Systems and Digitalization, UNAIR (Jan 2025 - Feb 2025)
-   - Database repairs and optimization for health service unit
-   - Data cleaning and normalization
-   
-2. Machine Learning Student at Bangkit Academy (Feb 2021 - Dec 2022)
-   - Google, Tokopedia, Gojek, Traveloka partnership
-   - ML fundamentals to advanced AI techniques
-   
-3. Head Division Media & Information at UKMKI Universitas Airlangga (Feb 2022 - Dec 2022)
-   - Increased social media followers by 50%
+  if (/^(hi|hello|hey|halo|hola|sup|yo|howdy|good\s*(morning|afternoon|evening))/.test(q)) {
+    return [
+      ["Hey there! 👋", "I'm here to tell you all about Rajif — his work, skills, projects, whatever you're curious about.", "What would you like to know?"],
+      ["Hi! 😊", "Happy to chat about Rajif's background.", "Ask me about his skills, experience, projects, or how to get in touch!"],
+      ["Hello! 👋", "I know Rajif's portfolio inside out.", "Feel free to ask me anything — skills, projects, experience, you name it."],
+    ][Math.floor(Math.random() * 3)]
+  }
 
-SKILLS:
-Programming: Python (75%), SQL (75%), R (70%), JavaScript (50%)
-Data Science: Machine Learning (60%), Data Analysis (80%), Deep Learning (40%), NLP (50%)
-Tools: Pandas (90%), Scikit-learn (75%), TensorFlow (60%), Jupyter (75%)
-Visualization: Tableau (50%), Matplotlib (75%), Seaborn (75%), Plotly (75%)
-Database: PostgreSQL (75%), MySQL (75%), MongoDB (50%)
+  if (/who are you|what are you|introduce yourself|about (you|yourself)/.test(q)) {
+    return ["I'm a custom AI assistant built into Rajif's portfolio. 🤖", "I know everything about him — his background, skills, projects, and experience.", "What would you like to know?"]
+  }
 
-CERTIFICATIONS:
-- Data Science Fundamentals (Bangkit Academy, 2022)
-- Machine Learning Path (Bangkit Academy, 2022)
-- SQL for Data Analysis (DataCamp, 2023)
-- Data Visualization with Tableau (Tableau, 2023)
-- Python for Data Science (IBM, 2023)
-- Google Analytics Certification (Google, 2023)
+  if (/who is rajif|about rajif|tell me about (him|rajif)|introduce rajif/.test(q)) {
+    return [
+      `Rajif — short for ${KB.name} — is a ${KB.role} based in ${KB.location}. 📍`,
+      "He graduated from Universitas Airlangga with a degree in Information Systems, focusing on data analytics.",
+      "His strongest suit is turning messy data into clear insights. Best at data analysis, SQL, and Python.",
+      "Oh, and he built a snake game into his portfolio landing page, which tells you something about him. 🐍",
+    ]
+  }
 
-PROJECTS:
-1. Healthcare Database - SQL, PostgreSQL
-2. ML Bangkit Project - Python, Machine Learning
-3. Social Analytics Dashboard - Tableau, Analytics
-4. Web Kost Management - React, PostgreSQL
-5. LoveRegex - Flask, NLP, Python
-`;
+  if (/skill|tech(nolog|nical)|stack|know|good at|expert|best at|proficien|language|tool/.test(q)) {
+    return [
+      "Great question! Rajif's toolkit is pretty solid. 🛠️",
+      `His strongest areas: **${KB.skills.top.join(', ')}**.`,
+      `Programming languages: ${KB.skills.programming.join(', ')}.`,
+      `Data science side: ${KB.skills.ds.join(', ')}.`,
+      `Visualization: ${KB.skills.viz.join(', ')}.`,
+      "If I had to pick one standout — Pandas at 90% proficiency. He's basically fluent in it. 🐼",
+    ]
+  }
 
+  if (/python/.test(q)) {
+    return [
+      "Python is Rajif's main weapon. 🐍",
+      "He's been using it for 3 years across 15+ projects — 75% proficiency.",
+      "Go-to stack: Pandas for data wrangling, Scikit-learn for ML, Matplotlib/Seaborn for visualization.",
+      "He's also done Flask for web backend (check out LoveRegex) and TensorFlow for deep learning.",
+    ]
+  }
+
+  if (/\bsql\b|database|postgres|mysql|query/.test(q)) {
+    return [
+      "SQL is one of Rajif's core skills — 75%, 3 years, 12+ projects. 💾",
+      "Works with PostgreSQL and MySQL — complex window functions, CTEs, query optimization.",
+      "Most recent SQL project: repairing a healthcare database at UNAIR. Real production data.",
+    ]
+  }
+
+  if (/machine.?learn|ml\b|deep.?learn|neural|tensorflow|sklearn|model|\bai\b|artificial/.test(q)) {
+    return [
+      "ML is something Rajif takes seriously — full Bangkit Academy ML path backed by Google. 🤖",
+      "Proficiency at 60%, 10+ ML projects covering supervised/unsupervised learning.",
+      "His Bangkit capstone was a fact-checking system using NLP text classification.",
+      "Still growing in deep learning (40%) — honest about it, which matters in data work.",
+    ]
+  }
+
+  if (/experience|work|job|career|employ|intern|professional|background/.test(q)) {
+    return [
+      "Rajif has a mix of real-world and training experience. Quick rundown: 📋",
+      `**${KB.experience[0].title}** at ${KB.experience[0].company} (${KB.experience[0].period}) — ${KB.experience[0].highlights[0]}.`,
+      `**${KB.experience[1].title}** at ${KB.experience[1].company} (${KB.experience[1].period}) — ${KB.experience[1].highlights[1]}.`,
+      `**${KB.experience[2].title}** at ${KB.experience[2].company} — grew social media 50% and won Best Staff. 🏆`,
+    ]
+  }
+
+  if (/education|study|university|college|school|degree|gpa|academic|unair/.test(q)) {
+    return [
+      `Rajif studied at **${KB.education[0].school}** — ${KB.education[0].degree}, graduating in 2024. 🎓`,
+      `GPA: ${KB.education[0].gpa}. Focus: ${KB.education[0].focus}.`,
+      "Also completed Bangkit Academy's ML program — backed by Google, Tokopedia, Gojek, and Traveloka.",
+    ]
+  }
+
+  if (/project|portfolio|build|create|make|develop|\bapp\b|web|work on/.test(q)) {
+    return [
+      "Rajif has some interesting projects across the stack. Highlights: 🚀",
+      `**${KB.projects[0].name}** (${KB.projects[0].tech}) — ${KB.projects[0].desc}. Live at ${KB.projects[0].link}.`,
+      `**${KB.projects[1].name}** (${KB.projects[1].tech}) — ${KB.projects[1].desc}. Live at ${KB.projects[1].link}.`,
+      `**${KB.projects[2].name}** (${KB.projects[2].tech}) — ${KB.projects[2].desc}.`,
+      "Projects lean toward data and ML, but the React project shows he can go full-stack.",
+    ]
+  }
+
+  if (/kost|kostmanager|boarding/.test(q)) {
+    return [
+      "Web Kost Management is a property management system Rajif built for boarding house businesses. 🏠",
+      `Stack: ${KB.projects[0].tech}.`,
+      "Live at kostmanagerv1.vercel.app — worth checking out to see his full-stack work.",
+    ]
+  }
+
+  if (/regex|loveregex/.test(q)) {
+    return [
+      "LoveRegex is one of his more creative projects — an interactive regex learning platform. 💡",
+      `Built with ${KB.projects[1].tech}, gives real-time feedback as you practice regular expressions.`,
+      "Live at loveregex.vercel.app. Surprisingly fun to use.",
+    ]
+  }
+
+  if (/cert(ification|ificate|ified)|credential|badge|course/.test(q)) {
+    return [
+      "Rajif has stacked up some solid certifications: 📜",
+      ...KB.certs.map(c => `✓ ${c}`),
+      "The Bangkit ones are particularly notable — very competitive program.",
+    ]
+  }
+
+  if (/contact|reach|email|phone|connect|hire|work with|get in touch|linkedin|github/.test(q)) {
+    return [
+      "Here's how to reach Rajif: 📬",
+      `📧 Email: ${KB.email}`,
+      `📱 Phone: ${KB.phone}`,
+      `💼 LinkedIn: ${KB.linkedin}`,
+      `💻 GitHub: ${KB.github}`,
+      "Open to data analyst roles and project collaborations. Best to reach out via email or LinkedIn!",
+    ]
+  }
+
+  if (/hire|available|open to|opportunit|\bjob\b|position|role|recruit|freelanc/.test(q)) {
+    return [
+      "Rajif is open to data analyst roles and collaborations. 🙌",
+      "Background strongest in data analysis, SQL, and Python-based projects.",
+      `Best way to reach out: ${KB.email} or LinkedIn at ${KB.linkedin}.`,
+    ]
+  }
+
+  if (/fun fact|interesting|personality|hobbies|about him personally|unique/.test(q)) {
+    return [
+      "A few things that make Rajif stand out: 🌟",
+      "• Believes data cleaning is literally 80% of the job",
+      "• Built a snake game into his portfolio landing page",
+      "• Originally from a village — passionate about rural youth empowerment",
+      "• Active blogger writing about data, career, and life",
+    ]
+  }
+
+  if (/snake|game/.test(q)) {
+    return [
+      "Ha, yeah — Rajif embedded a fully playable snake game in his portfolio's landing page. 🐍",
+      "You have to play through it (or skip it) to 'unlock' the rest of the portfolio.",
+      "Fun way to show personality and a subtle flex that he can build interactive games too.",
+    ]
+  }
+
+  if (/blog|write|writing|article|post|thought/.test(q)) {
+    return [
+      "Rajif writes on a few topics: 📝",
+      "• Data cleaning best practices (strong opinions — 80% of the job, he says)",
+      "• Career journey from student to analyst",
+      "• SQL optimization techniques",
+      "• Rural youth empowerment and tech access",
+      "Practical and honest writing. Worth a read in the About section.",
+    ]
+  }
+
+  if (/tableau|visuali|dashboard|chart|plot|graph|matplotlib|seaborn|plotly/.test(q)) {
+    return [
+      "Visualization is a solid part of Rajif's skillset. 📊",
+      "Matplotlib & Seaborn for Python charts, Plotly for interactive dashboards, Tableau for BI.",
+      "Built a social analytics dashboard tracking 50% growth metrics — in his projects.",
+    ]
+  }
+
+  if (/strength|weakness|improve|grow|learning/.test(q)) {
+    return [
+      "Rajif's clear strengths: data analysis, SQL, Pandas, Python — all 75%+ proficiency. 💪",
+      "Still growing: deep learning (40%) and Docker/MLOps (45%). He's honest about gaps.",
+      "Not pretending to know things he doesn't — that matters a lot in data work.",
+    ]
+  }
+
+  if (/thank|thanks|thx|\bty\b|cheers|appreciate/.test(q)) {
+    return [
+      ["Happy to help! 😊", "Feel free to ask anything else about Rajif."],
+      ["Anytime! 👋", "Let me know if there's anything else you'd like to know."],
+      ["Of course! 🙌", "Is there anything else about Rajif I can help with?"],
+    ][Math.floor(Math.random() * 3)]
+  }
+
+  if (/^(yes|no|ok|okay|sure|yep|nope|alright|cool|nice|great|wow|awesome)[\s!.]*$/.test(q)) {
+    return ["Got it! 😄", "Anything else you'd like to know about Rajif?"]
+  }
+
+  return [
+    ["Hmm, I'm not sure I caught that! 🤔", "I'm best at questions about Rajif's skills, experience, projects, or how to contact him.", "Could you rephrase, or try one of the quick topics below?"],
+    ["That one's a bit outside my knowledge base. 😅", "Try asking about his skills, projects, work experience, or education!"],
+    ["Not quite sure what you're asking. 🙏", "I'm best at questions like: *What are his skills?* or *Tell me about his projects.*"],
+  ][Math.floor(Math.random() * 3)]
+}
+
+// ─── Suggestion chips ──────────────────────────────────────────────────────────
+const SUGGESTIONS = [
+  { label: '🛠 Skills', prompt: 'What are his strongest skills?' },
+  { label: '🚀 Projects', prompt: 'Tell me about his projects' },
+  { label: '💼 Experience', prompt: "What's his work experience?" },
+  { label: '📬 Contact', prompt: 'How can I reach Rajif?' },
+  { label: '🎓 Education', prompt: "What's his educational background?" },
+  { label: '📜 Certs', prompt: 'What certifications does he have?' },
+]
+
+// ─── Typewriter hook ───────────────────────────────────────────────────────────
+// FIX: queue-based so rapid sends don't corrupt earlier messages
+function useTypewriter() {
+  const [isTyping, setIsTyping] = useState(false)
+  const timersRef = useRef([])
+
+  const clearAll = useCallback(() => {
+    timersRef.current.forEach(clearTimeout)
+    timersRef.current = []
+  }, [])
+
+  // type() resolves exactly one bot message, then calls onDone.
+  // Caller is responsible for not overlapping calls (queue in component).
+  const type = useCallback((chunks, onProgress, onDone) => {
+    clearAll()
+    setIsTyping(true)
+
+    let chunkIdx = 0
+    let charIdx = 0
+    let currentText = ''
+
+    const tick = () => {
+      const chunk = chunks[chunkIdx]
+      if (!chunk) {
+        setIsTyping(false)
+        onDone?.()
+        return
+      }
+      if (charIdx < chunk.length) {
+        currentText += chunk[charIdx]
+        charIdx++
+        onProgress(chunkIdx, currentText, false)
+        const ch = chunk[charIdx - 1]
+        const delay = /[.!?]/.test(ch) ? 55 : ch === ',' ? 35 : ch === ' ' ? 10 : 16
+        timersRef.current.push(setTimeout(tick, delay))
+      } else {
+        onProgress(chunkIdx, currentText, true)
+        chunkIdx++
+        charIdx = 0
+        currentText = ''
+        if (chunkIdx < chunks.length) {
+          timersRef.current.push(setTimeout(tick, 260))
+        } else {
+          setIsTyping(false)
+          onDone?.()
+        }
+      }
+    }
+
+    timersRef.current.push(setTimeout(tick, 100))
+  }, [clearAll])
+
+  const stop = useCallback(() => {
+    clearAll()
+    setIsTyping(false)
+  }, [clearAll])
+
+  useEffect(() => () => clearAll(), [clearAll])
+
+  return { type, stop, isTyping }
+}
+
+// ─── Render markdown-ish message content ──────────────────────────────────────
+function MsgContent({ text }) {
+  if (!text) return null
+  return (
+    <div className="space-y-1 text-sm leading-relaxed">
+      {text.split('\n').map((line, i) => {
+        if (!line) return <div key={i} className="h-1" />
+        if (/^\*\*(.+)\*\*$/.test(line.trim())) {
+          return <p key={i} className="font-semibold text-accent-teal mt-1.5 first:mt-0">{line.replace(/\*\*/g, '')}</p>
+        }
+        const html = line.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+        if (/^[•✓✗*-]/.test(line.trim())) {
+          return <p key={i} className="pl-3 border-l-2 border-accent-teal/30" dangerouslySetInnerHTML={{ __html: html }} />
+        }
+        return <p key={i} dangerouslySetInnerHTML={{ __html: html }} />
+      })}
+    </div>
+  )
+}
+
+// ─── Main Component ────────────────────────────────────────────────────────────
 export default function AIChatbot({ activeSection }) {
   const { theme } = useTheme()
+
+  // ── All hooks declared unconditionally (Rules of Hooks compliant) ──
   const [isOpen, setIsOpen] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(false)
+  const [input, setInput] = useState('')
+  const [copied, setCopied] = useState(null)
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hi! I'm Rajif's AI assistant. I can answer questions about his skills, projects, experience, and more. How can I help you today?",
-      timestamp: new Date()
-    }
+      displayed: ["Hey! 👋\n\nI'm Rajif's AI assistant.\n\nAsk me anything — or pick a topic below!"],
+      done: true,
+      timestamp: new Date(),
+    },
   ])
-  const [inputMessage, setInputMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [showSettings, setShowSettings] = useState(false)
-  const [copiedIndex, setCopiedIndex] = useState(null)
-  
+
+  const { type, stop, isTyping } = useTypewriter()
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
 
-  // FIXED: Close chatbot when leaving hello section (with proper cleanup)
+  // FIX: message queue — pending bot responses wait their turn
+  const queueRef = useRef([])       // Array of { chunks, msgIdx }
+  const processingRef = useRef(false)
+
+  const processQueue = useCallback(() => {
+    if (processingRef.current || queueRef.current.length === 0) return
+    processingRef.current = true
+    const { chunks, msgIdx } = queueRef.current[0]
+
+    type(
+      chunks,
+      (chunkIdx, text) => {
+        setMessages(list => {
+          if (!list[msgIdx]) return list
+          const copy = [...list]
+          const disp = [...copy[msgIdx].displayed]
+          disp[chunkIdx] = text
+          copy[msgIdx] = { ...copy[msgIdx], displayed: disp }
+          return copy
+        })
+      },
+      () => {
+        // Mark message done
+        setMessages(list => {
+          if (!list[msgIdx]) return list
+          const copy = [...list]
+          copy[msgIdx] = { ...copy[msgIdx], done: true }
+          return copy
+        })
+        // Dequeue and process next
+        queueRef.current.shift()
+        processingRef.current = false
+        processQueue()
+      }
+    )
+  }, [type])
+
+  // Auto-scroll
   useEffect(() => {
-    if (activeSection !== 'hello' && isOpen) {
-      setIsOpen(false)
-      // Reset states when closing
-      setShowSettings(false)
-      setInputMessage('')
+    if (isOpen && !isMinimized) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [activeSection, isOpen])
+  }, [messages, isOpen, isMinimized])
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
+  // Focus input when opened
   useEffect(() => {
-    if (isOpen) {
-      scrollToBottom()
+    if (isOpen && !isMinimized) {
+      setTimeout(() => inputRef.current?.focus(), 150)
     }
-  }, [messages, isOpen])
+  }, [isOpen, isMinimized])
 
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [isOpen])
+  // Cleanup on unmount
+  useEffect(() => () => { stop(); queueRef.current = []; processingRef.current = false }, [stop])
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return
+  // ── Conditional render AFTER all hooks ──
+  if (activeSection !== 'hello') return null
 
-    const userMessage = {
+  const sendMessage = (text) => {
+    const userText = (text || input).trim()
+    if (!userText) return
+    setInput('')
+
+    const userMsg = {
       role: 'user',
-      content: inputMessage,
-      timestamp: new Date()
+      displayed: [userText],
+      done: true,
+      timestamp: new Date(),
     }
 
-    setMessages(prev => [...prev, userMessage])
-    setInputMessage('')
-    setIsLoading(true)
+    const chunks = getResponse(userText)
 
-    try {
-      const response = await generateAIResponse(inputMessage, portfolioContext)
-      
-      const assistantMessage = {
+    // FIX: use functional setState to safely capture the real msgIdx
+    setMessages(prev => {
+      const botMsg = {
         role: 'assistant',
-        content: response,
-        timestamp: new Date()
+        displayed: Array(chunks.length).fill(''),
+        done: false,
+        timestamp: new Date(),
       }
+      const next = [...prev, userMsg, botMsg]
+      const msgIdx = next.length - 1
 
-      setMessages(prev => [...prev, assistantMessage])
-    } catch (error) {
-      const errorMessage = {
-        role: 'assistant',
-        content: "I apologize, but I'm having trouble processing your request. Please try again or rephrase your question.",
-        timestamp: new Date()
-      }
-      setMessages(prev => [...prev, errorMessage])
-    } finally {
-      setIsLoading(false)
-    }
-  }
+      // Enqueue and kick off if idle
+      queueRef.current.push({ chunks, msgIdx })
+      // Use setTimeout(0) so setState settles before processQueue reads messages
+      setTimeout(() => processQueue(), 0)
 
-  const generateAIResponse = async (query, context) => {
-    const lowerQuery = query.toLowerCase()
-    
-    if (lowerQuery.includes('skill') || lowerQuery.includes('technology')) {
-      return `Rajif has strong skills in:\n\n**Programming Languages:**\n- Python (75%) - 3 years, 15+ projects\n- SQL (75%) - 3 years, 12+ projects\n- R (70%) - 2 years, 8+ projects\n\n**Data Science & ML:**\n- Data Analysis (80%) - 20+ projects\n- Machine Learning (60%) - 10+ projects\n- Time Series (75%) - 6+ projects\n\n**Tools:**\n- Pandas (90%) - Expert level\n- Tableau (50%) - 10+ dashboards\n- TensorFlow (60%) - Deep learning projects\n\nWould you like to know more about any specific skill?`
-    }
-    
-    if (lowerQuery.includes('experience') || lowerQuery.includes('work') || lowerQuery.includes('job')) {
-      return `**Rajif's Professional Experience:**\n\n**1. Data Analyst** at UNAIR (Jan 2025 - Feb 2025)\n- Database repairs and optimization for health service system\n- Data cleaning and normalization\n\n**2. Machine Learning Student** at Bangkit Academy (Feb 2021 - Dec 2022)\n- Partnership with Google, Tokopedia, Gojek, Traveloka\n- Completed intensive ML training program\n\n**3. Head Division Media & Information** at UKMKI UNAIR (Feb 2022 - Dec 2022)\n- Led social media strategy\n- Increased followers by 50%\n- Awarded Best Staff\n\nWould you like details about any specific role?`
-    }
-    
-    if (lowerQuery.includes('education') || lowerQuery.includes('university') || lowerQuery.includes('study')) {
-      return `**Education Background:**\n\n**Universitas Airlangga** (2020-2024)\n- Bachelor of Information Systems\n- GPA: 3.3/4.0\n- Focus: Data Analytics & Information Systems\n- Active in academic competitions\n\n**MAS Hasyim Asy'ari** (2017-2020)\n- Science Major\n- Mathematics & Science focus\n\nHe also completed Bangkit Academy's Machine Learning program with certifications in Data Science and ML.`
-    }
-    
-    if (lowerQuery.includes('project')) {
-      return `**Notable Projects:**\n\n1. **Healthcare Database** (SQL, PostgreSQL)\n   - Database optimization for UNAIR health service\n   - Data cleaning and normalization\n\n2. **ML Bangkit Project** (Python, ML)\n   - Capstone project from Bangkit Academy\n   - Fact-checking system using NLP\n\n3. **Social Analytics Dashboard** (Tableau)\n   - Achieved 50% growth in metrics\n   - Interactive visualizations\n\n4. **Web Kost Management** (React, PostgreSQL)\n   - Property management system\n   - Full-stack development\n\n5. **LoveRegex** (Flask, NLP, Python)\n   - Interactive regex learning platform\n   - Real-time feedback system\n\nWould you like more details about any project?`
-    }
-    
-    if (lowerQuery.includes('certification') || lowerQuery.includes('certificate')) {
-      return `**Professional Certifications:**\n\n✓ Data Science Fundamentals (Bangkit Academy, 2022)\n✓ Machine Learning Path (Bangkit Academy, 2022)\n✓ SQL for Data Analysis (DataCamp, 2023)\n✓ Data Visualization with Tableau (Tableau, 2023)\n✓ Python for Data Science (IBM, 2023)\n✓ Google Analytics Certification (Google, 2023)\n\nAll certifications are verifiable with credential IDs.`
-    }
-    
-    if (lowerQuery.includes('contact') || lowerQuery.includes('email') || lowerQuery.includes('phone') || lowerQuery.includes('reach')) {
-      return `**Contact Information:**\n\n📧 Email: mrajifalfarikhi@gmail.com\n📱 Phone: +6281460326800\n📍 Location: Surabaya, Indonesia\n\n🔗 LinkedIn: linkedin.com/in/muhammadrajifalfarikhi\n💻 GitHub: github.com/rajfiPy\n\nFeel free to reach out for collaboration opportunities or data projects!`
-    }
-    
-    if (lowerQuery.includes('python')) {
-      return `**Python Expertise:**\n\nRajif has **75% proficiency** in Python with:\n- **3 years** of experience\n- **15+ projects** completed\n\n**Specializations:**\n- Data analysis with Pandas (90% proficiency)\n- Machine learning with Scikit-learn (75%)\n- Deep learning with TensorFlow (60%)\n- Data visualization with Matplotlib & Seaborn\n- Web scraping and automation\n\nHe uses Python daily for data analysis, ML projects, and automation tasks.`
-    }
-    
-    if (lowerQuery.includes('sql') || lowerQuery.includes('database')) {
-      return `**Database & SQL Skills:**\n\n**SQL Proficiency:** 75% (3 years, 12+ projects)\n\n**Databases:**\n- PostgreSQL (75%) - Advanced queries, optimization\n- MySQL (75%) - Relational database management\n- MongoDB (50%) - NoSQL for unstructured data\n\n**Expertise:**\n- Complex query optimization\n- Database design and normalization\n- Data cleaning and ETL processes\n- Performance tuning\n\nRecent project: Healthcare database repairs at UNAIR.`
-    }
-    
-    if (lowerQuery.includes('machine learning') || lowerQuery.includes('ml ')) {
-      return `**Machine Learning Expertise:**\n\n**Proficiency:** 60% (2 years, 10+ projects)\n\n**Skills:**\n- Supervised & unsupervised learning\n- Model optimization and evaluation\n- Feature engineering\n- Scikit-learn (75% proficiency)\n- TensorFlow (60% proficiency)\n\n**Experience:**\n- Completed Bangkit Academy ML Path\n- Built end-to-end ML projects\n- Capstone: Fact-checking system using NLP\n\n**Also skilled in:**\n- Deep Learning (40%)\n- NLP (50%)\n- Time Series Analysis (75%)`
-    }
-    
-    if (lowerQuery.includes('strength') || lowerQuery.includes('best at')) {
-      return `**Rajif's Top Strengths:**\n\n🌟 **Data Analysis** (80%)\n- 3 years experience, 20+ projects\n- Strong statistical foundation\n\n🐼 **Pandas** (90%)\n- Expert-level data manipulation\n- 18+ projects\n\n📊 **Visualization** (75%)\n- Matplotlib, Seaborn, Plotly\n- Tableau dashboards\n\n💾 **SQL** (75%)\n- PostgreSQL, MySQL expertise\n- Database optimization\n\n📈 **Time Series** (75%)\n- Forecasting and analysis\n- 6+ projects\n\nHis analytical mindset and technical skills make him excel in turning data into actionable insights!`
-    }
-    
-    if (lowerQuery.includes('hi') || lowerQuery.includes('hello') || lowerQuery.includes('hey')) {
-      return `Hello! 👋 I'm here to help you learn about Rajif's background and skills.\n\nI can tell you about:\n- His technical skills and proficiency levels\n- Work experience and achievements\n- Education background\n- Projects and portfolio\n- Certifications\n- How to contact him\n\nWhat would you like to know?`
-    }
-    
-    return `I'd be happy to help you learn about Rajif! Here are some topics I can discuss:\n\n• **Skills & Technologies** - Programming languages, tools, frameworks\n• **Experience** - Work history and achievements\n• **Education** - Academic background and certifications\n• **Projects** - Portfolio and notable work\n• **Contact** - How to reach him\n\nPlease ask me about any of these topics, or ask a specific question!`
-  }
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
-    }
-  }
-
-  const handleReset = () => {
-    setMessages([
-      {
-        role: 'assistant',
-        content: "Hi! I'm Rajif's AI assistant. I can answer questions about his skills, projects, experience, and more. How can I help you today?",
-        timestamp: new Date()
-      }
-    ])
-  }
-
-  const copyToClipboard = (text, index) => {
-    navigator.clipboard.writeText(text)
-    setCopiedIndex(index)
-    setTimeout(() => setCopiedIndex(null), 2000)
-  }
-
-  const formatMessage = (content) => {
-    return content.split('\n').map((line, i) => {
-      if (line.startsWith('**') && line.endsWith('**')) {
-        return <div key={i} className="font-bold text-accent-teal mt-2">{line.slice(2, -2)}</div>
-      }
-      if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
-        return <div key={i} className="ml-4 text-sm">{line}</div>
-      }
-      if (/^\d+\./.test(line.trim())) {
-        return <div key={i} className="ml-4 text-sm">{line}</div>
-      }
-      if (line.trim() === '') {
-        return <div key={i} className="h-2"></div>
-      }
-      return <div key={i} className="text-sm">{line}</div>
+      return next
     })
   }
 
-  const bgPrimary = theme === 'dark' ? 'bg-dark-bg' : 'bg-light-bg'
-  const bgSecondary = theme === 'dark' ? 'bg-dark-secondary' : 'bg-light-secondary'
-  const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-  const textClass = theme === 'dark' ? 'text-dark-text' : 'text-light-text'
-
-  // FIXED: Don't render anything if not in hello section
-  if (activeSection !== 'hello') {
-    return null
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
   }
+
+  const reset = () => {
+    stop()
+    queueRef.current = []
+    processingRef.current = false
+    setInput('')
+    setMessages([{
+      role: 'assistant',
+      displayed: ["Fresh start! 🔄\n\nWhat would you like to know about Rajif?"],
+      done: true,
+      timestamp: new Date(),
+    }])
+  }
+
+  const copyMsg = (text, i) => {
+    navigator.clipboard.writeText(text)
+    setCopied(i)
+    setTimeout(() => setCopied(null), 2000)
+  }
+
+  const getFullText = (msg) => msg.displayed.filter(Boolean).join('\n\n')
+
+  const isDark = theme === 'dark'
+  const bg     = isDark ? 'bg-[#011627]'  : 'bg-white'
+  const bgSub  = isDark ? 'bg-[#011221]'  : 'bg-gray-50'
+  const border = isDark ? 'border-[#1E2D3D]' : 'border-gray-200'
+  const muted  = isDark ? 'text-[#607B96]'   : 'text-gray-400'
+  const bold   = isDark ? 'text-white'        : 'text-gray-900'
 
   return (
     <>
+      {/* ── FAB ── */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`fixed bottom-6 right-6 p-4 rounded-full shadow-lg transition-all hover:scale-110 z-40 ${
-            theme === 'dark' 
-              ? 'bg-accent-teal text-dark-bg hover:bg-accent-teal/90' 
-              : 'bg-accent-blue text-white hover:bg-accent-blue/90'
-          }`}
-          aria-label="Open AI Assistant"
+          className={`fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3
+            rounded-full shadow-lg transition-all hover:scale-105 active:scale-95
+            ${isDark ? 'bg-accent-teal text-[#011627]' : 'bg-accent-blue text-white'}`}
+          aria-label="Open AI chatbot"
         >
-          <MessageCircle size={24} />
+          <Sparkles size={18} />
+          <span className="text-sm font-semibold">Ask AI</span>
         </button>
       )}
 
+      {/* ── Chat window ── */}
       {isOpen && (
-        <div className={`fixed bottom-6 right-6 w-96 h-[600px] rounded-lg shadow-2xl border-2 overflow-hidden flex flex-col z-40 ${
-          bgPrimary
-        } ${borderClass}`}>
-          <div className={`${bgSecondary} border-b ${borderClass} p-4 flex items-center justify-between`}>
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <MessageCircle size={24} className="text-accent-teal" />
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-dark-bg"></div>
+        <div
+          className={`fixed bottom-6 right-6 z-40 flex flex-col rounded-2xl
+            shadow-2xl border transition-all duration-200
+            ${bg} ${border}
+            ${isMinimized ? 'h-14 w-72' : 'w-[22rem] h-[580px]'}`}
+          style={{ maxWidth: 'calc(100vw - 32px)', maxHeight: 'calc(100vh - 48px)' }}
+        >
+          {/* Header */}
+          <div className={`flex items-center gap-3 px-4 py-3 border-b rounded-t-2xl flex-shrink-0 ${bgSub} ${border}`}>
+            <div className="relative flex-shrink-0">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center
+                ${isDark ? 'bg-accent-teal/20' : 'bg-accent-blue/10'}`}>
+                <Bot size={16} className={isDark ? 'text-accent-teal' : 'text-accent-blue'} />
               </div>
-              <div>
-                <h3 className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  AI Assistant
-                </h3>
-                <p className="text-xs text-accent-blue">Ask me about Rajif</p>
-              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2"
+                style={{ borderColor: isDark ? '#011221' : '#f9fafb' }} />
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowSettings(!showSettings)}
-                className="p-2 hover:bg-dark-border rounded transition-colors"
-                aria-label="Settings"
-              >
-                <Settings size={18} />
+
+            <div className="flex-1 min-w-0">
+              <p className={`text-sm font-semibold truncate ${bold}`}>Rajif's AI</p>
+              {!isMinimized && (
+                <p className={`text-xs truncate ${muted}`}>
+                  {isTyping ? (
+                    <span className="flex items-center gap-1">
+                      <span className="inline-flex gap-0.5">
+                        {[0, 1, 2].map(i => (
+                          <span key={i} className="w-1 h-1 bg-accent-teal rounded-full animate-bounce"
+                            style={{ animationDelay: `${i * 150}ms` }} />
+                        ))}
+                      </span>
+                      typing...
+                    </span>
+                  ) : 'Ask me anything'}
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center gap-0.5">
+              <button onClick={reset} title="Reset chat"
+                className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-[#1E2D3D]' : 'hover:bg-gray-100'}`}>
+                <RefreshCw size={13} className={muted} />
               </button>
-              <button
-                onClick={handleReset}
-                className="p-2 hover:bg-dark-border rounded transition-colors"
-                aria-label="Reset conversation"
-              >
-                <RefreshCw size={18} />
+              <button onClick={() => setIsMinimized(v => !v)}
+                className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-[#1E2D3D]' : 'hover:bg-gray-100'}`}>
+                <ChevronDown size={13} className={`${muted} transition-transform ${isMinimized ? 'rotate-180' : ''}`} />
               </button>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-dark-border rounded transition-colors"
-                aria-label="Close chat"
-              >
-                <X size={20} />
+              <button onClick={() => { setIsOpen(false); setIsMinimized(false) }}
+                className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-[#1E2D3D]' : 'hover:bg-gray-100'}`}>
+                <X size={13} className={muted} />
               </button>
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`max-w-[80%] ${
-                  message.role === 'user'
-                    ? 'bg-accent-teal text-dark-bg'
-                    : `${bgSecondary} ${textClass}`
-                } rounded-lg p-3 relative group`}>
-                  <div className="whitespace-pre-wrap">
-                    {message.role === 'assistant' 
-                      ? formatMessage(message.content)
-                      : message.content
-                    }
-                  </div>
-                  <div className="text-xs mt-2 opacity-60">
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </div>
-                  
-                  {message.role === 'assistant' && (
+          {!isMinimized && (
+            <>
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4 min-h-0">
+                {messages.map((msg, i) => {
+                  const text = getFullText(msg)
+                  const isUser = msg.role === 'user'
+                  const showCursor = !isUser && i === messages.length - 1 && !msg.done
+
+                  return (
+                    <div key={i} className={`flex gap-2 ${isUser ? 'flex-row-reverse' : ''}`}>
+                      {/* Avatar */}
+                      <div className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5
+                        ${isUser
+                          ? isDark ? 'bg-accent-blue/30' : 'bg-accent-blue/10'
+                          : isDark ? 'bg-accent-teal/20' : 'bg-accent-teal/10'}`}>
+                        {isUser
+                          ? <User size={12} className="text-accent-blue" />
+                          : <Bot size={12} className="text-accent-teal" />}
+                      </div>
+
+                      {/* Bubble */}
+                      <div className="group relative max-w-[80%]">
+                        <div className={`px-3 py-2.5 rounded-2xl
+                          ${isUser
+                            ? 'bg-accent-blue text-white rounded-tr-sm'
+                            : isDark
+                              ? `${bgSub} ${bold} rounded-tl-sm border ${border}`
+                              : 'bg-gray-100 text-gray-800 rounded-tl-sm'}`}>
+                          {isUser
+                            ? <p className="text-sm leading-relaxed">{text}</p>
+                            : (
+                              <div>
+                                <MsgContent text={text} />
+                                {showCursor && (
+                                  <span className="inline-block w-0.5 h-3.5 bg-accent-teal ml-0.5 align-middle animate-pulse" />
+                                )}
+                              </div>
+                            )}
+                        </div>
+
+                        {/* Timestamp + copy */}
+                        <div className={`flex items-center gap-1 mt-1 px-0.5 ${isUser ? 'justify-end' : 'justify-start'}`}>
+                          <span className={`text-[10px] ${muted}`}>
+                            {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          {!isUser && msg.done && text && (
+                            <button onClick={() => copyMsg(text, i)}
+                              className={`opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded ${muted}`}>
+                              {copied === i ? <Check size={10} className="text-green-400" /> : <Copy size={10} />}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Suggestion chips — always visible */}
+              <div className={`px-4 pt-2 pb-1 border-t ${border} flex-shrink-0`}>
+                <p className={`text-[10px] mb-1.5 ${muted}`}>Quick questions:</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {SUGGESTIONS.map(s => (
                     <button
-                      onClick={() => copyToClipboard(message.content, index)}
-                      className="absolute top-2 right-2 p-1 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-dark-border"
-                      aria-label="Copy message"
+                      key={s.label}
+                      onClick={() => sendMessage(s.prompt)}
+                      className={`text-[11px] px-2.5 py-1 rounded-full border transition-all active:scale-95
+                        ${isDark
+                          ? `border-[#1E2D3D] ${muted} hover:border-accent-teal hover:text-accent-teal`
+                          : `border-gray-200 text-gray-400 hover:border-accent-blue hover:text-accent-blue`}`}
                     >
-                      {copiedIndex === index ? (
-                        <Check size={14} className="text-accent-teal" />
-                      ) : (
-                        <Copy size={14} />
-                      )}
+                      {s.label}
                     </button>
-                  )}
+                  ))}
                 </div>
               </div>
-            ))}
-            
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className={`${bgSecondary} rounded-lg p-3 flex items-center gap-2`}>
-                  <Loader2 size={16} className="animate-spin text-accent-teal" />
-                  <span className="text-sm">Thinking...</span>
-                </div>
-              </div>
-            )}
-            
-            <div ref={messagesEndRef} />
-          </div>
 
-          <div className={`border-t ${borderClass} p-4`}>
-            <div className="flex gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask about skills, projects, experience..."
-                className={`flex-1 ${bgSecondary} border ${borderClass} rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-accent-teal ${textClass}`}
-                disabled={isLoading}
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={!inputMessage.trim() || isLoading}
-                className={`p-2 rounded-lg transition-colors ${
-                  !inputMessage.trim() || isLoading
-                    ? 'bg-dark-border opacity-50 cursor-not-allowed'
-                    : 'bg-accent-teal hover:bg-accent-teal/80 text-dark-bg'
-                }`}
-                aria-label="Send message"
-              >
-                <Send size={20} />
-              </button>
-            </div>
-            
-            <div className="mt-3 flex flex-wrap gap-2">
-              {['Skills', 'Experience', 'Projects', 'Contact'].map((suggestion) => (
-                <button
-                  key={suggestion}
-                  onClick={() => {
-                    setInputMessage(`Tell me about ${suggestion.toLowerCase()}`)
-                    inputRef.current?.focus()
-                  }}
-                  className={`text-xs px-3 py-1 rounded-full border ${borderClass} hover:border-accent-teal transition-colors`}
-                >
-                  {suggestion}
-                </button>
-              ))}
-            </div>
-          </div>
+              {/* Input — never disabled */}
+              <div className="px-4 pb-4 pt-2 flex-shrink-0">
+                <div className={`flex gap-2 items-end rounded-xl border px-3 py-2 transition-colors
+                  ${isDark
+                    ? `${bgSub} border-[#1E2D3D] focus-within:border-accent-teal`
+                    : 'bg-gray-50 border-gray-200 focus-within:border-accent-blue'}`}>
+                  <textarea
+                    ref={inputRef}
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type your question here..."
+                    rows={1}
+                    className={`flex-1 bg-transparent text-sm resize-none outline-none
+                      max-h-20 min-h-[20px] leading-5
+                      ${isDark
+                        ? 'text-white placeholder:text-[#607B96]'
+                        : 'text-gray-900 placeholder:text-gray-400'}`}
+                  />
+                  <button
+                    onClick={() => sendMessage()}
+                    disabled={!input.trim()}
+                    className={`flex-shrink-0 p-1.5 rounded-lg transition-all
+                      ${!input.trim()
+                        ? 'opacity-25 cursor-not-allowed'
+                        : isDark
+                          ? 'bg-accent-teal text-[#011627] hover:bg-accent-teal/80 active:scale-95'
+                          : 'bg-accent-blue text-white hover:bg-accent-blue/80 active:scale-95'}`}
+                  >
+                    <Send size={15} />
+                  </button>
+                </div>
+                <p className={`text-[10px] mt-1.5 text-center ${muted}`}>
+                  Enter to send · Shift+Enter for new line
+                </p>
+              </div>
+            </>
+          )}
         </div>
       )}
     </>
