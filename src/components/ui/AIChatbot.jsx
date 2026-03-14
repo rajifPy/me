@@ -24,7 +24,7 @@ const KB = {
       gpa: '3.3/4.0',
       focus: 'Data Analytics & Information Systems',
     },
-    { school: "MAS Hasyim Asy'ari", degree: 'Science Major', period: '2017–2020', location: 'Jepara' },
+    { school: "MAS Hasyim Asy'ari", degree: 'Science Major', period: '2017–2020' },
   ],
   experience: [
     {
@@ -84,7 +84,7 @@ function getResponse(raw) {
   }
 
   if (/who are you|what are you|introduce yourself|about (you|yourself)/.test(q)) {
-    return ["I'm a custom AI assistant built into Rajif's portfolio. 🤖", "I know everything about him — his background, skills, projects, and experience.", "What would you like to know?"]
+    return ["I'm a custom AI assistant built into Rajif's portfolio. 🤖", "I know everything about him — background, skills, projects, and experience.", "What would you like to know?"]
   }
 
   if (/who is rajif|about rajif|tell me about (him|rajif)|introduce rajif/.test(q)) {
@@ -110,17 +110,17 @@ function getResponse(raw) {
   if (/python/.test(q)) {
     return [
       "Python is Rajif's main weapon. 🐍",
-      "He's been using it for 3 years across 15+ projects — 75% proficiency.",
-      "Go-to stack: Pandas for data wrangling, Scikit-learn for ML, Matplotlib/Seaborn for visualization.",
-      "He's also done Flask for web backend (check out LoveRegex) and TensorFlow for deep learning.",
+      "3 years, 15+ projects, 75% proficiency.",
+      "Go-to stack: Pandas for wrangling, Scikit-learn for ML, Matplotlib/Seaborn for visualization.",
+      "Also done Flask for backend (check LoveRegex) and TensorFlow for deep learning.",
     ]
   }
 
   if (/\bsql\b|database|postgres|mysql|query/.test(q)) {
     return [
       "SQL is one of Rajif's core skills — 75%, 3 years, 12+ projects. 💾",
-      "Works with PostgreSQL and MySQL — complex window functions, CTEs, query optimization.",
-      "Most recent SQL project: repairing a healthcare database at UNAIR. Real production data.",
+      "Works with PostgreSQL and MySQL — window functions, CTEs, query optimization.",
+      "Most recent: repairing a healthcare database at UNAIR. Real production data.",
     ]
   }
 
@@ -128,7 +128,7 @@ function getResponse(raw) {
     return [
       "ML is something Rajif takes seriously — full Bangkit Academy ML path backed by Google. 🤖",
       "Proficiency at 60%, 10+ ML projects covering supervised/unsupervised learning.",
-      "His Bangkit capstone was a fact-checking system using NLP text classification.",
+      "Bangkit capstone was a fact-checking system using NLP text classification.",
       "Still growing in deep learning (40%) — honest about it, which matters in data work.",
     ]
   }
@@ -162,15 +162,15 @@ function getResponse(raw) {
 
   if (/kost|kostmanager|boarding/.test(q)) {
     return [
-      "Web Kost Management is a property management system Rajif built for boarding house businesses. 🏠",
+      "Web Kost Management is a property management system for boarding house businesses. 🏠",
       `Stack: ${KB.projects[0].tech}.`,
-      "Live at kostmanagerv1.vercel.app — worth checking out to see his full-stack work.",
+      "Live at kostmanagerv1.vercel.app — worth checking out to see his full-stack side.",
     ]
   }
 
   if (/regex|loveregex/.test(q)) {
     return [
-      "LoveRegex is one of his more creative projects — an interactive regex learning platform. 💡",
+      "LoveRegex is one of his more creative projects — interactive regex learning platform. 💡",
       `Built with ${KB.projects[1].tech}, gives real-time feedback as you practice regular expressions.`,
       "Live at loveregex.vercel.app. Surprisingly fun to use.",
     ]
@@ -191,14 +191,14 @@ function getResponse(raw) {
       `📱 Phone: ${KB.phone}`,
       `💼 LinkedIn: ${KB.linkedin}`,
       `💻 GitHub: ${KB.github}`,
-      "Open to data analyst roles and project collaborations. Best to reach out via email or LinkedIn!",
+      "Open to data analyst roles and collaborations. Best via email or LinkedIn!",
     ]
   }
 
   if (/hire|available|open to|opportunit|\bjob\b|position|role|recruit|freelanc/.test(q)) {
     return [
       "Rajif is open to data analyst roles and collaborations. 🙌",
-      "Background strongest in data analysis, SQL, and Python-based projects.",
+      "Background strongest in data analysis, SQL, and Python.",
       `Best way to reach out: ${KB.email} or LinkedIn at ${KB.linkedin}.`,
     ]
   }
@@ -216,19 +216,18 @@ function getResponse(raw) {
   if (/snake|game/.test(q)) {
     return [
       "Ha, yeah — Rajif embedded a fully playable snake game in his portfolio's landing page. 🐍",
-      "You have to play through it (or skip it) to 'unlock' the rest of the portfolio.",
-      "Fun way to show personality and a subtle flex that he can build interactive games too.",
+      "You have to play through it (or skip it) to unlock the rest of the portfolio.",
+      "Fun way to show personality and a subtle flex that he can build interactive games.",
     ]
   }
 
   if (/blog|write|writing|article|post|thought/.test(q)) {
     return [
       "Rajif writes on a few topics: 📝",
-      "• Data cleaning best practices (strong opinions — 80% of the job, he says)",
+      "• Data cleaning best practices (80% of the job, he insists)",
       "• Career journey from student to analyst",
       "• SQL optimization techniques",
       "• Rural youth empowerment and tech access",
-      "Practical and honest writing. Worth a read in the About section.",
     ]
   }
 
@@ -243,8 +242,8 @@ function getResponse(raw) {
   if (/strength|weakness|improve|grow|learning/.test(q)) {
     return [
       "Rajif's clear strengths: data analysis, SQL, Pandas, Python — all 75%+ proficiency. 💪",
-      "Still growing: deep learning (40%) and Docker/MLOps (45%). He's honest about gaps.",
-      "Not pretending to know things he doesn't — that matters a lot in data work.",
+      "Still growing: deep learning (40%) and Docker/MLOps (45%). He's open about gaps.",
+      "Not pretending to know things he doesn't — that matters in data work.",
     ]
   }
 
@@ -252,7 +251,7 @@ function getResponse(raw) {
     return [
       ["Happy to help! 😊", "Feel free to ask anything else about Rajif."],
       ["Anytime! 👋", "Let me know if there's anything else you'd like to know."],
-      ["Of course! 🙌", "Is there anything else about Rajif I can help with?"],
+      ["Of course! 🙌", "Is there anything else I can help with?"],
     ][Math.floor(Math.random() * 3)]
   }
 
@@ -261,24 +260,23 @@ function getResponse(raw) {
   }
 
   return [
-    ["Hmm, I'm not sure I caught that! 🤔", "I'm best at questions about Rajif's skills, experience, projects, or how to contact him.", "Could you rephrase, or try one of the quick topics below?"],
+    ["Hmm, I'm not sure I caught that! 🤔", "I'm best at questions about Rajif's skills, experience, projects, or contact info.", "Could you rephrase, or try one of the quick topics below?"],
     ["That one's a bit outside my knowledge base. 😅", "Try asking about his skills, projects, work experience, or education!"],
-    ["Not quite sure what you're asking. 🙏", "I'm best at questions like: *What are his skills?* or *Tell me about his projects.*"],
+    ["Not quite sure what you're asking. 🙏", "Best at questions like: *What are his skills?* or *Tell me about his projects.*"],
   ][Math.floor(Math.random() * 3)]
 }
 
 // ─── Suggestion chips ──────────────────────────────────────────────────────────
 const SUGGESTIONS = [
-  { label: '🛠 Skills', prompt: 'What are his strongest skills?' },
-  { label: '🚀 Projects', prompt: 'Tell me about his projects' },
+  { label: '🛠 Skills',     prompt: 'What are his strongest skills?' },
+  { label: '🚀 Projects',   prompt: 'Tell me about his projects' },
   { label: '💼 Experience', prompt: "What's his work experience?" },
-  { label: '📬 Contact', prompt: 'How can I reach Rajif?' },
-  { label: '🎓 Education', prompt: "What's his educational background?" },
-  { label: '📜 Certs', prompt: 'What certifications does he have?' },
+  { label: '📬 Contact',    prompt: 'How can I reach Rajif?' },
+  { label: '🎓 Education',  prompt: "What's his educational background?" },
+  { label: '📜 Certs',      prompt: 'What certifications does he have?' },
 ]
 
 // ─── Typewriter hook ───────────────────────────────────────────────────────────
-// FIX: queue-based so rapid sends don't corrupt earlier messages
 function useTypewriter() {
   const [isTyping, setIsTyping] = useState(false)
   const timersRef = useRef([])
@@ -288,23 +286,16 @@ function useTypewriter() {
     timersRef.current = []
   }, [])
 
-  // type() resolves exactly one bot message, then calls onDone.
-  // Caller is responsible for not overlapping calls (queue in component).
   const type = useCallback((chunks, onProgress, onDone) => {
     clearAll()
     setIsTyping(true)
-
     let chunkIdx = 0
     let charIdx = 0
     let currentText = ''
 
     const tick = () => {
       const chunk = chunks[chunkIdx]
-      if (!chunk) {
-        setIsTyping(false)
-        onDone?.()
-        return
-      }
+      if (!chunk) { setIsTyping(false); onDone?.(); return }
       if (charIdx < chunk.length) {
         currentText += chunk[charIdx]
         charIdx++
@@ -314,32 +305,23 @@ function useTypewriter() {
         timersRef.current.push(setTimeout(tick, delay))
       } else {
         onProgress(chunkIdx, currentText, true)
-        chunkIdx++
-        charIdx = 0
-        currentText = ''
+        chunkIdx++; charIdx = 0; currentText = ''
         if (chunkIdx < chunks.length) {
           timersRef.current.push(setTimeout(tick, 260))
         } else {
-          setIsTyping(false)
-          onDone?.()
+          setIsTyping(false); onDone?.()
         }
       }
     }
-
     timersRef.current.push(setTimeout(tick, 100))
   }, [clearAll])
 
-  const stop = useCallback(() => {
-    clearAll()
-    setIsTyping(false)
-  }, [clearAll])
-
+  const stop = useCallback(() => { clearAll(); setIsTyping(false) }, [clearAll])
   useEffect(() => () => clearAll(), [clearAll])
-
   return { type, stop, isTyping }
 }
 
-// ─── Render markdown-ish message content ──────────────────────────────────────
+// ─── Render markdown-ish content ──────────────────────────────────────────────
 function MsgContent({ text }) {
   if (!text) return null
   return (
@@ -363,12 +345,12 @@ function MsgContent({ text }) {
 export default function AIChatbot({ activeSection }) {
   const { theme } = useTheme()
 
-  // ── All hooks declared unconditionally (Rules of Hooks compliant) ──
-  const [isOpen, setIsOpen] = useState(false)
+  // ── All hooks unconditionally declared first ──
+  const [isOpen, setIsOpen]           = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
-  const [input, setInput] = useState('')
-  const [copied, setCopied] = useState(null)
-  const [messages, setMessages] = useState([
+  const [input, setInput]             = useState('')
+  const [copied, setCopied]           = useState(null)
+  const [messages, setMessages]       = useState([
     {
       role: 'assistant',
       displayed: ["Hey! 👋\n\nI'm Rajif's AI assistant.\n\nAsk me anything — or pick a topic below!"],
@@ -378,12 +360,10 @@ export default function AIChatbot({ activeSection }) {
   ])
 
   const { type, stop, isTyping } = useTypewriter()
-  const messagesEndRef = useRef(null)
-  const inputRef = useRef(null)
-
-  // FIX: message queue — pending bot responses wait their turn
-  const queueRef = useRef([])       // Array of { chunks, msgIdx }
-  const processingRef = useRef(false)
+  const messagesEndRef  = useRef(null)
+  const inputRef        = useRef(null)
+  const queueRef        = useRef([])
+  const processingRef   = useRef(false)
 
   const processQueue = useCallback(() => {
     if (processingRef.current || queueRef.current.length === 0) return
@@ -403,14 +383,12 @@ export default function AIChatbot({ activeSection }) {
         })
       },
       () => {
-        // Mark message done
         setMessages(list => {
           if (!list[msgIdx]) return list
           const copy = [...list]
           copy[msgIdx] = { ...copy[msgIdx], done: true }
           return copy
         })
-        // Dequeue and process next
         queueRef.current.shift()
         processingRef.current = false
         processQueue()
@@ -432,8 +410,12 @@ export default function AIChatbot({ activeSection }) {
     }
   }, [isOpen, isMinimized])
 
-  // Cleanup on unmount
-  useEffect(() => () => { stop(); queueRef.current = []; processingRef.current = false }, [stop])
+  // Cleanup
+  useEffect(() => () => {
+    stop()
+    queueRef.current = []
+    processingRef.current = false
+  }, [stop])
 
   // ── Conditional render AFTER all hooks ──
   if (activeSection !== 'hello') return null
@@ -452,7 +434,6 @@ export default function AIChatbot({ activeSection }) {
 
     const chunks = getResponse(userText)
 
-    // FIX: use functional setState to safely capture the real msgIdx
     setMessages(prev => {
       const botMsg = {
         role: 'assistant',
@@ -462,21 +443,19 @@ export default function AIChatbot({ activeSection }) {
       }
       const next = [...prev, userMsg, botMsg]
       const msgIdx = next.length - 1
-
-      // Enqueue and kick off if idle
       queueRef.current.push({ chunks, msgIdx })
-      // Use setTimeout(0) so setState settles before processQueue reads messages
       setTimeout(() => processQueue(), 0)
-
       return next
     })
   }
 
+  // ── FIX: only preventDefault for Enter, let all other keys type freely ──
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
+      e.preventDefault()   // prevent newline on Enter
       sendMessage()
     }
+    // every other key (letters, numbers, symbols) — do nothing, let browser handle it
   }
 
   const reset = () => {
@@ -500,16 +479,16 @@ export default function AIChatbot({ activeSection }) {
 
   const getFullText = (msg) => msg.displayed.filter(Boolean).join('\n\n')
 
-  const isDark = theme === 'dark'
-  const bg     = isDark ? 'bg-[#011627]'  : 'bg-white'
-  const bgSub  = isDark ? 'bg-[#011221]'  : 'bg-gray-50'
-  const border = isDark ? 'border-[#1E2D3D]' : 'border-gray-200'
-  const muted  = isDark ? 'text-[#607B96]'   : 'text-gray-400'
-  const bold   = isDark ? 'text-white'        : 'text-gray-900'
+  const isDark  = theme === 'dark'
+  const bg      = isDark ? 'bg-[#011627]'     : 'bg-white'
+  const bgSub   = isDark ? 'bg-[#011221]'     : 'bg-gray-50'
+  const border  = isDark ? 'border-[#1E2D3D]' : 'border-gray-200'
+  const muted   = isDark ? 'text-[#607B96]'   : 'text-gray-400'
+  const bold    = isDark ? 'text-white'        : 'text-gray-900'
 
   return (
     <>
-      {/* ── FAB ── */}
+      {/* FAB */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -523,7 +502,7 @@ export default function AIChatbot({ activeSection }) {
         </button>
       )}
 
-      {/* ── Chat window ── */}
+      {/* Chat window */}
       {isOpen && (
         <div
           className={`fixed bottom-6 right-6 z-40 flex flex-col rounded-2xl
@@ -589,7 +568,6 @@ export default function AIChatbot({ activeSection }) {
 
                   return (
                     <div key={i} className={`flex gap-2 ${isUser ? 'flex-row-reverse' : ''}`}>
-                      {/* Avatar */}
                       <div className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5
                         ${isUser
                           ? isDark ? 'bg-accent-blue/30' : 'bg-accent-blue/10'
@@ -599,7 +577,6 @@ export default function AIChatbot({ activeSection }) {
                           : <Bot size={12} className="text-accent-teal" />}
                       </div>
 
-                      {/* Bubble */}
                       <div className="group relative max-w-[80%]">
                         <div className={`px-3 py-2.5 rounded-2xl
                           ${isUser
@@ -619,7 +596,6 @@ export default function AIChatbot({ activeSection }) {
                             )}
                         </div>
 
-                        {/* Timestamp + copy */}
                         <div className={`flex items-center gap-1 mt-1 px-0.5 ${isUser ? 'justify-end' : 'justify-start'}`}>
                           <span className={`text-[10px] ${muted}`}>
                             {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -638,7 +614,7 @@ export default function AIChatbot({ activeSection }) {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Suggestion chips — always visible */}
+              {/* Suggestions — always visible */}
               <div className={`px-4 pt-2 pb-1 border-t ${border} flex-shrink-0`}>
                 <p className={`text-[10px] mb-1.5 ${muted}`}>Quick questions:</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -657,12 +633,18 @@ export default function AIChatbot({ activeSection }) {
                 </div>
               </div>
 
-              {/* Input — never disabled */}
+              {/* ── Input area ── */}
               <div className="px-4 pb-4 pt-2 flex-shrink-0">
                 <div className={`flex gap-2 items-end rounded-xl border px-3 py-2 transition-colors
                   ${isDark
                     ? `${bgSub} border-[#1E2D3D] focus-within:border-accent-teal`
                     : 'bg-gray-50 border-gray-200 focus-within:border-accent-blue'}`}>
+
+                  {/*
+                    KEY FIX: textarea has NO disabled prop and NO e.preventDefault()
+                    on regular key presses — only Enter is intercepted.
+                    This ensures every keystroke from the keyboard reaches the input.
+                  */}
                   <textarea
                     ref={inputRef}
                     value={input}
@@ -670,12 +652,17 @@ export default function AIChatbot({ activeSection }) {
                     onKeyDown={handleKeyDown}
                     placeholder="Type your question here..."
                     rows={1}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
                     className={`flex-1 bg-transparent text-sm resize-none outline-none
                       max-h-20 min-h-[20px] leading-5
                       ${isDark
                         ? 'text-white placeholder:text-[#607B96]'
                         : 'text-gray-900 placeholder:text-gray-400'}`}
                   />
+
                   <button
                     onClick={() => sendMessage()}
                     disabled={!input.trim()}
