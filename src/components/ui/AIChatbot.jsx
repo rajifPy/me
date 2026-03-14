@@ -786,7 +786,7 @@ export default function AIChatbot({ activeSection }) {
                   </button>
                 </div>
                 <p className={`text-[10px] mt-1.5 text-center ${muted}`}>
-                  Enter to send · No API needed
+                  Enter to send ·
                 </p>
               </div>
             </>
