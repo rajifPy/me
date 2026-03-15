@@ -33,8 +33,8 @@ export const photos = [
   },
   {
     id: 6,
-    url: '/images/12358.png',
-    caption: 'Tech conference participation',
+    url: '/images/IMG_9682.HEIC',
+    caption: 'Pelayanan Sosial Universitas Airlangga',
     category: 'Events'
   },
   {
