@@ -33,7 +33,7 @@ export const photos = [
   },
   {
     id: 6,
-    url: '/images/DSC_5054.JPG',
+    url: '/images/IMG_9682.JPG',
     caption: 'Pelayanan Sosial Universitas Airlangga',
     category: 'Events'
   },
