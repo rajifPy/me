@@ -27,8 +27,8 @@ export const photos = [
   },
   {
     id: 5,
-    url: '/images/12358.png',
-    caption: 'Bangkit Academy graduation ceremony',
+    url: '/DSC_5054.JPG',
+    caption: 'Bakti Sosial on Mojokerto',
     category: 'Events'
   },
   {
