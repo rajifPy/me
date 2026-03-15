@@ -27,7 +27,7 @@ export const photos = [
   },
   {
     id: 5,
-    url: '/DSC_5054.JPG',
+    url: '/images/DSC_5054.JPG',
     caption: 'Bakti Sosial on Mojokerto',
     category: 'Events'
   },
