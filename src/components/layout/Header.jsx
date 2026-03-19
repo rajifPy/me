@@ -2,21 +2,25 @@
 
 import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
+import { useLanguage } from '@/context/LanguageContext'
+import { useTranslation } from '@/data/translations'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import LanguageToggle from '@/components/ui/LanguageToggle'
 import { Menu, X } from 'lucide-react'
 
 export default function Header({ activeSection, setActiveSection }) {
   const { theme } = useTheme()
+  const { language } = useLanguage()
+  const t = useTranslation(language)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
 
-  // UPDATED: Added research menu item
   const navItems = [
-    { id: 'hello', label: '_hello' },
-    { id: 'about-me', label: '_about-me' },
-    { id: 'projects', label: '_projects' },
-    { id: 'research', label: '_research' },
-    { id: 'contact-me', label: '_contact-me' }
+    { id: 'hello',      label: t.nav.hello },
+    { id: 'about-me',   label: t.nav.about },
+    { id: 'projects',   label: t.nav.projects },
+    { id: 'research',   label: t.nav.research },
+    { id: 'contact-me', label: t.nav.contact },
   ]
 
   const handleNavClick = (id) => {
@@ -45,7 +49,10 @@ export default function Header({ activeSection, setActiveSection }) {
         ))}
       </nav>
 
-      <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex items-center gap-2 md:gap-3">
+        {/* Language Toggle */}
+        <LanguageToggle />
+
         <ThemeToggle />
         
         {/* Mobile Menu Button */}
@@ -64,7 +71,7 @@ export default function Header({ activeSection, setActiveSection }) {
           rel="noopener noreferrer" 
           className="hidden md:block hover:text-accent-teal transition-colors text-sm"
         >
-          _contact-me
+          {t.nav.contact}
         </a>
       </div>
 
