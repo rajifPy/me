@@ -4,6 +4,8 @@ export const blogThoughts = [
   {
     id: 1,
     date: '2024-12-15',
+
+    // ── English ──────────────────────────────────────────────────────────────
     title: 'Why Data Cleaning is 80% of the Job',
     content: `People often think data science is all about fancy algorithms and AI models. The reality is quite different from what you see in job descriptions or bootcamp advertisements. I spend most of my time cleaning messy data, and I'm not alone in this experience.
 
@@ -87,12 +89,100 @@ Data cleaning is often seen as unglamorous work – the necessary evil before yo
 The next time you see a job posting for a data scientist that emphasizes machine learning and AI, remember that the real job is probably 80% data cleaning. And that's not a bad thing – it's where the magic really happens.
 
 Master the cleaning, and the modeling becomes much easier. Rush to the modeling, and you'll spend twice as long debugging issues that trace back to data quality problems.`,
+
+    // ── Indonesian ────────────────────────────────────────────────────────────
+    title_id: 'Mengapa Pembersihan Data adalah 80% dari Pekerjaan',
+    content_id: `Orang sering berpikir ilmu data hanya tentang algoritma canggih dan model AI. Kenyataannya jauh berbeda dari yang terlihat di deskripsi pekerjaan atau iklan bootcamp. Saya menghabiskan sebagian besar waktu untuk membersihkan data yang berantakan, dan saya tidak sendirian dalam pengalaman ini.
+
+## Realita Keras Dunia Data
+
+Ketika saya memulai perjalanan sebagai penggemar data, saya membayangkan diri membangun jaringan saraf yang canggih dan menerapkan model machine learning mutakhir. Kenyataan menghantam keras saat proyek nyata pertama saya di unit layanan kesehatan UNAIR. Saya menghabiskan tiga minggu hanya untuk memahami struktur database, mengidentifikasi inkonsistensi, dan membersihkan catatan duplikat sebelum bisa mulai memikirkan analisis.
+
+## Masalah Kualitas Data yang Umum
+
+Mari saya jelaskan masalah-masalah yang biasa saya temui:
+
+**1. Catatan Duplikat**
+Dalam proyek database kesehatan, saya menemukan beberapa catatan pasien yang dimasukkan berkali-kali dengan variasi kecil pada nama, tanggal, atau nomor ID. Satu pasien bisa memiliki tiga ID berbeda di sistem. Ini bukan sabotase – melainkan kesalahan manusia, migrasi sistem, dan kurangnya aturan validasi.
+
+**2. Nilai yang Hilang**
+Tidak semua nilai yang hilang diciptakan sama. Terkadang NULL berarti "tidak berlaku," terkadang berarti "kami lupa mengumpulkan ini," dan terkadang berarti "sistem crash saat entri." Memahami konteks data yang hilang sangat penting sebelum memutuskan cara menanganinya.
+
+**3. Format yang Tidak Konsisten**
+Tanggal dimasukkan sebagai "12/01/2024," "01-12-2024," atau "12 Januari 2024." Nomor telepon dengan atau tanpa kode negara. Nama dalam huruf besar atau kecil yang berbeda. Inkonsistensi ini mungkin tampak kecil, tetapi bisa sepenuhnya merusak analisis jika tidak ditangani.
+
+**4. Ketidakcocokan Tipe Data**
+Angka disimpan sebagai string, tanggal disimpan sebagai integer, nilai boolean disimpan sebagai string "Ya"/"Tidak" – masalah ini lebih umum dari yang Anda kira dan dapat menyebabkan bug halus dalam analisis.
+
+## Pendekatan Sistematis Saya
+
+Seiring waktu, saya mengembangkan pendekatan sistematis untuk pembersihan data yang saya ikuti di setiap proyek:
+
+**Langkah 1: Eksplorasi Awal**
+Sebelum menyentuh apapun, saya meluangkan waktu untuk memahami data. Apa yang diwakili setiap kolom? Berapa rentang nilai yang diharapkan? Aturan bisnis apa yang harus diterapkan? Saya mendokumentasikan semuanya di Jupyter notebook.
+
+**Langkah 2: Definisikan Aturan Kualitas Data**
+Berdasarkan kebutuhan bisnis dan pengetahuan domain, saya menetapkan aturan yang jelas: "ID Pasien harus 8 digit," "Tanggal harus dalam 50 tahun terakhir," "Alamat email harus mengandung @," dll.
+
+**Langkah 3: Pembersihan Sistematis**
+Saya menangani masalah berdasarkan urutan dampak: duplikat terlebih dahulu (bisa mempengaruhi segalanya), lalu nilai yang hilang, lalu inkonsistensi format, dan terakhir outlier. Setiap langkah didokumentasikan dan dapat dibatalkan.
+
+**Langkah 4: Validasi**
+Setelah membersihkan, saya memvalidasi hasilnya. Apakah statistiknya masuk akal? Apakah ada pola yang tidak terduga? Saya sering menemukan masalah baru saat validasi yang mengharuskan kembali ke langkah sebelumnya.
+
+## Alat dan Teknik
+
+Alat andalan saya untuk pembersihan data:
+
+**Pandas untuk Python**
+Tulang punggung pekerjaan pembersihan data saya. Fungsi seperti drop_duplicates(), fillna(), replace(), dan apply() sangat diperlukan. Saya telah menulis fungsi pembersihan khusus yang saya gunakan kembali di berbagai proyek.
+
+**SQL untuk Pembersihan Tingkat Database**
+Terkadang lebih efisien membersihkan data di tingkat database, terutama untuk dataset besar. Window functions, CTE, dan operasi JOIN yang tepat dapat mengidentifikasi dan memperbaiki masalah sebelum data mencapai lingkungan analisis Anda.
+
+**Regular Expressions**
+Untuk pembersihan dan standarisasi teks, regex sangat berharga. Saya menggunakannya untuk mengekstrak pola dari teks yang berantakan, memvalidasi format, dan menstandarkan entri.
+
+## Dampak Nyata
+
+Dalam proyek database kesehatan, pembersihan data yang tepat mengungkapkan bahwa apa yang tampak sebagai peningkatan 50% kunjungan pasien sebenarnya hanyalah catatan duplikat. Bayangkan jika kami membuat keputusan berdasarkan data yang belum dibersihkan – kami mungkin telah merekrut staf yang tidak perlu atau berinvestasi dalam ekspansi yang tidak diperlukan.
+
+Dalam proyek lain menganalisis pertumbuhan media sosial, pembersihan data mengungkapkan bahwa lonjakan keterlibatan yang tampak berasal dari akun bot. Menghapus keterlibatan palsu ini memberi kami gambaran nyata pertumbuhan organik dan membantu memfokuskan strategi kami secara efektif.
+
+## Mengapa Pembersihan Lebih Penting dari Algoritma
+
+Ini adalah kebenaran pahit: regresi linear sederhana pada data bersih akan mengungguli jaringan saraf yang kompleks pada data kotor. Setiap saat.
+
+Model machine learning paling canggih hanya sebaik data yang digunakan untuk melatihnya. Sampah masuk, sampah keluar – ini bukan sekadar pepatah, ini adalah kebenaran fundamental ilmu data.
+
+## Saran untuk Calon Data Scientist
+
+1. Kuasai Dasar-dasar: Jadilah sangat mahir dalam pandas, SQL, dan manipulasi data. Di sinilah Anda akan menghabiskan sebagian besar waktu.
+
+2. Kembangkan Pendekatan Sistematis: Jangan membersihkan secara ad-hoc. Miliki proses yang dapat diulang yang bisa diterapkan pada dataset apapun.
+
+3. Dokumentasikan Segalanya: Kamu di masa depan (atau rekan timmu) akan berterima kasih. Dokumentasikan apa yang dibersihkan, mengapa dibersihkan, dan asumsi apa yang dibuat.
+
+4. Pelajari Domainnya: Memahami konteks bisnis membantu membuat keputusan yang lebih baik tentang cara menangani kasus tepi dalam data Anda.
+
+5. Validasi, Validasi, Validasi: Jangan pernah berasumsi pembersihan Anda berhasil sempurna. Selalu validasi hasilnya.
+
+## Keahlian yang Kurang Dihargai
+
+Pembersihan data sering dianggap sebagai pekerjaan yang tidak glamor – kejahatan yang diperlukan sebelum Anda bisa melakukan ilmu data "yang sesungguhnya." Tetapi berdasarkan pengalaman saya, di sinilah wawasan nyata berasal. Memahami data Anda pada tingkat yang sangat rinci memberi Anda intuisi tentang pola, hubungan, dan potensi masalah yang tidak akan pernah Anda temukan dengan langsung melompat ke pemodelan.
+
+Lain kali Anda melihat lowongan kerja untuk data scientist yang menekankan machine learning dan AI, ingatlah bahwa pekerjaan nyatanya mungkin 80% pembersihan data. Dan itu bukan hal yang buruk – di situlah keajaiban sebenarnya terjadi.
+
+Kuasai pembersihan, dan pemodelan menjadi jauh lebih mudah. Terburu-buru ke pemodelan, dan Anda akan menghabiskan dua kali lebih lama untuk men-debug masalah yang berasal dari masalah kualitas data.`,
+
     tags: ['Data Science', 'Best Practices', 'Career', 'Data Cleaning'],
-    category: 'Insights'
+    category: 'Insights',
   },
+
   {
     id: 2,
     date: '2024-11-20',
+
     title: 'My Journey from Student to Data Analyst',
     content: `Looking back at my journey from a university student to working as a Data Analyst, I realize how much I've learned not just about data, but about myself and the industry.
 
@@ -140,12 +230,63 @@ If you're just starting out:
 The journey from student to professional isn't linear. There will be setbacks, rejections, and moments of doubt. But each experience, whether success or failure, teaches you something valuable.
 
 Remember: everyone started somewhere. Your current skill level doesn't define your potential. Keep learning, keep building, and keep pushing forward.`,
+
+    title_id: 'Perjalananku dari Mahasiswa ke Analis Data',
+    content_id: `Melihat ke belakang perjalanan saya dari mahasiswa universitas hingga bekerja sebagai Analis Data, saya menyadari betapa banyak yang telah saya pelajari – bukan hanya tentang data, tetapi juga tentang diri sendiri dan industri ini.
+
+## Titik Awal
+
+Saya memulai gelar Sistem Informasi di Universitas Airlangga pada tahun 2020, tepat saat pandemi melanda. Masa yang menantang ini justru menjadi peluang – dengan segalanya serba daring, saya memiliki lebih banyak fleksibilitas untuk menjelajahi jalur belajar dan kursus online yang berbeda.
+
+## Pengalaman Bangkit Academy
+
+Bergabung dengan Bangkit Academy pada tahun 2021 adalah titik balik. Program Machine Learning intensif ini, yang didukung oleh Google, Tokopedia, Gojek, dan Traveloka, memperkenalkan saya pada praktik standar industri dan penerapan ilmu data di dunia nyata.
+
+Program ini tidak mudah. Kami harus menyeimbangkan tugas kuliah dengan kurikulum Bangkit yang intensif. Namun proyek langsung dan mentoring dari industri sangat berharga. Saya belajar bahwa ilmu data bukan hanya tentang mengetahui algoritma – ini tentang memecahkan masalah bisnis nyata.
+
+## Proyek Nyata Pertama
+
+Proyek besar pertama saya adalah optimasi database kesehatan di UNAIR. Ini bukan machine learning yang glamor – melainkan pembersihan data dan normalisasi database yang serius. Tetapi proyek ini mengajarkan saya lebih banyak tentang rekayasa data daripada kursus manapun.
+
+Saya menghabiskan berminggu-minggu memahami struktur database, mengidentifikasi masalah kualitas data, dan mengimplementasikan solusi. Dampaknya nyata – kami meningkatkan performa kueri dan keandalan data untuk seluruh unit layanan kesehatan.
+
+## Pelajaran Kunci yang Dipetik
+
+1. **Kemampuan Teknis Hanyalah Fondasi**: Mengetahui Python dan SQL itu penting, tetapi memahami konteks bisnis dan mengkomunikasikan wawasan sama pentingnya.
+
+2. **Mulai Kecil, Berpikir Besar**: Jangan menunggu proyek yang sempurna. Mulailah dengan dataset kecil, berlatih di Kaggle, berkontribusi pada proyek open-source.
+
+3. **Bangun di Depan Umum**: Bagikan pembelajaran Anda, buat portofolio, terlibat dengan komunitas. Visibilitas ini membantu saya mendapatkan peluang.
+
+4. **Soft Skill Penting**: Kemampuan kolaborasi, komunikasi, dan pemecahan masalah sama pentingnya dengan keahlian teknis.
+
+5. **Jangan Pernah Berhenti Belajar**: Bidang ini berkembang pesat. Pembelajaran berkelanjutan bukan pilihan – ini keharusan.
+
+## Fokus Saat Ini
+
+Sekarang saat saya melanjutkan perjalanan, saya fokus untuk memperdalam keahlian di area tertentu: analisis deret waktu, optimasi SQL lanjutan, dan sistem ML tingkat produksi.
+
+## Saran untuk Calon Analis Data
+
+Jika Anda baru memulai:
+- Bangun fondasi yang kuat dalam statistik dan pemrograman
+- Kerjakan proyek nyata, meskipun proyek pribadi
+- Dokumentasikan perjalanan belajar Anda
+- Terhubung dengan komunitas
+- Jangan takut untuk memulai – tindakan tidak sempurna mengalahkan kelambanan yang sempurna
+
+Perjalanan dari mahasiswa ke profesional tidak linear. Akan ada kemunduran, penolakan, dan momen keraguan. Tetapi setiap pengalaman, baik kesuksesan maupun kegagalan, mengajarkan sesuatu yang berharga.
+
+Ingat: semua orang mulai dari suatu tempat. Tingkat keahlian Anda saat ini tidak menentukan potensi Anda. Terus belajar, terus membangun, dan terus melangkah maju.`,
+
     tags: ['Career', 'Personal', 'Learning', 'Advice'],
-    category: 'Personal'
+    category: 'Personal',
   },
+
   {
     id: 3,
     date: '2024-10-05',
+
     title: 'SQL Optimization Techniques I Wish I Knew Earlier',
     content: `After working with databases for three years, I've learned that writing SQL that works is easy. Writing SQL that works efficiently at scale is an art.
 
@@ -165,7 +306,7 @@ Indexes are powerful but not magic. I learned to index:
 - Columns used in ORDER BY
 But avoid over-indexing – each index slows down write operations.
 
-**3. Avoid SELECT \***
+**3. Avoid SELECT ***
 Only select the columns you need. This reduces data transfer and memory usage. In large tables, this single change can improve performance by 50% or more.
 
 **4. Use Window Functions Instead of Subqueries**
@@ -211,39 +352,134 @@ Before calling a query "done," I now check:
 SQL optimization isn't about memorizing tricks – it's about understanding how databases work. Invest time in learning about indexes, execution plans, and query processing. This knowledge will serve you throughout your career.
 
 Remember: premature optimization is the root of all evil, but knowing when and how to optimize is a critical skill. Start with correct queries, then make them fast when needed.`,
+
+    title_id: 'Teknik Optimasi SQL yang Ingin Saya Ketahui Lebih Awal',
+    content_id: `Setelah bekerja dengan database selama tiga tahun, saya belajar bahwa menulis SQL yang berfungsi itu mudah. Menulis SQL yang bekerja efisien dalam skala besar adalah sebuah seni.
+
+## Masalah Performa
+
+Ketika pertama kali belajar SQL, saya fokus mendapatkan hasil yang benar. Jika kueri membutuhkan 30 detik, saya hanya menunggu. Tetapi dalam sistem produksi dengan jutaan baris, 30 detik itu menjadi berjam-jam, dan tiba-tiba laporan Anda bukan hanya lambat – melainkan mustahil.
+
+## Teknik Optimasi Penting
+
+**1. Pahami Execution Plan Anda**
+Sebelum mengoptimalkan apapun, pahami bagaimana database mengeksekusi kueri. Gunakan EXPLAIN atau EXPLAIN ANALYZE untuk melihat apa yang sebenarnya terjadi di balik layar.
+
+**2. Buat Index Secara Strategis**
+Index itu powerful tapi bukan sihir. Saya belajar untuk mengindeks:
+- Kolom yang digunakan dalam klausa WHERE
+- Kolom yang digunakan dalam kondisi JOIN
+- Kolom yang digunakan dalam ORDER BY
+Tetapi hindari over-indexing – setiap index memperlambat operasi tulis.
+
+**3. Hindari SELECT ***
+Hanya pilih kolom yang Anda butuhkan. Ini mengurangi transfer data dan penggunaan memori. Dalam tabel besar, perubahan tunggal ini bisa meningkatkan performa 50% atau lebih.
+
+**4. Gunakan Window Functions daripada Subquery**
+Window functions seperti ROW_NUMBER(), RANK(), dan LAG() seringkali lebih efisien daripada correlated subquery dan lebih mudah dibaca.
+
+**5. Filter Lebih Awal, Filter Sering**
+Dorong klausa WHERE sejauh mungkin ke bawah dalam kueri Anda. Semakin awal Anda mengurangi dataset, semakin sedikit data yang perlu diproses database.
+
+**6. Operasi Batch**
+Daripada menjalankan ribuan pernyataan INSERT atau UPDATE individual, kelompokkan mereka. Ini mengurangi overhead transaksi secara dramatis.
+
+**7. Partisi Tabel Besar**
+Untuk tabel dengan jutaan baris, partisi berdasarkan tanggal atau kategori dapat membuat kueri lebih cepat berkali-kali lipat.
+
+## Contoh Nyata
+
+Dalam proyek database kesehatan, saya memiliki kueri yang membutuhkan 45 detik. Setelah optimasi:
+- Menambahkan index yang tepat: 45d → 12d
+- Menulis ulang subquery sebagai window function: 12d → 4d
+- Memfilter lebih awal dalam kueri: 4d → 0,8d
+
+Kueri akhir 56 kali lebih cepat dari aslinya!
+
+## Kesalahan Umum yang Harus Dihindari
+
+1. **Menggunakan Fungsi pada Kolom yang Diindeks**: WHERE YEAR(date_column) = 2024 mencegah penggunaan index
+2. **Konversi Implisit**: Membandingkan string dengan angka memaksa konversi tipe
+3. **NOT IN dengan NULL**: Dapat menghasilkan hasil yang tidak terduga
+4. **Overusing DISTINCT**: Biasanya menunjukkan kueri yang ditulis dengan buruk
+5. **Lupa ANALYZE**: Statistik database perlu diperbarui secara berkala
+
+## Checklist Optimasi SQL Saya
+
+Sebelum menyebut kueri "selesai," saya sekarang memeriksa:
+- Apakah sudah menggunakan index secara efisien?
+- Bisakah saya mengurangi jumlah baris lebih awal?
+- Apakah ada subquery yang bisa menjadi CTE atau JOIN?
+- Apakah mudah dibaca dan dipelihara?
+- Apakah menangani kasus tepi (NULL, duplikat)?
+
+## Intinya
+
+Optimasi SQL bukan tentang menghafal trik – ini tentang memahami cara kerja database. Investasikan waktu untuk mempelajari index, execution plan, dan pemrosesan kueri. Pengetahuan ini akan berguna sepanjang karir Anda.
+
+Ingat: optimasi prematur adalah akar dari semua kejahatan, tetapi mengetahui kapan dan bagaimana mengoptimalkan adalah keterampilan penting. Mulailah dengan kueri yang benar, lalu buat cepat bila diperlukan.`,
+
     tags: ['SQL', 'Performance', 'Database', 'Technical'],
-    category: 'Technical'
+    category: 'Technical',
   },
+
   {
     id: 4,
     date: '2024-09-25',
-    title: 'Boy From Village ',
+
+    title: 'Boy From Village',
     content: `When people talk about villages, they often imagine simplicity, tradition, and distance from modern life. Yet behind the rice fields and quiet roads, there are young souls with dreams as vast as the sky.
 
 ## Between Stereotype and Reality
 
-When we talk about villages, what comes to mind? Most people picture going home for the holidays, visiting elderly parents, or simply enjoying a simple atmosphere. Many also assume villages and their people are backward, old-fashioned, and far from modern currents.However, having been born and raised in a village, I know this view is not entirely true. Being labeled “old-fashioned” is painful. Nowadays many young people feel embarrassed to be called behind the times, although some choose not to care.
+When we talk about villages, what comes to mind? Most people picture going home for the holidays, visiting elderly parents, or simply enjoying a simple atmosphere. Many also assume villages and their people are backward, old-fashioned, and far from modern currents. However, having been born and raised in a village, I know this view is not entirely true. Being labeled "old-fashioned" is painful. Nowadays many young people feel embarrassed to be called behind the times, although some choose not to care.
 
 ## Restrictive Old Culture
 
-One factor that makes villages lag behind is the doctrine coming from parents. Many say, “There’s no need to pursue too much education—we’re just village kids; our duty is to farm and raise livestock.” Although those words come from love, they limit children’s dreams. Every child has the right to determine their future. It doesn’t matter if you were born in a village or a city, poor or rich—everyone has the right to reach for the highest dreams. Parents should instill the spirit: “Aim for dreams as high as the sky, so that one day you can bring change for yourself, your family, and your village.”
+One factor that makes villages lag behind is the doctrine coming from parents. Many say, "There's no need to pursue too much education—we're just village kids; our duty is to farm and raise livestock." Although those words come from love, they limit children's dreams. Every child has the right to determine their future. It doesn't matter if you were born in a village or a city, poor or rich—everyone has the right to reach for the highest dreams. Parents should instill the spirit: "Aim for dreams as high as the sky, so that one day you can bring change for yourself, your family, and your village."
 
 ## The Gap Between Village and City
 
-Compared with city kids, the differences are obvious. City youth are used to staying updated, are open-minded, and can filter information. Village youth often follow the thinking of those closest to them when they receive new information. When it comes to technology—Artificial Intelligence, the Internet of Things, Big Data—many village young people are still unfamiliar. Even big names like Elon Musk, Jeff Bezos, or Larry Page may sound unfamiliar. Yet we live in the 4.0 era, where technology advances rapidly and is dominated by developed countries. 
+Compared with city kids, the differences are obvious. City youth are used to staying updated, are open-minded, and can filter information. Village youth often follow the thinking of those closest to them when they receive new information. When it comes to technology—Artificial Intelligence, the Internet of Things, Big Data—many village young people are still unfamiliar. Even big names like Elon Musk, Jeff Bezos, or Larry Page may sound unfamiliar. Yet we live in the 4.0 era, where technology advances rapidly and is dominated by developed countries.
 
 ## The 4.0 Era: Our Challenges and Opportunities
 
-We must not merely be users or “slaves” of technology; we should also contribute to creating it. Village youth have the same opportunities to learn, innovate, and contribute. A village is not only a recipient of change but can also be the birthplace of change itself.
+We must not merely be users or "slaves" of technology; we should also contribute to creating it. Village youth have the same opportunities to learn, innovate, and contribute. A village is not only a recipient of change but can also be the birthplace of change itself.
 
 ## Village Youth as Agents of Change
 
-I do not mean to belittle village kids or compare them with city kids. On the contrary, I want to motivate village youth to bring positive change and keep up with the times. They shouldn’t just be followers but true agents of change.
+I do not mean to belittle village kids or compare them with city kids. On the contrary, I want to motivate village youth to bring positive change and keep up with the times. They shouldn't just be followers but true agents of change.
 
 🌱 **Message to rural youth: Dare to dream, dare to act. Your roots are not chains—they are the soil from which greatness grows.**`,
+
+    title_id: 'Anak Desa',
+    content_id: `Ketika orang berbicara tentang desa, mereka sering membayangkan kesederhanaan, tradisi, dan jauh dari kehidupan modern. Namun di balik sawah dan jalan sunyi, ada jiwa-jiwa muda dengan mimpi seluas langit.
+
+## Antara Stereotip dan Realita
+
+Ketika kita berbicara tentang desa, apa yang terlintas di benak? Kebanyakan orang membayangkan pulang kampung saat liburan, mengunjungi orang tua yang sudah tua, atau sekadar menikmati suasana sederhana. Banyak juga yang beranggapan bahwa desa dan orang-orangnya itu terbelakang, kuno, dan jauh dari arus modern. Namun, sebagai orang yang lahir dan besar di desa, saya tahu pandangan ini tidak sepenuhnya benar. Dicap "ketinggalan zaman" itu menyakitkan. Zaman sekarang banyak anak muda yang malu disebut ketinggalan zaman, meski ada juga yang memilih tak peduli.
+
+## Budaya Lama yang Membatasi
+
+Salah satu faktor yang membuat desa tertinggal adalah doktrin yang datang dari orang tua. Banyak yang berkata, "Tidak perlu sekolah tinggi-tinggi, kita kan anak desa; tugas kita bertani dan beternak." Meski kata-kata itu keluar dari rasa cinta, namun membatasi mimpi anak. Setiap anak berhak menentukan masa depannya sendiri. Tidak peduli kamu lahir di desa atau kota, miskin atau kaya—semua berhak meraih mimpi setinggi-tingginya. Orang tua seharusnya menanamkan semangat: "Gantungkan cita-citamu setinggi langit, agar suatu hari kamu bisa membawa perubahan untuk dirimu, keluargamu, dan desamu."
+
+## Kesenjangan antara Desa dan Kota
+
+Dibandingkan dengan anak kota, perbedaannya terlihat jelas. Pemuda kota terbiasa update, berwawasan luas, dan bisa menyaring informasi. Pemuda desa sering mengikuti pemikiran orang-orang terdekat mereka saat menerima informasi baru. Soal teknologi—Kecerdasan Buatan, Internet of Things, Big Data—banyak pemuda desa yang masih asing. Bahkan nama besar seperti Elon Musk, Jeff Bezos, atau Larry Page mungkin terdengar asing. Padahal kita hidup di era 4.0, di mana teknologi berkembang pesat dan didominasi oleh negara-negara maju.
+
+## Era 4.0: Tantangan dan Peluang Kita
+
+Kita tidak boleh hanya menjadi pengguna atau "budak" teknologi; kita juga harus berkontribusi dalam menciptakannya. Pemuda desa memiliki kesempatan yang sama untuk belajar, berinovasi, dan berkontribusi. Sebuah desa bukan hanya penerima perubahan, tetapi juga bisa menjadi tempat lahirnya perubahan itu sendiri.
+
+## Pemuda Desa sebagai Agen Perubahan
+
+Saya tidak bermaksud meremehkan anak desa atau membandingkan mereka dengan anak kota. Sebaliknya, saya ingin memotivasi pemuda desa untuk membawa perubahan positif dan mengikuti perkembangan zaman. Mereka seharusnya bukan hanya pengikut, tetapi bagian dari agen perubahan .
+
+🌱 **Pesan untuk pemuda desa: Beranilah bermimpi, beranilah bertindak. Akarmu bukan belenggu—melainkan tanah tempat kebesaran tumbuh.**`,
+
     tags: ['Motivation', 'Society', 'Youth', 'Change'],
-    category: 'Insights'
-  }
+    category: 'Insights',
+  },
 ]
 
 export const blogCategories = ['All', 'Insights', 'Technical', 'Personal']
@@ -257,17 +493,16 @@ export const getBlogStats = () => {
   const totalWords = blogThoughts.reduce((sum, post) => {
     return sum + post.content.split(/\s+/).length
   }, 0)
-
   return {
     totalPosts: blogThoughts.length,
-    totalWords: totalWords,
+    totalWords,
     totalCategories: blogCategories.length - 1,
-    latestYear: Math.max(...blogThoughts.map(p => new Date(p.date).getFullYear()))
+    latestYear: Math.max(...blogThoughts.map(p => new Date(p.date).getFullYear())),
   }
 }
 
 export const getPopularPosts = (limit = 3) => {
-  return blogThoughts
+  return [...blogThoughts]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, limit)
 }
