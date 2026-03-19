@@ -1,12 +1,15 @@
-// src/components/layout/Footer.jsx
 'use client'
 
 import { useTheme } from '@/context/ThemeContext'
+import { useLanguage } from '@/context/LanguageContext'
+import { useTranslation } from '@/data/translations'
 import { Github, Linkedin, Twitter } from 'lucide-react'
 import VisitorCounter from '@/components/ui/VisitorCounter'
 
 export default function Footer() {
   const { theme } = useTheme()
+  const { language } = useLanguage()
+  const t = useTranslation(language)
   const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
 
   return (
@@ -15,7 +18,7 @@ export default function Footer() {
 
       {/* Left — social links */}
       <div className="flex items-center gap-3 md:gap-4">
-        <span className="hidden sm:inline">find me in:</span>
+        <span className="hidden sm:inline">{t.footer.findMe}</span>
         <a
           href="https://twitter.com"
           className="hover:text-accent-teal transition-colors"
