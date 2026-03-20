@@ -148,7 +148,7 @@ export const skillsData = {
       name: 'Seaborn', 
       level: 75, 
       years: 2, 
-      projects: 15, 
+      projects: 7, 
       icon: '🌊',
       description: 'Statistical data visualization'
     },
@@ -164,7 +164,7 @@ export const skillsData = {
       name: 'Power BI', 
       level: 50, 
       years: 1, 
-      projects: 5, 
+      projects: 2, 
       icon: '📊',
       description: 'Business analytics and reporting'
     }
@@ -174,7 +174,7 @@ export const skillsData = {
       name: 'PostgreSQL', 
       level: 75, 
       years: 2, 
-      projects: 10, 
+      projects: 5, 
       icon: '🐘',
       description: 'Advanced SQL, query optimization, and database design'
     },
@@ -208,7 +208,7 @@ export const skillsData = {
       name: 'Git & GitHub', 
       level: 75, 
       years: 3, 
-      projects: 20, 
+      projects: 50, 
       icon: '🔧',
       description: 'Version control and collaboration'
     },
