@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { useTranslation } from '@/data/translations'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap, Camera, MessageCircle } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap, Camera, MessageCircle, Download } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
@@ -16,6 +16,7 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
 
   const [openFolders, setOpenFolders] = useState({ 'personal-info': true, 'education': true, 'professional': true })
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [cvDownloading, setCvDownloading] = useState(false)
 
   const toggleFolder = (folder) => setOpenFolders(prev => ({ ...prev, [folder]: !prev[folder] }))
   const toggleFilter = (filter) => setSelectedFilters(prev => prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter])
@@ -25,6 +26,17 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
   const bgClass = theme === 'dark' ? 'bg-dark-bg' : 'bg-light-bg'
 
   const handleTabClick = (tab) => { setActiveTab(tab); setMobileOpen(false) }
+
+  const handleDownloadCV = () => {
+    setCvDownloading(true)
+    const link = document.createElement('a')
+    link.href = '/cv/rajif-cv.pdf'
+    link.download = 'Muhammad_Rajif_Al_Farikhi_CV.pdf'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    setTimeout(() => setCvDownloading(false), 2000)
+  }
 
   const tabItem = (tab, icon, label, color) => (
     <button onClick={() => handleTabClick(tab)}
@@ -38,6 +50,24 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
     <>
       {activeSection === 'about-me' && (
         <div className="p-4">
+          {/* CV Download Button */}
+          <button
+            onClick={handleDownloadCV}
+            className={`w-full flex items-center justify-center gap-2 mb-4 px-3 py-2 rounded-lg text-xs font-bold transition-all active:scale-95 ${
+              cvDownloading
+                ? 'bg-accent-teal/50 text-dark-bg cursor-not-allowed'
+                : theme === 'dark'
+                  ? 'bg-accent-teal text-dark-bg hover:bg-accent-teal/80'
+                  : 'bg-accent-blue text-white hover:bg-accent-blue/80'
+            }`}
+            disabled={cvDownloading}
+          >
+            <Download size={13} className={cvDownloading ? 'animate-bounce' : ''} />
+            {cvDownloading
+              ? (language === 'id' ? 'Mengunduh...' : 'Downloading...')
+              : (language === 'id' ? 'Unduh CV' : 'Download CV')}
+          </button>
+
           <div className="mb-2">
             <button onClick={() => toggleFolder('personal-info')} className="flex items-center gap-2 hover:text-accent-teal transition-colors w-full">
               {openFolders['personal-info'] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
