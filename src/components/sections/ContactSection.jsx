@@ -3,7 +3,7 @@
 import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { useTranslation } from '@/data/translations'
-import { Mail, Phone, Linkedin, Github } from 'lucide-react'
+import { Mail, Phone, Linkedin, Github, Download, FileText } from 'lucide-react'
 
 export default function ContactSection() {
   const { theme } = useTheme()
@@ -12,11 +12,50 @@ export default function ContactSection() {
   const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
   const c = t.contact
 
+  const handleDownloadCV = () => {
+    const link = document.createElement('a')
+    link.href = '/cv/rajif-cv.pdf'
+    link.download = 'Muhammad_Rajif_Al_Farikhi_CV.pdf'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="max-w-4xl mx-auto">
       <h2 className={`text-xl md:text-2xl mb-6 md:mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
         <span>//</span> {c.title}
       </h2>
+
+      {/* CV Download Card */}
+      <div className={`mb-8 p-4 md:p-6 border-2 border-dashed rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+        theme === 'dark'
+          ? 'border-accent-teal/40 bg-accent-teal/5'
+          : 'border-accent-blue/40 bg-accent-blue/5'
+      }`}>
+        <div className="flex items-center gap-3">
+          <FileText size={24} className={theme === 'dark' ? 'text-accent-teal' : 'text-accent-blue'} />
+          <div>
+            <p className={`font-bold text-sm md:text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              {c.cvTitle || 'Muhammad_Rajif_Al_Farikhi_CV.pdf'}
+            </p>
+            <p className="text-xs text-accent-blue mt-0.5">
+              {c.cvSubtitle || '// Data Analyst · Data Enthusiast'}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={handleDownloadCV}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all hover:scale-105 active:scale-95 ${
+            theme === 'dark'
+              ? 'bg-accent-teal text-dark-bg hover:bg-accent-teal/80'
+              : 'bg-accent-blue text-white hover:bg-accent-blue/80'
+          }`}
+        >
+          <Download size={16} />
+          {c.downloadCV || 'Download CV'}
+        </button>
+      </div>
 
       <div className="space-y-4 md:space-y-6">
         <div className="text-sm md:text-base">
