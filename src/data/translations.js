@@ -1,8 +1,8 @@
 // src/data/translations.js
+// DIFF: Added cvTitle, cvSubtitle, downloadCV to contact section (en + id)
 
 export const translations = {
   en: {
-    // Navigation
     nav: {
       hello: '_hello',
       about: '_about-me',
@@ -10,8 +10,6 @@ export const translations = {
       research: '_research',
       contact: '_contact-me',
     },
-
-    // Hello Section
     hello: {
       greeting: 'Hi all, I am',
       role: 'Data Enthusiast',
@@ -20,8 +18,6 @@ export const translations = {
       githubConst: 'const',
       githubVar: 'githubLink',
     },
-
-    // About Section
     about: {
       title: 'About Me',
       bioConst: 'const',
@@ -48,7 +44,6 @@ export const translations = {
       photos: 'photos',
       university: 'university',
       highSchool: 'high-school',
-      // Skills Matrix
       category: 'Category:',
       sortBy: 'By Level',
       byLevel: 'By Level',
@@ -62,7 +57,6 @@ export const translations = {
       expertSkills: 'Expert',
       totalProjects: 'Projects',
       avgExp: 'Avg Exp',
-      // Education
       uniName: 'Universitas Airlangga',
       uniDegree: 'Undergradute Data Science Tech',
       uniPeriod: '2021 - present',
@@ -77,8 +71,6 @@ export const translations = {
       hsFocus: 'Mathematics & Science focus',
       hsActive: 'Active in extracurricular activities',
     },
-
-    // Experience
     experience: {
       title: 'Experience',
       analyst: {
@@ -119,8 +111,6 @@ export const translations = {
         ],
       },
     },
-
-    // Projects
     projects: {
       title: 'projects',
       filterBy: '// filter by:',
@@ -134,8 +124,6 @@ export const translations = {
       filterTips: '// filter tips:',
       filterHint: 'Select multiple filters to see projects that use any of the selected technologies',
     },
-
-    // Research
     research: {
       title: 'Research Papers',
       subtitle: 'Published research and academic work in data science and machine learning',
@@ -157,8 +145,6 @@ export const translations = {
       of: 'of',
       protected: '⚠️ This document is protected. Downloading is not permitted.',
     },
-
-    // Contact
     contact: {
       title: 'Get In Touch',
       const: 'const',
@@ -167,16 +153,16 @@ export const translations = {
       letsWork: "Let's work together on data projects!",
       available: '// Available for Data Analyst roles',
       open: '// Open to collaborations & opportunities',
+      // ── CV Download ──
+      cvTitle: 'Muhammad_Rajif_Al_Farikhi_CV.pdf',
+      cvSubtitle: '// Data Analyst · Data Enthusiast · Universitas Airlangga',
+      downloadCV: 'Download CV',
     },
-
-    // Footer
     footer: {
       findMe: 'find me in:',
       visitors: 'visitors',
       top: 'top:',
     },
-
-    // Chatbot
     chatbot: {
       askAI: 'Ask AI',
       rajifAI: "Rajif's AI",
@@ -190,13 +176,11 @@ export const translations = {
         { label: '🛠 Skills', prompt: 'What are his strongest skills?' },
         { label: '🚀 Projects', prompt: 'Tell me about his projects' },
         { label: '💼 Experience', prompt: "What's his work experience?" },
+        { label: '📄 CV', prompt: 'How can I download his CV?' },
         { label: '📬 Contact', prompt: 'How can I reach Rajif?' },
         { label: '🎓 Education', prompt: "What's his educational background?" },
-        { label: '📜 Certs', prompt: 'What certifications does he have?' },
       ],
     },
-
-    // Game
     game: {
       startGame: 'start-game',
       restart: 'restart',
@@ -211,14 +195,10 @@ export const translations = {
       complete: '% complete',
       cannotSkip: '⚠️ You cannot skip until audio finishes playing',
     },
-
-    // Visitor Counter
     visitor: {
       visitors: 'visitors',
       top: 'top:',
     },
-
-    // Blog
     blog: {
       title: 'Thoughts & Insights',
       subtitle: 'Personal blog about data science, tech, and career learnings',
@@ -233,8 +213,6 @@ export const translations = {
       noFoundHint: 'Try selecting a different category',
       words: 'words',
     },
-
-    // Certifications
     certs: {
       title: 'Certifications',
       filterBy: '// filter by category',
@@ -258,7 +236,6 @@ export const translations = {
   // INDONESIAN
   // ─────────────────────────────────────────────────────────────────────────────
   id: {
-    // Navigation
     nav: {
       hello: '_beranda',
       about: '_tentang-saya',
@@ -266,8 +243,6 @@ export const translations = {
       research: '_penelitian',
       contact: '_hubungi-saya',
     },
-
-    // Hello Section
     hello: {
       greeting: 'Halo semua, saya',
       role: 'Penggemar Data',
@@ -276,8 +251,6 @@ export const translations = {
       githubConst: 'const',
       githubVar: 'tautanGithub',
     },
-
-    // About Section
     about: {
       title: 'Tentang Saya',
       bioConst: 'const',
@@ -304,7 +277,6 @@ export const translations = {
       photos: 'foto',
       university: 'universitas',
       highSchool: 'sma',
-      // Skills Matrix
       category: 'Kategori:',
       sortBy: 'Berdasarkan Level',
       byLevel: 'Berdasarkan Level',
@@ -318,7 +290,6 @@ export const translations = {
       expertSkills: 'Ahli',
       totalProjects: 'Proyek',
       avgExp: 'Rata-rata',
-      // Education
       uniName: 'Universitas Airlangga',
       uniDegree: 'Mahasiswa Teknologi Sains Data',
       uniPeriod: '2020 - 2024',
@@ -333,8 +304,6 @@ export const translations = {
       hsFocus: 'Fokus Matematika & Sains',
       hsActive: 'Aktif dalam kegiatan ekstrakurikuler',
     },
-
-    // Experience
     experience: {
       title: 'Pengalaman',
       analyst: {
@@ -375,8 +344,6 @@ export const translations = {
         ],
       },
     },
-
-    // Projects
     projects: {
       title: 'proyek',
       filterBy: '// filter berdasarkan:',
@@ -390,8 +357,6 @@ export const translations = {
       filterTips: '// tips filter:',
       filterHint: 'Pilih beberapa filter untuk melihat proyek yang menggunakan teknologi yang dipilih',
     },
-
-    // Research
     research: {
       title: 'Makalah Penelitian',
       subtitle: 'Penelitian dan karya akademik dalam ilmu data dan machine learning',
@@ -413,8 +378,6 @@ export const translations = {
       of: 'dari',
       protected: '⚠️ Dokumen ini dilindungi. Pengunduhan tidak diizinkan.',
     },
-
-    // Contact
     contact: {
       title: 'Hubungi Saya',
       const: 'const',
@@ -423,16 +386,16 @@ export const translations = {
       letsWork: 'Mari bekerja sama dalam proyek data!',
       available: '// Tersedia untuk posisi Analis Data',
       open: '// Terbuka untuk kolaborasi & peluang',
+      // ── CV Download ──
+      cvTitle: 'Muhammad_Rajif_Al_Farikhi_CV.pdf',
+      cvSubtitle: '// Analis Data · Penggemar Data · Universitas Airlangga',
+      downloadCV: 'Unduh CV',
     },
-
-    // Footer
     footer: {
       findMe: 'temukan saya di:',
       visitors: 'pengunjung',
       top: 'teratas:',
     },
-
-    // Chatbot
     chatbot: {
       askAI: 'Tanya AI',
       rajifAI: 'AI Rajif',
@@ -446,13 +409,11 @@ export const translations = {
         { label: '🛠 Keahlian', prompt: 'Apa keahlian terkuatnya?' },
         { label: '🚀 Proyek', prompt: 'Ceritakan tentang proyeknya' },
         { label: '💼 Pengalaman', prompt: 'Apa pengalaman kerjanya?' },
+        { label: '📄 CV', prompt: 'Bagaimana cara mengunduh CV-nya?' },
         { label: '📬 Kontak', prompt: 'Bagaimana cara menghubungi Rajif?' },
         { label: '🎓 Pendidikan', prompt: 'Apa latar belakang pendidikannya?' },
-        { label: '📜 Sertifikat', prompt: 'Apa sertifikasi yang dimilikinya?' },
       ],
     },
-
-    // Game
     game: {
       startGame: 'mulai-game',
       restart: 'mulai-lagi',
@@ -467,14 +428,10 @@ export const translations = {
       complete: '% selesai',
       cannotSkip: '⚠️ Kamu tidak bisa melewati sampai audio selesai diputar',
     },
-
-    // Visitor Counter
     visitor: {
       visitors: 'pengunjung',
       top: 'teratas:',
     },
-
-    // Blog
     blog: {
       title: 'Pemikiran & Wawasan',
       subtitle: 'Blog pribadi tentang ilmu data, teknologi, dan pembelajaran karir',
@@ -489,8 +446,6 @@ export const translations = {
       noFoundHint: 'Coba pilih kategori yang berbeda',
       words: 'kata',
     },
-
-    // Certifications
     certs: {
       title: 'Sertifikasi',
       filterBy: '// filter berdasarkan kategori',
