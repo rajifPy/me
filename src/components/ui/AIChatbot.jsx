@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageContext'
 import { useTranslation } from '@/data/translations'
 import {
   X, Send, RefreshCw, Copy, Check,
-  ChevronDown, Sparkles, Bot, User
+  ChevronDown, Sparkles, Bot, User, Download
 } from 'lucide-react'
 
 // ─── Knowledge Base ────────────────────────────────────────────────────────────
@@ -18,6 +18,8 @@ const KB = {
   phone: '+6281460326800',
   github: 'github.com/rajfiPy',
   linkedin: 'linkedin.com/in/muhammadrajifalfarikhi',
+  cvFile: 'Muhammad_Rajif_Al_Farikhi_CV.pdf',
+  cvPath: '/cv/rajif-cv.pdf',
   education: [
     { school: 'Universitas Airlangga', degree: { en: 'Bachelor of Information Systems', id: 'Sarjana Sistem Informasi' }, period: '2020–2024', gpa: '3.3/4.0' },
     { school: "MAS Hasyim Asy'ari", degree: { en: 'Science Major', id: 'Jurusan IPA' }, period: '2017–2020' },
@@ -56,11 +58,10 @@ const KB = {
 }
 
 // ─── Response Generator (bilingual) ────────────────────────────────────────────
-function getResponse(raw, lang = 'en') {
+function getResponse(raw, lang = 'en', triggerCvDownload) {
   const q = raw.toLowerCase().trim()
   const isID = lang === 'id'
 
-  // helpers
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)]
   const exp  = KB.experience[lang]
   const proj = KB.projects[lang]
@@ -79,11 +80,29 @@ function getResponse(raw, lang = 'en') {
     ])
   }
 
+  // ── CV / Resume Download ───────────────────────────────────────────────────
+  if (/\bcv\b|resume|curriculum vitae|unduh cv|download cv|download resume|get cv|get resume|dapatkan cv|minta cv/.test(q)) {
+    // Trigger the actual browser download
+    if (triggerCvDownload) triggerCvDownload()
+
+    return isID ? [
+      'Tentu! CV Rajif sedang diunduh sekarang. 📄⬇️',
+      `File: **${KB.cvFile}**`,
+      'Jika unduhan tidak dimulai otomatis, pergi ke halaman **Contact** dan klik tombol **"Unduh CV"** berwarna hijau teal — atau buka sidebar di halaman **About**.',
+      'Semoga bermanfaat! Jangan ragu bertanya jika ada informasi lain yang dibutuhkan. 🙌',
+    ] : [
+      "Sure! Rajif's CV is downloading now. 📄⬇️",
+      `File: **${KB.cvFile}**`,
+      "If the download doesn't start automatically, head to the **Contact** section and click the teal **\"Download CV\"** button — or open the sidebar on the **About** page.",
+      "Hope it's useful! Feel free to ask if you need anything else. 🙌",
+    ]
+  }
+
   // ── Who are you ────────────────────────────────────────────────────────────
   if (/who are you|what are you|introduce yourself|kamu siapa|kamu apa|perkenalkan diri/.test(q)) {
     return isID
-      ? ['Saya asisten AI khusus yang dibuat untuk portofolio Rajif. 🤖', 'Saya tahu segalanya tentang dia — latar belakang, keahlian, proyek, dan pengalaman.', 'Mau tahu apa?']
-      : ["I'm a custom AI assistant built into Rajif's portfolio. 🤖", 'I know everything about him — background, skills, projects, and experience.', 'What would you like to know?']
+      ? ['Saya asisten AI khusus yang dibuat untuk portofolio Rajif. 🤖', 'Saya tahu segalanya tentang dia — latar belakang, keahlian, proyek, dan pengalaman.', 'Mau tahu apa? Saya juga bisa membantu kamu mengunduh CV-nya!']
+      : ["I'm a custom AI assistant built into Rajif's portfolio. 🤖", 'I know everything about him — background, skills, projects, and experience.', "What would you like to know? I can also help you download his CV!"]
   }
 
   // ── Who is Rajif ───────────────────────────────────────────────────────────
@@ -255,6 +274,7 @@ function getResponse(raw, lang = 'en') {
       `📱 Telepon: ${KB.phone}`,
       `💼 LinkedIn: ${KB.linkedin}`,
       `💻 GitHub: ${KB.github}`,
+      `📄 CV tersedia untuk diunduh — ketik *"download cv"* atau pergi ke halaman **Contact**.`,
       'Terbuka untuk posisi analis data dan kolaborasi. Terbaik melalui email atau LinkedIn!',
     ] : [
       "Here's how to reach Rajif: 📬",
@@ -262,6 +282,7 @@ function getResponse(raw, lang = 'en') {
       `📱 Phone: ${KB.phone}`,
       `💼 LinkedIn: ${KB.linkedin}`,
       `💻 GitHub: ${KB.github}`,
+      `📄 CV available for download — type *"download cv"* or visit the **Contact** section.`,
       'Open to data analyst roles and collaborations. Best via email or LinkedIn!',
     ]
   }
@@ -272,10 +293,12 @@ function getResponse(raw, lang = 'en') {
       'Rajif terbuka untuk posisi analis data dan kolaborasi. 🙌',
       'Latar belakang terkuat di analisis data, SQL, dan Python.',
       `Cara terbaik menghubungi: ${KB.email} atau LinkedIn di ${KB.linkedin}.`,
+      `📄 Unduh CV-nya untuk melihat riwayat lengkapnya — ketik *"unduh cv"*.`,
     ] : [
       "Rajif is open to data analyst roles and collaborations. 🙌",
       'Background strongest in data analysis, SQL, and Python.',
       `Best way to reach out: ${KB.email} or LinkedIn at ${KB.linkedin}.`,
+      `📄 Download his CV for the full picture — just type *"download cv"*.`,
     ]
   }
 
@@ -423,7 +446,7 @@ function MsgContent({ text }) {
       {text.split('\n').map((line, i) => {
         if (!line) return <div key={i} className="h-1" />
         if (/^\*\*(.+)\*\*$/.test(line.trim())) return <p key={i} className="font-semibold text-accent-teal mt-1.5 first:mt-0">{line.replace(/\*\*/g, '')}</p>
-        const html = line.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+        const html = line.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`(.+?)`/g, '<code class="text-accent-orange bg-black/20 px-1 rounded text-xs">$1</code>')
         if (/^[•✓✗*-]/.test(line.trim())) return <p key={i} className="pl-3 border-l-2 border-accent-teal/30" dangerouslySetInnerHTML={{ __html: html }} />
         return <p key={i} dangerouslySetInnerHTML={{ __html: html }} />
       })}
@@ -442,7 +465,8 @@ export default function AIChatbot({ activeSection }) {
   const [isMinimized,  setIsMinimized]  = useState(false)
   const [input,        setInput]        = useState('')
   const [copied,       setCopied]       = useState(null)
-  const [messages,     setMessages]     = useState(null) // init lazily after mount
+  const [cvDownloading, setCvDownloading] = useState(false)
+  const [messages,     setMessages]     = useState(null)
 
   const { type, stop, isTyping } = useTypewriter()
   const messagesEndRef  = useRef(null)
@@ -450,6 +474,18 @@ export default function AIChatbot({ activeSection }) {
   const queueRef        = useRef([])
   const processingRef   = useRef(false)
   const prevLangRef     = useRef(language)
+
+  // ── CV download trigger ───────────────────────────────────────────────────
+  const triggerCvDownload = useCallback(() => {
+    setCvDownloading(true)
+    const link = document.createElement('a')
+    link.href = KB.cvPath
+    link.download = KB.cvFile
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    setTimeout(() => setCvDownloading(false), 3000)
+  }, [])
 
   // ── Init messages once on mount ────────────────────────────────────────────
   useEffect(() => {
@@ -521,7 +557,7 @@ export default function AIChatbot({ activeSection }) {
 
   const sendMessage = (text) => {
     const userText = (text || input).trim(); if (!userText) return; setInput('')
-    const chunks = getResponse(userText, language)
+    const chunks = getResponse(userText, language, triggerCvDownload)
     setMessages(prev => {
       const botMsg = { role: 'assistant', displayed: Array(chunks.length).fill(''), done: false, timestamp: new Date() }
       const next = [...prev, { role: 'user', displayed: [userText], done: true, timestamp: new Date() }, botMsg]
@@ -590,6 +626,17 @@ export default function AIChatbot({ activeSection }) {
               )}
             </div>
             <div className="flex items-center gap-0.5">
+              {/* Quick CV download button in header */}
+              {!isMinimized && (
+                <button
+                  onClick={triggerCvDownload}
+                  title={language === 'id' ? 'Unduh CV' : 'Download CV'}
+                  disabled={cvDownloading}
+                  className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-[#1E2D3D]' : 'hover:bg-gray-100'} ${cvDownloading ? 'opacity-50' : ''}`}
+                >
+                  <Download size={13} className={cvDownloading ? 'text-accent-teal animate-bounce' : muted} />
+                </button>
+              )}
               <button onClick={reset} title="Reset" className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-[#1E2D3D]' : 'hover:bg-gray-100'}`}><RefreshCw size={13} className={muted} /></button>
               <button onClick={() => setIsMinimized(v => !v)} className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-[#1E2D3D]' : 'hover:bg-gray-100'}`}><ChevronDown size={13} className={`${muted} transition-transform ${isMinimized ? 'rotate-180' : ''}`} /></button>
               <button onClick={() => { setIsOpen(false); setIsMinimized(false) }} className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-[#1E2D3D]' : 'hover:bg-gray-100'}`}><X size={13} className={muted} /></button>
@@ -630,7 +677,7 @@ export default function AIChatbot({ activeSection }) {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Suggestion chips — dari translations */}
+              {/* Suggestion chips */}
               <div className={`px-4 pt-2 pb-1 border-t ${border} flex-shrink-0`}>
                 <p className={`text-[10px] mb-1.5 ${muted}`}>{ui.quickQuestions}</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -642,6 +689,14 @@ export default function AIChatbot({ activeSection }) {
                   ))}
                 </div>
               </div>
+
+              {/* CV download status banner */}
+              {cvDownloading && (
+                <div className={`mx-4 mb-1 flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] ${isDark ? 'bg-accent-teal/10 text-accent-teal border border-accent-teal/20' : 'bg-accent-blue/10 text-accent-blue border border-accent-blue/20'}`}>
+                  <Download size={11} className="animate-bounce flex-shrink-0" />
+                  <span>{language === 'id' ? 'Mengunduh CV...' : 'Downloading CV...'}</span>
+                </div>
+              )}
 
               {/* Input */}
               <div className="px-4 pb-4 pt-2 flex-shrink-0">
