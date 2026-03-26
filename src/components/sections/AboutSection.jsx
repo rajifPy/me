@@ -12,6 +12,7 @@ import CodeSnippet from '@/components/ui/CodeSnippet'
 import CertificationBadges from '@/components/ui/CertificationBadges'
 import PhotoAlbum from '@/components/ui/PhotoAlbum'
 import BlogThoughts from '@/components/ui/BlogThoughts'
+import DataGames from '@/components/ui/DataGames'
 
 export default function AboutSection({ activeTab }) {
   const { theme } = useTheme()
@@ -272,6 +273,7 @@ export default function AboutSection({ activeTab }) {
       {activeTab === 'certifications' && renderCertifications()}
       {activeTab === 'blog' && <BlogThoughts />}
       {activeTab === 'photos' && <PhotoAlbum />}
+      {activeTab === 'data-games' && <DataGames />}
     </div>
   )
 }
