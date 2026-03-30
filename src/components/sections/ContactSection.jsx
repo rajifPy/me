@@ -20,25 +20,27 @@ export default function ContactSection() {
       </h2>
 
       {/* CV Download Card */}
-      <div className={`mb-8 p-4 md:p-6 border-2 border-dashed rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+      <div className={`mb-8 p-4 md:p-5 border-2 border-dashed rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
         theme === 'dark'
           ? 'border-accent-teal/40 bg-accent-teal/5'
           : 'border-accent-blue/40 bg-accent-blue/5'
       }`}>
-        <div className="flex items-center gap-3">
-          <FileText size={24} className={theme === 'dark' ? 'text-accent-teal' : 'text-accent-blue'} />
-          <div>
-            <p className={`font-bold text-sm md:text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+        <div className="flex items-center gap-3 min-w-0">
+          <FileText size={20} className={`flex-shrink-0 ${theme === 'dark' ? 'text-accent-teal' : 'text-accent-blue'}`} />
+          <div className="min-w-0">
+            <p className={`font-bold text-sm truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
               {c.cvTitle || 'Muhammad_Rajif_Al_Farikhi_CV.pdf'}
             </p>
-            <p className="text-xs text-accent-blue mt-0.5">
+            <p className="text-xs text-accent-blue mt-0.5 truncate">
               {c.cvSubtitle || '// Data Analyst · Data Enthusiast'}
             </p>
           </div>
         </div>
 
-        {/* ── Animated Download Button ── */}
-        <DownloadCVButton />
+        {/* ── Animated Download Button (md size) ── */}
+        <div className="flex-shrink-0 self-center sm:self-auto">
+          <DownloadCVButton size="md" />
+        </div>
       </div>
 
       <div className="space-y-4 md:space-y-6">
