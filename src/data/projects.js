@@ -46,12 +46,12 @@ export const projects = [
   },
   {
     id: 61,
-    name: '_visualization-dash',
-    tech: ['Tableau', 'Data Visualization'],
-    description: 'Interactive data visualization dashboards for business insights.',
-    image: '/images/project-6.svg',
-    link: 'https://github.com/rajfiPy',
-    repo: 'https://github.com/rajfiPy'
+    name: '_kantin_management_app',
+    tech: ['Databases', 'Data Visualization'],
+    description: 'an interactive website for managing products',
+    image: '/images/kantin.png',
+    link: 'https://github.com/rajifPy/sistem_stok_v2',
+    repo: 'https://manageproduk.vercel.app/login'
   },
   {
     id: 71,
