@@ -3,7 +3,8 @@
 import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { useTranslation } from '@/data/translations'
-import { Mail, Phone, Linkedin, Github, Download, FileText } from 'lucide-react'
+import { Mail, Phone, Linkedin, Github, FileText } from 'lucide-react'
+import DownloadCVButton from '@/components/ui/DownloadCVButton'
 
 export default function ContactSection() {
   const { theme } = useTheme()
@@ -11,15 +12,6 @@ export default function ContactSection() {
   const t = useTranslation(language)
   const borderClass = theme === 'dark' ? 'border-dark-border' : 'border-light-border'
   const c = t.contact
-
-  const handleDownloadCV = () => {
-    const link = document.createElement('a')
-    link.href = '/cv/rajif-cv.pdf'
-    link.download = 'Muhammad_Rajif_Al_Farikhi_CV.pdf'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -44,17 +36,9 @@ export default function ContactSection() {
             </p>
           </div>
         </div>
-        <button
-          onClick={handleDownloadCV}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all hover:scale-105 active:scale-95 ${
-            theme === 'dark'
-              ? 'bg-accent-teal text-dark-bg hover:bg-accent-teal/80'
-              : 'bg-accent-blue text-white hover:bg-accent-blue/80'
-          }`}
-        >
-          <Download size={16} />
-          {c.downloadCV || 'Download CV'}
-        </button>
+
+        {/* ── Animated Download Button ── */}
+        <DownloadCVButton />
       </div>
 
       <div className="space-y-4 md:space-y-6">
