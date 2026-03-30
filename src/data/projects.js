@@ -50,8 +50,8 @@ export const projects = [
     tech: ['Databases', 'Data Visualization'],
     description: 'an interactive website for managing products',
     image: '/images/kantin.png',
-    link: 'https://github.com/rajifPy/sistem_stok_v2',
-    repo: 'https://manageproduk.vercel.app/login'
+    link: 'https://manageproduk.vercel.app/',
+    repo: 'https://github.com/rajifPy/sistem_stok_v2'
   },
   {
     id: 71,
