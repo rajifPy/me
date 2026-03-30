@@ -40,9 +40,9 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
     <>
       {activeSection === 'about-me' && (
         <div className="p-4">
-          {/* ── Animated CV Download Button ── */}
+          {/* ── CV Download Button (ukuran sm, pas di sidebar) ── */}
           <div className="flex justify-center mb-4">
-            <DownloadCVButton />
+            <DownloadCVButton size="sm" />
           </div>
 
           <div className="mb-2">
