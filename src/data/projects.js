@@ -37,12 +37,12 @@ export const projects = [
   },
   {
     id: 51,
-    name: '_eda-portfolio',
-    tech: ['Python', 'Pandas'],
-    description: 'Exploratory Data Analysis portfolio with various datasets.',
-    image: '/images/project-5.svg',
-    link: 'https://github.com/rajfiPy',
-    repo: 'https://github.com/rajfiPy'
+    name: '_sharing_opini',
+    tech: ['Typescript', 'supabase', 'vercel'],
+    description: 'A web app for sharing anything interesting',
+    image: '/images/sharing_opini.png',
+    link: 'https://sharing-opini-rek.vercel.app/',
+    repo: 'https://github.com/rajifPy/threadskw'
   },
   {
     id: 61,
