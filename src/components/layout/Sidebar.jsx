@@ -4,9 +4,10 @@ import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { useTranslation } from '@/data/translations'
-import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap, Camera, MessageCircle, Download } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code2, Award, Zap, Camera, MessageCircle } from 'lucide-react'
 import { techFilters } from '@/data/projects'
 import { Gamepad2 } from 'lucide-react'
+import DownloadCVButton from '@/components/ui/DownloadCVButton'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
   const { theme } = useTheme()
@@ -17,7 +18,6 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
 
   const [openFolders, setOpenFolders] = useState({ 'personal-info': true, 'education': true, 'professional': true })
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [cvDownloading, setCvDownloading] = useState(false)
 
   const toggleFolder = (folder) => setOpenFolders(prev => ({ ...prev, [folder]: !prev[folder] }))
   const toggleFilter = (filter) => setSelectedFilters(prev => prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter])
@@ -28,18 +28,7 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
 
   const handleTabClick = (tab) => { setActiveTab(tab); setMobileOpen(false) }
 
-  const handleDownloadCV = () => {
-    setCvDownloading(true)
-    const link = document.createElement('a')
-    link.href = '/cv/rajif-cv.pdf'
-    link.download = 'Muhammad_Rajif_Al_Farikhi_CV.pdf'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    setTimeout(() => setCvDownloading(false), 2000)
-  }
-
-  const tabItem = (tab, icon, label, color) => (
+  const tabItem = (tab, icon, label) => (
     <button onClick={() => handleTabClick(tab)}
       className={`flex items-center gap-2 transition-colors text-sm ${activeTab === tab ? 'text-white' : 'hover:text-white'}`}>
       {icon}
@@ -51,23 +40,10 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
     <>
       {activeSection === 'about-me' && (
         <div className="p-4">
-          {/* CV Download Button */}
-          <button
-            onClick={handleDownloadCV}
-            className={`w-full flex items-center justify-center gap-2 mb-4 px-3 py-2 rounded-lg text-xs font-bold transition-all active:scale-95 ${
-              cvDownloading
-                ? 'bg-accent-teal/50 text-dark-bg cursor-not-allowed'
-                : theme === 'dark'
-                  ? 'bg-accent-teal text-dark-bg hover:bg-accent-teal/80'
-                  : 'bg-accent-blue text-white hover:bg-accent-blue/80'
-            }`}
-            disabled={cvDownloading}
-          >
-            <Download size={13} className={cvDownloading ? 'animate-bounce' : ''} />
-            {cvDownloading
-              ? (language === 'id' ? 'Mengunduh...' : 'Downloading...')
-              : (language === 'id' ? 'Unduh CV' : 'Download CV')}
-          </button>
+          {/* ── Animated CV Download Button ── */}
+          <div className="flex justify-center mb-4">
+            <DownloadCVButton />
+          </div>
 
           <div className="mb-2">
             <button onClick={() => toggleFolder('personal-info')} className="flex items-center gap-2 hover:text-accent-teal transition-colors w-full">
@@ -75,7 +51,7 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
               <Folder size={16} className="text-accent-pink" />
               <span className="text-sm">{a.personalInfo}</span>
             </button>
-            
+
             {openFolders['personal-info'] && (
               <div className="ml-6 mt-2 space-y-2">
                 {tabItem('bio', <FileText size={14} />, a.bio)}
@@ -85,7 +61,7 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                 {tabItem('blog', <MessageCircle size={14} className="text-purple-400" />, a.blog)}
                 {tabItem('photos', <Camera size={14} className="text-accent-pink" />, a.photos)}
                 {tabItem('data-games', <Gamepad2 size={14} className="text-accent-orange" />, 'data-games')}
-                
+
                 <div>
                   <button onClick={() => toggleFolder('education')} className="flex items-center gap-2 hover:text-white transition-colors text-sm">
                     {openFolders['education'] ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -139,7 +115,7 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
               </button>
             )}
           </div>
-          
+
           {selectedFilters.length > 0 && (
             <div className="mb-3 text-xs text-accent-blue">
               {selectedFilters.length} {selectedFilters.length === 1 ? p.filterSelected : p.filtersSelected}
