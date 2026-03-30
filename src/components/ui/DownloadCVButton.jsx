@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 
-export default function DownloadCVButton({ className = '' }) {
+export default function DownloadCVButton({ className = '', size = 'md' }) {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const [checked, setChecked] = useState(false)
@@ -12,12 +12,42 @@ export default function DownloadCVButton({ className = '' }) {
 
   const isDark = theme === 'dark'
 
+  // Size variants
+  const sizes = {
+    sm: {
+      width: '110px',
+      circleSize: '28px',
+      fontSize: '11px',
+      padding: '3px',
+      iconSize: '16px',
+      squareSize: '9px',
+    },
+    md: {
+      width: '140px',
+      circleSize: '36px',
+      fontSize: '13px',
+      padding: '4px',
+      iconSize: '20px',
+      squareSize: '12px',
+    },
+    lg: {
+      width: '160px',
+      circleSize: '43px',
+      fontSize: '14px',
+      padding: '5px',
+      iconSize: '24px',
+      squareSize: '14px',
+    },
+  }
+
+  const s = sizes[size] || sizes.md
+  const checkedWidth = size === 'sm' ? '40px' : size === 'md' ? '48px' : '57px'
+
   const handleClick = () => {
     if (checked || done) return
 
     setChecked(true)
 
-    // Trigger actual download at ~3.5s (when animation reaches "Open" state)
     setTimeout(() => {
       const link = document.createElement('a')
       link.href = '/cv/rajif-cv.pdf'
@@ -27,7 +57,6 @@ export default function DownloadCVButton({ className = '' }) {
       document.body.removeChild(link)
     }, 3500)
 
-    // Mark as done so button resets after ~4.5s
     setTimeout(() => {
       setDone(true)
       setTimeout(() => {
@@ -39,31 +68,36 @@ export default function DownloadCVButton({ className = '' }) {
 
   const label = {
     download: language === 'id' ? 'Unduh CV' : 'Download',
-    open:     language === 'id' ? 'Terbuka!' : 'Open!',
+    open: language === 'id' ? 'Terbuka!' : 'Open!',
   }
+
+  const accentColor = isDark ? '#43D9AD' : '#0D9488'
+  const accentDark  = isDark ? '#2aab84' : '#0f7a6e'
+  const bgColor     = isDark ? '#011627' : '#FFFFFF'
 
   return (
     <>
       <style>{`
-        .cv-btn-label {
+        .cv-btn-${size} {
           background-color: transparent;
-          border: 2px solid #43D9AD;
+          border: 2px solid ${accentColor};
           display: flex;
           align-items: center;
           border-radius: 50px;
-          width: 160px;
+          width: ${s.width};
           cursor: pointer;
           transition: all 0.4s ease;
-          padding: 5px;
+          padding: ${s.padding};
           position: relative;
           user-select: none;
+          flex-shrink: 0;
         }
 
-        .cv-btn-label::before {
+        .cv-btn-${size}::before {
           content: "";
           position: absolute;
           top: 0; bottom: 0; left: 0; right: 0;
-          background-color: #43D9AD;
+          background-color: ${accentColor};
           width: 8px; height: 8px;
           transition: all 0.4s ease;
           border-radius: 100%;
@@ -72,37 +106,40 @@ export default function DownloadCVButton({ className = '' }) {
           visibility: hidden;
         }
 
-        .cv-btn-label .cv-title {
-          font-size: 14px;
+        .cv-btn-${size} .cv-title-${size} {
+          font-size: ${s.fontSize};
           font-family: 'Fira Code', monospace;
-          color: #43D9AD;
+          color: ${accentColor};
           transition: all 0.4s ease;
           position: absolute;
-          right: 18px;
-          bottom: 13px;
+          right: 10px;
+          bottom: 50%;
+          transform: translateY(50%);
           text-align: center;
           white-space: nowrap;
         }
 
-        .cv-btn-label .cv-title-open {
-          font-size: 14px;
+        .cv-btn-${size} .cv-title-open-${size} {
+          font-size: ${s.fontSize};
           font-family: 'Fira Code', monospace;
-          color: #011627;
+          color: ${bgColor};
           transition: all 0.4s ease;
           position: absolute;
-          right: 18px;
-          bottom: 13px;
+          right: 10px;
+          bottom: 50%;
+          transform: translateY(50%);
           text-align: center;
           white-space: nowrap;
           opacity: 0;
           visibility: hidden;
         }
 
-        .cv-btn-label .cv-circle {
-          height: 43px;
-          width: 43px;
+        .cv-btn-${size} .cv-circle-${size} {
+          height: ${s.circleSize};
+          width: ${s.circleSize};
+          min-width: ${s.circleSize};
           border-radius: 50%;
-          background-color: #43D9AD;
+          background-color: ${accentColor};
           display: flex;
           justify-content: center;
           align-items: center;
@@ -113,21 +150,21 @@ export default function DownloadCVButton({ className = '' }) {
           flex-shrink: 0;
         }
 
-        .cv-btn-label .cv-circle .cv-icon {
-          color: #011627;
-          width: 24px;
-          height: 24px;
+        .cv-btn-${size} .cv-circle-${size} .cv-icon-${size} {
+          color: ${bgColor};
+          width: ${s.iconSize};
+          height: ${s.iconSize};
           position: absolute;
           top: 50%; left: 50%;
           transform: translate(-50%, -50%);
           transition: all 0.4s ease;
         }
 
-        .cv-btn-label .cv-square {
+        .cv-btn-${size} .cv-square-${size} {
           aspect-ratio: 1;
-          width: 14px;
+          width: ${s.squareSize};
           border-radius: 2px;
-          background-color: #011627;
+          background-color: ${bgColor};
           opacity: 0;
           visibility: hidden;
           position: absolute;
@@ -136,130 +173,116 @@ export default function DownloadCVButton({ className = '' }) {
           transition: all 0.4s ease;
         }
 
-        .cv-btn-label .cv-circle::before {
+        .cv-btn-${size} .cv-circle-${size}::before {
           content: "";
           position: absolute;
           left: 0; top: 0;
-          background-color: #2aab84;
+          background-color: ${accentDark};
           width: 100%;
           height: 0;
           transition: all 0.4s ease;
         }
 
         /* ── Checked state ── */
-        .cv-btn-label.is-checked {
-          width: 57px;
-          animation: cv-installed 0.4s ease 3.5s forwards;
+        .cv-btn-${size}.is-checked {
+          width: ${checkedWidth};
+          animation: cv-installed-${size} 0.4s ease 3.5s forwards;
         }
 
-        .cv-btn-label.is-checked::before {
-          animation: cv-rotate 3s ease-in-out 0.4s forwards;
+        .cv-btn-${size}.is-checked::before {
+          animation: cv-rotate-${size} 3s ease-in-out 0.4s forwards;
         }
 
-        .cv-btn-label.is-checked .cv-circle {
+        .cv-btn-${size}.is-checked .cv-circle-${size} {
           animation:
-            cv-pulse 1s forwards,
-            cv-circle-hide 0.2s ease 3.5s forwards;
+            cv-pulse-${size} 1s forwards,
+            cv-circle-hide-${size} 0.2s ease 3.5s forwards;
           rotate: 180deg;
         }
 
-        .cv-btn-label.is-checked .cv-circle::before {
-          animation: cv-fill 3s ease-in-out forwards;
+        .cv-btn-${size}.is-checked .cv-circle-${size}::before {
+          animation: cv-fill-${size} 3s ease-in-out forwards;
         }
 
-        .cv-btn-label.is-checked .cv-icon {
+        .cv-btn-${size}.is-checked .cv-icon-${size} {
           opacity: 0;
           visibility: hidden;
         }
 
-        .cv-btn-label.is-checked .cv-square {
+        .cv-btn-${size}.is-checked .cv-square-${size} {
           opacity: 1;
           visibility: visible;
         }
 
-        .cv-btn-label.is-checked .cv-title {
+        .cv-btn-${size}.is-checked .cv-title-${size} {
           opacity: 0;
           visibility: hidden;
         }
 
-        .cv-btn-label.is-checked .cv-title-open {
-          animation: cv-show-open 0.4s ease 3.5s forwards;
+        .cv-btn-${size}.is-checked .cv-title-open-${size} {
+          animation: cv-show-open-${size} 0.4s ease 3.5s forwards;
         }
 
-        /* ── Keyframes ── */
-        @keyframes cv-pulse {
+        @keyframes cv-pulse-${size} {
           0%   { scale: 0.95; box-shadow: 0 0 0 0 rgba(67,217,173,0.7); }
-          70%  { scale: 1;    box-shadow: 0 0 0 14px rgba(67,217,173,0); }
+          70%  { scale: 1;    box-shadow: 0 0 0 10px rgba(67,217,173,0); }
           100% { scale: 0.95; box-shadow: 0 0 0 0 rgba(67,217,173,0); }
         }
 
-        @keyframes cv-fill {
+        @keyframes cv-fill-${size} {
           from { height: 0; }
           to   { height: 100%; }
         }
 
-        @keyframes cv-rotate {
-          0%   { transform: rotate(-90deg) translate(27px) rotate(0); opacity:1; visibility:visible; }
-          99%  { transform: rotate(270deg) translate(27px) rotate(270deg); opacity:1; visibility:visible; }
+        @keyframes cv-rotate-${size} {
+          0%   { transform: rotate(-90deg) translate(22px) rotate(0); opacity:1; visibility:visible; }
+          99%  { transform: rotate(270deg) translate(22px) rotate(270deg); opacity:1; visibility:visible; }
           100% { opacity:0; visibility:hidden; }
         }
 
-        @keyframes cv-installed {
+        @keyframes cv-installed-${size} {
           100% {
-            width: 150px;
-            border-color: #43D9AD;
-            background-color: #43D9AD;
+            width: ${s.width};
+            border-color: ${accentColor};
+            background-color: ${accentColor};
           }
         }
 
-        @keyframes cv-circle-hide {
+        @keyframes cv-circle-hide-${size} {
           100% { opacity:0; visibility:hidden; }
         }
 
-        @keyframes cv-show-open {
-          100% { opacity:1; visibility:visible; right: 50%; transform: translateX(50%); }
-        }
-
-        /* ── Light mode overrides ── */
-        .cv-btn-label.light-mode {
-          border-color: #0D9488;
-        }
-        .cv-btn-label.light-mode .cv-circle {
-          background-color: #0D9488;
-        }
-        .cv-btn-label.light-mode .cv-circle::before {
-          background-color: #0f7a6e;
-        }
-        .cv-btn-label.light-mode .cv-title {
-          color: #0D9488;
-        }
-        @keyframes cv-installed-light {
-          100% {
-            width: 150px;
-            border-color: #0D9488;
-            background-color: #0D9488;
-          }
-        }
-        .cv-btn-label.light-mode.is-checked {
-          animation: cv-installed-light 0.4s ease 3.5s forwards;
+        @keyframes cv-show-open-${size} {
+          100% { opacity:1; visibility:visible; right: 50%; transform: translate(50%, 50%); }
         }
       `}</style>
 
       <label
-        className={`cv-btn-label ${checked ? 'is-checked' : ''} ${!isDark ? 'light-mode' : ''} ${className}`}
+        className={`cv-btn-${size} ${checked ? 'is-checked' : ''} ${className}`}
         onClick={handleClick}
         style={{ pointerEvents: checked ? 'none' : 'auto' }}
       >
-        <span className="cv-circle">
-          {/* Arrow down icon */}
-          <svg className="cv-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 19V5m0 14-4-4m4 4 4-4" />
+        <span className={`cv-circle-${size}`}>
+          <svg
+            className={`cv-icon-${size}`}
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.5"
+              d="M12 19V5m0 14-4-4m4 4 4-4"
+            />
           </svg>
-          <div className="cv-square" />
+          <div className={`cv-square-${size}`} />
         </span>
 
-        <p className="cv-title">{label.download}</p>
-        <p className="cv-title-open">{label.open}</p>
+        <p className={`cv-title-${size}`}>{label.download}</p>
+        <p className={`cv-title-open-${size}`}>{label.open}</p>
       </label>
     </>
   )
