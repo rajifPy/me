@@ -93,6 +93,7 @@ export default function Home() {
 
       <Footer />
       <AIChatbot activeSection={activeSection} />
+      <CommandPalette setActiveSection={setActiveSection} setActiveTab={setActiveTab} />
     </div>
   )
 }
