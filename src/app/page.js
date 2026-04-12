@@ -13,6 +13,7 @@ import ResearchSection from '@/components/sections/ResearchSection'
 import ContactSection from '@/components/sections/ContactSection'
 import AIChatbot from '@/components/ui/AIChatbot'
 import { useVisitTracker } from '@/hooks/useVisitTracker'
+import CommandPalette from '@/components/ui/CommandPalette'
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('hello')
