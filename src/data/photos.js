@@ -9,8 +9,8 @@ export const photos = [
   },
   {
     id: 2,
-    url: '/images/12358.png',
-    caption: 'Data analysis session',
+    url: '/images/IMG_3462.jpg',
+    caption: 'my TEAM',
     category: 'Work'
   },
   {
