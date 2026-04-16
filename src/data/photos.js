@@ -52,7 +52,7 @@ export const photos = [
   {
     id: 9,
     url: '/images/magang_dsi.jpeg',
-    caption: 'Intern at DSI UNAIR,
+    caption: 'Intern at DSI UNAIR',
     category: 'Education'
   },
   {
