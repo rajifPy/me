@@ -51,9 +51,9 @@ export const photos = [
   },
   {
     id: 9,
-    url: '/images/12358.png',
-    caption: 'Daily routine as data enthusiast',
-    category: 'Lifestyle'
+    url: '/images/magang_dsi.jpeg',
+    caption: 'Intern at DSI UNAIR,
+    category: 'Edducation'
   },
   {
     id: 10,
