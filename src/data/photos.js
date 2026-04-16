@@ -21,8 +21,8 @@ export const photos = [
   },
   {
     id: 4,
-    url: '/images/12358.png',
-    caption: 'Presenting project results',
+    url: '/images/IMG_0705.jpg',
+    caption: 'Collaboration with Human Initiative',
     category: 'Events'
   },
   {
