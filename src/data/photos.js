@@ -15,9 +15,9 @@ export const photos = [
   },
   {
     id: 3,
-    url: '/images/12358.png',
-    caption: 'Team collaboration meeting',
-    category: 'Work'
+    url: '/images/IMG_6719',
+    caption: 'UKM Sosial Sercive, UNAIR',
+    category: 'Education'
   },
   {
     id: 4,
