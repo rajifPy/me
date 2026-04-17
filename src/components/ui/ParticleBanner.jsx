@@ -79,16 +79,24 @@ function genSpiral(n, r) {
   return pts
 }
 
-function genCrystal(n, r) {
+function genCube(n, r) {
   const pts = []
-  const layers = 6, h = r * 1.1
+  const half = r * 0.55
   for (let i = 0; i < n; i++) {
-    const ly    = Math.floor(Math.random() * layers)
-    const yy    = (ly / (layers - 1) - 0.5) * h
-    const lf    = 1 - Math.pow(2 * Math.abs(ly / (layers - 1) - 0.5), 2)
-    const angle = (Math.floor(Math.random() * 6) * Math.PI / 3) + (Math.random() - 0.5) * 0.3
-    const fr    = r * 0.6 * lf + (Math.random() - 0.5) * r * 0.08
-    pts.push([Math.cos(angle) * fr, yy, Math.sin(angle) * fr])
+    // Randomly pick one of the 6 faces
+    const face = Math.floor(Math.random() * 6)
+    let x, y, z
+    const u = (Math.random() - 0.5) * 2 * half
+    const v = (Math.random() - 0.5) * 2 * half
+    switch (face) {
+      case 0: x =  half; y = u; z = v; break
+      case 1: x = -half; y = u; z = v; break
+      case 2: y =  half; x = u; z = v; break
+      case 3: y = -half; x = u; z = v; break
+      case 4: z =  half; x = u; y = v; break
+      default: z = -half; x = u; y = v; break
+    }
+    pts.push([x, y, z])
   }
   return pts
 }
@@ -102,7 +110,7 @@ const SHAPES = [
   { name: 'Heart',      nameID: 'Hati',          icon: '♥',  gen: genHeart    },
   { name: 'Infinity ∞', nameID: 'Tak Hingga ∞',  icon: '∞',  gen: genInfinity },
   { name: 'Spiral',     nameID: 'Spiral',        icon: '🌀', gen: genSpiral   },
-  { name: 'Crystal',    nameID: 'Kristal',       icon: '💎', gen: genCrystal  },
+  { name: 'Cube',    nameID: 'Kubus',   icon: '🧊', gen: genCube    },
 ]
 
 const SCHEMES = [
