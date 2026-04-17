@@ -13,6 +13,7 @@ import CertificationBadges from '@/components/ui/CertificationBadges'
 import PhotoAlbum from '@/components/ui/PhotoAlbum'
 import BlogThoughts from '@/components/ui/BlogThoughts'
 import DataGames from '@/components/ui/DataGames'
+import ParticleBanner from '@/components/ui/ParticleBanner'
 
 export default function AboutSection({ activeTab }) {
   const { theme } = useTheme()
@@ -274,6 +275,7 @@ export default function AboutSection({ activeTab }) {
       {activeTab === 'blog' && <BlogThoughts />}
       {activeTab === 'photos' && <PhotoAlbum />}
       {activeTab === 'data-games' && <DataGames />}
+      {activeTab === 'particles' && <ParticleBanner />}
     </div>
   )
 }
