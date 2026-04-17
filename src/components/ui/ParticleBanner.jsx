@@ -5,7 +5,7 @@ import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 3-D Shape generators  (pure math, zero Three.js dependency)
+// 3-D Shape generators
 // ─────────────────────────────────────────────────────────────────────────────
 function genDNA(n, r) {
   const pts = []
@@ -118,6 +118,9 @@ const SCHEMES = [
 const N         = 1800
 const MORPH_DUR = 1.9
 const SIZE_FRAC = 0.25
+const MIN_ZOOM  = 0.4
+const MAX_ZOOM  = 3.0
+const ZOOM_STEP = 0.15
 
 function easeInOut(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t }
 
@@ -163,6 +166,17 @@ export default function ParticleBanner() {
     shapeIdx: 0, schemeIdx: 0,
     rafId: null, lastTime: 0,
     isDark: isDark,
+    // zoom state
+    zoom: 1.0,
+    panX: 0,
+    panY: 0,
+    isPanning: false,
+    panStartX: 0,
+    panStartY: 0,
+    panOriginX: 0,
+    panOriginY: 0,
+    // pinch state
+    lastPinchDist: null,
   })
 
   const [currentShape,  setCurrentShape]  = useState(0)
@@ -170,10 +184,42 @@ export default function ParticleBanner() {
   const [morphing,      setMorphing]      = useState(false)
   const [showHint,      setShowHint]      = useState(true)
   const [fps,           setFps]           = useState(0)
+  const [zoomLevel,     setZoomLevel]     = useState(1.0)
   const fpsRef = useRef({ frames: 0, last: 0 })
 
-  // keep isDark in mutable ref so canvas loop sees current value
   useEffect(() => { stateRef.current.isDark = isDark }, [isDark])
+
+  // ── zoom helpers ──────────────────────────────────────────────
+  const clampZoom = (z) => Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, z))
+
+  const applyZoom = useCallback((newZoom, originX, originY) => {
+    const s = stateRef.current
+    const clamped = clampZoom(newZoom)
+    const ratio = clamped / s.zoom
+    // Adjust pan so zoom pivots around origin
+    s.panX = originX + (s.panX - originX) * ratio
+    s.panY = originY + (s.panY - originY) * ratio
+    s.zoom = clamped
+    setZoomLevel(clamped)
+  }, [])
+
+  const zoomIn = useCallback(() => {
+    const s = stateRef.current
+    applyZoom(s.zoom + ZOOM_STEP, 0, 0)
+  }, [applyZoom])
+
+  const zoomOut = useCallback(() => {
+    const s = stateRef.current
+    applyZoom(s.zoom - ZOOM_STEP, 0, 0)
+  }, [applyZoom])
+
+  const resetZoom = useCallback(() => {
+    const s = stateRef.current
+    s.zoom = 1.0
+    s.panX = 0
+    s.panY = 0
+    setZoomLevel(1.0)
+  }, [])
 
   // ── shape builder ─────────────────────────────────────────────
   const buildShape = useCallback((idx, r) => SHAPES[idx].gen(N, r), [])
@@ -224,7 +270,6 @@ export default function ParticleBanner() {
       const t = ts / 1000
       const s = stateRef.current
 
-      // FPS counter
       fpsRef.current.frames++
       if (t - fpsRef.current.last >= 1) {
         setFps(fpsRef.current.frames)
@@ -234,14 +279,16 @@ export default function ParticleBanner() {
 
       s.lastTime = t
       const W = canvas.width, H = canvas.height
-      const cx = W / 2, cy = H / 2
+      // Apply zoom + pan transform via center offset
+      const cx = W / 2 + s.panX
+      const cy = H / 2 + s.panY
 
-      // trail fade
-      ctx.fillStyle = s.isDark ? 'rgba(1,18,39,0.18)' : 'rgba(245,245,245,0.22)'
+      // trail fade — slightly thicker to clear zoomed content
+      ctx.fillStyle = s.isDark ? 'rgba(1,18,39,0.20)' : 'rgba(245,245,245,0.24)'
       ctx.fillRect(0, 0, W, H)
 
       // auto-rotate
-      if (!s.isDragging) {
+      if (!s.isDragging && !s.isPanning) {
         s.rotY += 0.0015
         s.rotX += 0.0003 * Math.sin(t * 0.2)
       }
@@ -272,7 +319,6 @@ export default function ParticleBanner() {
           }
         }
       } else {
-        // idle noise flow + breathe
         const breath = 1 + Math.sin(t * 0.4) * 0.012
         const freq   = 0.012, ts2 = t * 0.04
         for (let i = 0; i < N; i++) {
@@ -288,10 +334,11 @@ export default function ParticleBanner() {
         }
       }
 
-      // project + depth sort
+      // project + depth sort — zoom applied via scaled coordinates
       const maxR = Math.min(W, H) * SIZE_FRAC
+      const zoom = s.zoom
       const projected = s.pts3D.map(p => {
-        const pr  = project(p[0], p[1], p[2], s.rotX, s.rotY, cx, cy)
+        const pr  = project(p[0] * zoom, p[1] * zoom, p[2] * zoom, s.rotX, s.rotY, cx, cy)
         const len = Math.sqrt(p[0] ** 2 + p[1] ** 2 + p[2] ** 2)
         return { ...pr, norm: Math.min(len / maxR, 1) }
       })
@@ -300,10 +347,13 @@ export default function ParticleBanner() {
       // draw particles
       for (const p of projected) {
         const { sx, sy, scale, norm } = p
+        // Clip to canvas bounds for performance
+        if (sx < -20 || sx > W + 20 || sy < -20 || sy > H + 20) continue
+
         const h    = scheme.h0 + norm * (scheme.h1 - scheme.h0)
         const sPct = Math.round(scheme.s * 100)
         const lPct = Math.round(scheme.l * 100)
-        const size = Math.max(0.4, scale * 2.5)
+        const size = Math.max(0.4, scale * 2.5 * Math.sqrt(zoom))
         const alpha = s.isMorphing
           ? (0.3 + 0.7 * Math.abs(Math.sin(s.morphT * Math.PI)))
           : 0.88
@@ -332,31 +382,86 @@ export default function ParticleBanner() {
     }
   }, [initPts])
 
-  // ── pointer / keyboard events ─────────────────────────────────
+  // ── pointer / keyboard / wheel events ────────────────────────
   useEffect(() => {
     const canvas = canvasRef.current; if (!canvas) return
     const s = stateRef.current
     let dragged = false
 
+    // ── Mouse drag (rotate when not panning) ─────────────────
     const onDown = e => {
-      s.isDragging = true; dragged = false
+      // Middle mouse or Ctrl+drag = pan, else rotate
+      if (e.button === 1 || e.ctrlKey) {
+        s.isPanning = true
+        s.panStartX = e.clientX
+        s.panStartY = e.clientY
+        s.panOriginX = s.panX
+        s.panOriginY = s.panY
+      } else {
+        s.isDragging = true
+      }
+      dragged = false
       s.lastMX = e.clientX; s.lastMY = e.clientY
     }
-    const onUp = () => { s.isDragging = false }
+    const onUp = () => { s.isDragging = false; s.isPanning = false }
     const onMove = e => {
+      if (s.isPanning) {
+        dragged = true
+        s.panX = s.panOriginX + (e.clientX - s.panStartX)
+        s.panY = s.panOriginY + (e.clientY - s.panStartY)
+        return
+      }
       if (!s.isDragging) return
       const dx = e.clientX - s.lastMX, dy = e.clientY - s.lastMY
       if (Math.abs(dx) + Math.abs(dy) > 2) dragged = true
       s.rotY += dx * 0.005; s.rotX += dy * 0.005
       s.lastMX = e.clientX; s.lastMY = e.clientY
     }
-    const onClick = () => { if (!dragged) triggerMorph() }
+    const onClick = e => {
+      if (!dragged && !e.ctrlKey && e.button === 0) triggerMorph()
+    }
 
-    const onTouch = e => {
-      s.isDragging = true; dragged = false
-      s.lastMX = e.touches[0].clientX; s.lastMY = e.touches[0].clientY
+    // ── Scroll to zoom ────────────────────────────────────────
+    const onWheel = e => {
+      e.preventDefault()
+      const rect = canvas.getBoundingClientRect()
+      // origin relative to canvas center
+      const ox = (e.clientX - rect.left) - canvas.width / 2
+      const oy = (e.clientY - rect.top)  - canvas.height / 2
+      const delta = e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP
+      applyZoom(s.zoom + delta, ox, oy)
+    }
+
+    // ── Touch events ──────────────────────────────────────────
+    const getDistance = (touches) => {
+      const dx = touches[0].clientX - touches[1].clientX
+      const dy = touches[0].clientY - touches[1].clientY
+      return Math.sqrt(dx * dx + dy * dy)
+    }
+
+    const onTouchStart = e => {
+      if (e.touches.length === 2) {
+        s.lastPinchDist = getDistance(e.touches)
+        s.isDragging = false
+      } else {
+        s.isDragging = true; dragged = false
+        s.lastMX = e.touches[0].clientX; s.lastMY = e.touches[0].clientY
+      }
     }
     const onTouchMove = e => {
+      if (e.touches.length === 2 && s.lastPinchDist !== null) {
+        e.preventDefault()
+        const dist = getDistance(e.touches)
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2
+        const rect = canvas.getBoundingClientRect()
+        const ox = midX - rect.left - canvas.width / 2
+        const oy = midY - rect.top  - canvas.height / 2
+        const scale = dist / s.lastPinchDist
+        applyZoom(s.zoom * scale, ox, oy)
+        s.lastPinchDist = dist
+        return
+      }
       if (!s.isDragging) return
       const dx = e.touches[0].clientX - s.lastMX
       const dy = e.touches[0].clientY - s.lastMY
@@ -364,21 +469,31 @@ export default function ParticleBanner() {
       s.rotY += dx * 0.005; s.rotX += dy * 0.005
       s.lastMX = e.touches[0].clientX; s.lastMY = e.touches[0].clientY
     }
+    const onTouchEnd = e => {
+      if (e.touches.length < 2) s.lastPinchDist = null
+      s.isDragging = false
+    }
+
+    // ── Keyboard ──────────────────────────────────────────────
     const onKey = e => {
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); triggerMorph() }
       if (e.key === 'ArrowRight') s.rotY += 0.08
       if (e.key === 'ArrowLeft')  s.rotY -= 0.08
       if (e.key === 'ArrowUp')    s.rotX -= 0.08
       if (e.key === 'ArrowDown')  s.rotX += 0.08
+      if (e.key === '+' || e.key === '=') applyZoom(s.zoom + ZOOM_STEP, 0, 0)
+      if (e.key === '-')                  applyZoom(s.zoom - ZOOM_STEP, 0, 0)
+      if (e.key === '0')                  resetZoom()
     }
 
     canvas.addEventListener('mousedown',  onDown)
     window.addEventListener('mouseup',    onUp)
     window.addEventListener('mousemove',  onMove)
     canvas.addEventListener('click',      onClick)
-    canvas.addEventListener('touchstart', onTouch,     { passive: true })
-    window.addEventListener('touchend',   onUp)
-    window.addEventListener('touchmove',  onTouchMove, { passive: true })
+    canvas.addEventListener('wheel',      onWheel, { passive: false })
+    canvas.addEventListener('touchstart', onTouchStart,  { passive: true })
+    window.addEventListener('touchend',   onTouchEnd)
+    window.addEventListener('touchmove',  onTouchMove,   { passive: false })
     window.addEventListener('keydown',    onKey)
 
     return () => {
@@ -386,12 +501,13 @@ export default function ParticleBanner() {
       window.removeEventListener('mouseup',    onUp)
       window.removeEventListener('mousemove',  onMove)
       canvas.removeEventListener('click',      onClick)
-      canvas.removeEventListener('touchstart', onTouch)
-      window.removeEventListener('touchend',   onUp)
+      canvas.removeEventListener('wheel',      onWheel)
+      canvas.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchend',   onTouchEnd)
       window.removeEventListener('touchmove',  onTouchMove)
       window.removeEventListener('keydown',    onKey)
     }
-  }, [triggerMorph])
+  }, [triggerMorph, applyZoom, resetZoom])
 
   // hide hint after 4 s
   useEffect(() => {
@@ -414,6 +530,9 @@ export default function ParticleBanner() {
   const textMute = isDark ? '#607B96' : '#9CA3AF'
   const mono     = "'Fira Code', monospace"
 
+  const zoomPct = Math.round(zoomLevel * 100)
+  const zoomBarW = ((zoomLevel - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)) * 100
+
   return (
     <div className="w-full max-w-5xl mx-auto select-none">
 
@@ -425,8 +544,8 @@ export default function ParticleBanner() {
         </h2>
         <p style={{ fontFamily: mono, fontSize: 11, color: textMute, letterSpacing: '.05em' }}>
           {language === 'id'
-            ? '// 6 bentuk 3-D · klik kanvas untuk morph · drag untuk rotasi'
-            : '// 6 3-D shapes · click canvas to morph · drag to rotate'}
+            ? '// 6 bentuk 3-D · klik untuk morph · drag rotasi · scroll/pinch untuk zoom'
+            : '// 6 3-D shapes · click to morph · drag to rotate · scroll/pinch to zoom'}
         </p>
       </div>
 
@@ -487,7 +606,10 @@ export default function ParticleBanner() {
         <div style={{ position: 'relative', height: 420 }}>
           <canvas
             ref={canvasRef}
-            style={{ display: 'block', width: '100%', height: '100%', cursor: 'crosshair' }}
+            style={{
+              display: 'block', width: '100%', height: '100%',
+              cursor: zoomLevel > 1 ? 'grab' : 'crosshair',
+            }}
           />
 
           {/* Hint overlay */}
@@ -506,8 +628,8 @@ export default function ParticleBanner() {
               border: `1px solid ${isDark ? 'rgba(67,217,173,.25)' : 'rgba(13,148,136,.25)'}`,
             }}>
               {language === 'id'
-                ? 'klik untuk morph · drag untuk rotasi'
-                : 'click to morph · drag to rotate'}
+                ? 'klik morph · drag rotasi · scroll zoom'
+                : 'click to morph · drag to rotate · scroll to zoom'}
             </span>
           </div>
 
@@ -519,6 +641,20 @@ export default function ParticleBanner() {
             letterSpacing: '.06em', pointerEvents: 'none',
           }}>
             {fps} fps
+          </span>
+
+          {/* Zoom level badge */}
+          <span style={{
+            position: 'absolute', top: 10, right: 12,
+            fontFamily: mono, fontSize: 10,
+            color: zoomLevel !== 1 ? accent : (isDark ? 'rgba(96,123,150,.5)' : 'rgba(180,180,180,.7)'),
+            background: isDark ? 'rgba(1,18,39,.6)' : 'rgba(255,255,255,.7)',
+            padding: '2px 8px', borderRadius: 10,
+            border: `1px solid ${zoomLevel !== 1 ? accent + '40' : 'transparent'}`,
+            pointerEvents: 'none',
+            transition: 'color .2s, border-color .2s',
+          }}>
+            {zoomPct}%
           </span>
 
           {/* Watermark */}
@@ -536,7 +672,7 @@ export default function ParticleBanner() {
         <div className="flex items-center justify-between px-4 py-3 flex-wrap gap-3"
              style={{ borderTop: `1px solid ${border}` }}>
 
-          {/* Morph button */}
+          {/* Left: morph button */}
           <button
             onClick={triggerMorph}
             disabled={morphing}
@@ -555,7 +691,94 @@ export default function ParticleBanner() {
             {language === 'id' ? '▶ ganti-bentuk' : '▶ next-shape'}
           </button>
 
-          {/* Shape progress pills */}
+          {/* Center: zoom controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {/* Zoom out */}
+            <button
+              onClick={zoomOut}
+              disabled={zoomLevel <= MIN_ZOOM}
+              title={language === 'id' ? 'Perkecil' : 'Zoom out'}
+              style={{
+                width: 30, height: 30, borderRadius: 6,
+                border: `1px solid ${border}`,
+                background: 'transparent',
+                color: zoomLevel <= MIN_ZOOM ? (isDark ? '#1E2D3D' : '#DDD') : textMute,
+                cursor: zoomLevel <= MIN_ZOOM ? 'not-allowed' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 18, lineHeight: 1,
+                transition: 'all .15s ease',
+                fontFamily: mono,
+              }}
+            >
+              −
+            </button>
+
+            {/* Zoom bar track */}
+            <div
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const pct = (e.clientX - rect.left) / rect.width
+                const newZoom = MIN_ZOOM + pct * (MAX_ZOOM - MIN_ZOOM)
+                applyZoom(newZoom, 0, 0)
+              }}
+              style={{
+                width: 80, height: 4,
+                background: isDark ? '#1E2D3D' : '#E0E0E0',
+                borderRadius: 2, overflow: 'hidden',
+                cursor: 'pointer', position: 'relative',
+              }}
+            >
+              <div style={{
+                height: '100%',
+                width: `${zoomBarW}%`,
+                background: `linear-gradient(90deg, ${accent}, #4D5BCE)`,
+                borderRadius: 2,
+                transition: 'width .1s ease',
+              }} />
+            </div>
+
+            {/* Zoom in */}
+            <button
+              onClick={zoomIn}
+              disabled={zoomLevel >= MAX_ZOOM}
+              title={language === 'id' ? 'Perbesar' : 'Zoom in'}
+              style={{
+                width: 30, height: 30, borderRadius: 6,
+                border: `1px solid ${border}`,
+                background: 'transparent',
+                color: zoomLevel >= MAX_ZOOM ? (isDark ? '#1E2D3D' : '#DDD') : textMute,
+                cursor: zoomLevel >= MAX_ZOOM ? 'not-allowed' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 18, lineHeight: 1,
+                transition: 'all .15s ease',
+                fontFamily: mono,
+              }}
+            >
+              +
+            </button>
+
+            {/* Reset zoom */}
+            {zoomLevel !== 1 && (
+              <button
+                onClick={resetZoom}
+                title={language === 'id' ? 'Reset zoom' : 'Reset zoom'}
+                style={{
+                  padding: '4px 10px', borderRadius: 6,
+                  border: `1px solid ${accent}40`,
+                  background: `${accent}10`,
+                  color: accent,
+                  cursor: 'pointer',
+                  fontSize: 10, fontFamily: mono,
+                  letterSpacing: '.04em',
+                  transition: 'all .15s ease',
+                }}
+              >
+                {language === 'id' ? 'reset' : 'reset'}
+              </button>
+            )}
+          </div>
+
+          {/* Right: shape progress pills */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {SHAPES.map((_, i) => (
               <div key={i} style={{
@@ -567,13 +790,25 @@ export default function ParticleBanner() {
               }} />
             ))}
           </div>
+        </div>
 
-          {/* Keyboard hint */}
-          <span style={{
-            fontFamily: mono, fontSize: 10, letterSpacing: '.06em',
-            color: isDark ? '#1E2D3D' : '#C8C8C8',
-          }}>
-            space · arrow keys
+        {/* ── Zoom hint bar ── */}
+        <div style={{
+          padding: '6px 16px',
+          borderTop: `1px solid ${border}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: 8,
+          background: isDark ? 'rgba(1,18,39,0.4)' : 'rgba(248,248,248,0.7)',
+        }}>
+          <span style={{ fontFamily: mono, fontSize: 9, color: isDark ? '#1E2D3D' : '#CACACA', letterSpacing: '.06em' }}>
+            {language === 'id'
+              ? 'scroll = zoom · ctrl+drag = pan · pinch = zoom (touch) · +/- = zoom · 0 = reset'
+              : 'scroll = zoom · ctrl+drag = pan · pinch = zoom (touch) · +/- keys = zoom · 0 = reset'}
+          </span>
+          <span style={{ fontFamily: mono, fontSize: 9, color: isDark ? '#1E2D3D' : '#CACACA', letterSpacing: '.06em' }}>
+            {language === 'id'
+              ? `${MIN_ZOOM * 100}% – ${MAX_ZOOM * 100}%`
+              : `${MIN_ZOOM * 100}% – ${MAX_ZOOM * 100}%`}
           </span>
         </div>
       </div>
