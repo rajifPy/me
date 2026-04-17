@@ -9,16 +9,58 @@ import { useLanguage } from '@/context/LanguageContext'
 // ─────────────────────────────────────────────────────────────────────────────
 function genDNA(n, r) {
   const pts = []
-  const turns = 2.5, rad = r * 0.45, h = r * 1.1
-  for (let i = 0; i < n; i++) {
-    const t = (i / n) * Math.PI * 2 * turns
-    const phase = (i % 2) * Math.PI
+  const turns   = 3.0
+  const height  = r * 1.2
+  const rad     = r * 0.42
+  const nBases  = Math.floor(n * 0.18)  // ~18% partikel = pasangan basa
+  const nBackbone = n - nBases
+
+  // ── Strand A & B: backbone fosfat-gula ─────────────────────────────
+  for (let i = 0; i < nBackbone; i++) {
+    const strand = i < nBackbone / 2 ? 0 : 1
+    const frac   = (i % (nBackbone / 2)) / (nBackbone / 2)
+    const angle  = frac * Math.PI * 2 * turns + (strand === 1 ? Math.PI : 0)
+
+    // Sedikit noise agar terlihat organik seperti fosfat-gula
+    const noiseR = rad + (Math.random() - 0.5) * r * 0.04
+    const noiseY = (Math.random() - 0.5) * height * 0.025
+
     pts.push([
-      Math.cos(t + phase) * rad,
-      (i / n - 0.5) * h,
-      Math.sin(t + phase) * rad,
+      Math.cos(angle) * noiseR,
+      (frac - 0.5) * height + noiseY,
+      Math.sin(angle) * noiseR,
     ])
   }
+
+  // ── Pasangan basa nitrogen (horizontal bridges) ────────────────────
+  // A-T (adenine-thymine) dan G-C (guanine-cytosine)
+  // Letakkan 3-4 partikel per jembatan agar terlihat seperti ikatan hidrogen
+  const basesPerPair = Math.floor(nBases / Math.floor(turns * 6))
+  let placed = 0
+
+  for (let b = 0; b < Math.floor(turns * 6) && placed < nBases; b++) {
+    const frac  = b / (turns * 6)
+    const angle = frac * Math.PI * 2 * turns
+    const y     = (frac - 0.5) * height
+
+    const xA = Math.cos(angle) * rad
+    const zA = Math.sin(angle) * rad
+    const xB = Math.cos(angle + Math.PI) * rad
+    const zB = Math.sin(angle + Math.PI) * rad
+
+    // Isi jembatan dengan partikel merata dari strand A ke B
+    const count = Math.min(basesPerPair, nBases - placed)
+    for (let k = 0; k < count; k++) {
+      const t = (k + 1) / (count + 1)
+      pts.push([
+        xA + (xB - xA) * t + (Math.random() - 0.5) * r * 0.03,
+        y  + (Math.random() - 0.5) * r * 0.02,
+        zA + (zB - zA) * t + (Math.random() - 0.5) * r * 0.03,
+      ])
+      placed++
+    }
+  }
+
   return pts
 }
 
