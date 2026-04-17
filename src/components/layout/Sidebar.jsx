@@ -8,6 +8,7 @@ import { ChevronDown, ChevronRight, Folder, FileText, Mail, Phone, X, Menu, Code
 import { techFilters } from '@/data/projects'
 import { Gamepad2 } from 'lucide-react'
 import DownloadCVButton from '@/components/ui/DownloadCVButton'
+import { Sparkles } from 'lucide-react'
 
 export default function Sidebar({ activeSection, activeTab, setActiveTab, selectedFilters, setSelectedFilters }) {
   const { theme } = useTheme()
@@ -61,6 +62,7 @@ export default function Sidebar({ activeSection, activeTab, setActiveTab, select
                 {tabItem('blog', <MessageCircle size={14} className="text-purple-400" />, a.blog)}
                 {tabItem('photos', <Camera size={14} className="text-accent-pink" />, a.photos)}
                 {tabItem('data-games', <Gamepad2 size={14} className="text-accent-orange" />, 'data-games')}
+                {tabItem('particles', <Sparkles size={14} className="text-accent-teal" />, 'particles')}
 
                 <div>
                   <button onClick={() => toggleFolder('education')} className="flex items-center gap-2 hover:text-white transition-colors text-sm">
