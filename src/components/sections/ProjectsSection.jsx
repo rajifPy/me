@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import ProjectCard from '@/components/ui/ProjectCard'
 import { projects } from '@/data/projects'
+import ProjectReactions from '@/components/ui/ProjectReactions'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function ProjectsSection({ selectedFilters }) {
   const { theme } = useTheme()
@@ -45,6 +47,7 @@ export default function ProjectsSection({ selectedFilters }) {
           {filteredProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
+          <ProjectReactions language={language} />
         </div>
       ) : (
         <div className="text-center py-12">
