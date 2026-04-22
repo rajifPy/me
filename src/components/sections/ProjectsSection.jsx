@@ -1,14 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
-import { useLanguage } from '@/context/LanguageContext'
 import ProjectCard from '@/components/ui/ProjectCard'
 import { projects } from '@/data/projects'
-import ProjectReactions from '@/components/ui/ProjectReactions'
 
 export default function ProjectsSection({ selectedFilters }) {
   const { theme } = useTheme()
-  const { language } = useLanguage()
 
   // Filter projects based on selected technologies
   const filteredProjects = selectedFilters && selectedFilters.length > 0
@@ -47,7 +45,6 @@ export default function ProjectsSection({ selectedFilters }) {
           {filteredProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
-          <ProjectReactions language={language} />
         </div>
       ) : (
         <div className="text-center py-12">
