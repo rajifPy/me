@@ -101,7 +101,6 @@ export default function ProfileDisplay() {
   const accentBlue = isDark ? '#4D5BCE' : '#3B4BCA'
   const borderClr  = isDark ? '#1E2D3D' : '#E0E0E0'
   const bgCard     = isDark ? '#011221' : '#F5F5F5'
-  const bgOuter    = isDark ? 'rgba(1,22,39,0.9)' : 'rgba(245,245,245,0.9)'
 
   return (
     <>
@@ -124,14 +123,6 @@ export default function ProfileDisplay() {
           0%,100% { opacity: 0.3; }
           50%     { opacity: 0.7; }
         }
-        @keyframes pb-scanline {
-          from { top: -2px; }
-          to   { top: 100%; }
-        }
-        @keyframes pb-border-spin {
-          from { background-position: 0% 50%; }
-          to   { background-position: 200% 50%; }
-        }
         @keyframes pb-appear {
           from { opacity:0; transform: scale(0.9) translateY(10px); }
           to   { opacity:1; transform: scale(1) translateY(0); }
@@ -139,10 +130,6 @@ export default function ProfileDisplay() {
         @keyframes pb-tag-in {
           from { opacity:0; transform: translateX(-8px); }
           to   { opacity:1; transform: translateX(0); }
-        }
-        @keyframes pb-corner-flash {
-          0%,100% { opacity:1; }
-          50%     { opacity:0.2; }
         }
         @keyframes pb-glitch {
           0%   { transform: translate(0);   }
@@ -172,9 +159,6 @@ export default function ProfileDisplay() {
         }
         .pb-glow {
           animation: pb-glow-pulse 3s ease-in-out infinite;
-        }
-        .pb-corner {
-          animation: pb-corner-flash 2s ease-in-out infinite;
         }
         .pb-data-col {
           animation: pb-data-stream 1.8s linear infinite;
@@ -254,25 +238,7 @@ export default function ProfileDisplay() {
             transition: 'box-shadow 0.4s ease',
           }}
         >
-          {/* ── Corner decorations ──────────────────────────────── */}
-          {[
-            { top: 8, left: 8, rot: 0 },
-            { top: 8, right: 8, rot: 90 },
-            { bottom: 8, left: 8, rot: 270 },
-            { bottom: 8, right: 8, rot: 180 },
-          ].map((pos, i) => (
-            <div key={i} className="pb-corner" style={{
-              position: 'absolute', ...pos, zIndex: 10,
-              width: 12, height: 12,
-              transform: `rotate(${pos.rot}deg)`,
-              borderTop: `2px solid ${accent}`,
-              borderLeft: `2px solid ${accent}`,
-              borderRadius: '2px 0 0 0',
-              pointerEvents: 'none',
-            }} />
-          ))}
-
-          {/* ── Inner content ────────────────────────────────────── */}
+          {/* ── Inner content ────────────────────────────────────────── */}
           <div style={{
             borderRadius: 18,
             overflow: 'hidden',
@@ -305,7 +271,7 @@ export default function ProfileDisplay() {
               }} />
             ))}
 
-            {/* ── Header bar ───────────────────────────────────── */}
+            {/* ── Header bar ───────────────────────────────────────── */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -343,7 +309,7 @@ export default function ProfileDisplay() {
               }} />
             </div>
 
-            {/* ── Photo area ───────────────────────────────────── */}
+            {/* ── Photo area ───────────────────────────────────────── */}
             <div style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden' }}>
 
               {/* Pulse rings behind photo */}
@@ -380,7 +346,6 @@ export default function ProfileDisplay() {
                   transform: glitching ? 'scaleX(1.01)' : 'scaleX(1)',
                 }}
                 onError={e => {
-                  // Fallback: show initials avatar
                   e.target.style.display = 'none'
                   e.target.parentElement.querySelector('.pb-fallback').style.display = 'flex'
                 }}
@@ -459,7 +424,7 @@ export default function ProfileDisplay() {
               </div>
             </div>
 
-            {/* ── Info panel ───────────────────────────────────── */}
+            {/* ── Info panel ───────────────────────────────────────── */}
             <div style={{
               padding: '14px 16px',
               position: 'relative',
@@ -592,7 +557,7 @@ export default function ProfileDisplay() {
               </div>
             </div>
 
-            {/* ── Bottom bar ───────────────────────────────────── */}
+            {/* ── Bottom bar ───────────────────────────────────────── */}
             <div style={{
               borderTop: `1px solid ${borderClr}`,
               padding: '8px 16px',
