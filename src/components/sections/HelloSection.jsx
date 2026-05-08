@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { useTranslation } from '@/data/translations'
-import SnakeGame from '@/components/game/SnakeGame'
+import ProfileDisplay from '@/components/ui/ProfileDisplay'
 
 export default function HelloSection() {
   const { theme } = useTheme()
@@ -44,7 +44,6 @@ export default function HelloSection() {
   }
 
   useEffect(() => {
-    // Reset and re-run animation on language change
     setDisplayedTexts({ greeting: '', firstName: '', lastName: '', role: '', instruction1: '', instruction2: '', githubLine: '' })
     setTypewriterComplete(false)
     setShowContent(false)
@@ -117,10 +116,10 @@ export default function HelloSection() {
     )
   }
 
-  const tGame = t.game
-
   return (
     <div className="max-w-6xl flex flex-col lg:flex-row items-center gap-8 lg:gap-16 w-full">
+
+      {/* ── Left: typewriter text ──────────────────────────────────── */}
       <div className="flex-1 min-w-[280px] w-full">
         <p className={`mb-2 md:mb-4 text-sm md:text-base transition-all duration-300 ${
           theme === 'dark' ? 'text-white' : 'text-gray-900'
@@ -186,11 +185,15 @@ export default function HelloSection() {
         </div>
       </div>
 
-      {/* Snake Game */}
+      {/* ── Right: Animated Profile Display ───────────────────────── */}
       <div className={`w-full lg:w-auto flex justify-center transition-all duration-1000 ${
         typewriterComplete ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-      }`} style={{ transitionDelay: typewriterComplete ? '0.5s' : '0s', transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-        <SnakeGame t={tGame} />
+      }`} style={{
+        transitionDelay: typewriterComplete ? '0.5s' : '0s',
+        transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        maxWidth: 380,
+      }}>
+        <ProfileDisplay />
       </div>
     </div>
   )
