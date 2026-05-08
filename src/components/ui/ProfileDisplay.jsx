@@ -481,7 +481,7 @@ export default function ProfileDisplay() {
                     fontWeight: 500,
                     letterSpacing: '0.02em',
                   }}>
-                    Rajif
+                    murfhi
                   </div>
                   <div style={{
                     fontFamily: "'Fira Code', monospace",
@@ -609,7 +609,7 @@ export default function ProfileDisplay() {
                 color: isDark ? '#607B96' : '#9CA3AF',
                 letterSpacing: '0.06em',
               }}>
-                Surabaya, ID
+                Surabaya | Jepara, ID
               </span>
               <span style={{
                 fontFamily: "'Fira Code', monospace",
@@ -617,7 +617,6 @@ export default function ProfileDisplay() {
                 color: isDark ? '#607B96' : '#9CA3AF',
                 letterSpacing: '0.06em',
               }}>
-                UNAIR &nbsp;·&nbsp; Bangkit &apos;22
               </span>
             </div>
 
