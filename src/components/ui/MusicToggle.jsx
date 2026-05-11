@@ -12,7 +12,7 @@ export default function MusicToggle() {
 
   // Ganti src dengan file musik lo-fi kamu di /public/audio/
   useEffect(() => {
-    const audio = new Audio('/audio/Djo - End Of Beginning (Lyrics).mp3')
+    const audio = new Audio('/audio/on_on.mp3')
     audio.loop = true
     audio.volume = 0.35
     audioRef.current = audio
