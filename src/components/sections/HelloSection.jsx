@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { useTranslation } from '@/data/translations'
 import ProfileDisplay from '@/components/ui/ProfileDisplay'
+import LyricsTicker from '@/components/ui/LyricsTicker'
+import { MUSIC_EVENT } from '@/components/ui/MusicToggle'
 
 export default function HelloSection() {
   const { theme } = useTheme()
@@ -23,6 +25,17 @@ export default function HelloSection() {
     githubLine: ''
   })
   const [animKey, setAnimKey] = useState(0)
+
+  // ── Music state — listen to custom event from MusicToggle ──────────────────
+  const [musicPlaying, setMusicPlaying] = useState(false)
+
+  useEffect(() => {
+    const handler = (e) => {
+      setMusicPlaying(e.detail?.isPlaying ?? false)
+    }
+    window.addEventListener(MUSIC_EVENT, handler)
+    return () => window.removeEventListener(MUSIC_EVENT, handler)
+  }, [])
 
   const fullTexts = {
     greeting: t.hello.greeting,
@@ -119,7 +132,7 @@ export default function HelloSection() {
   return (
     <div className="max-w-6xl flex flex-col lg:flex-row items-center gap-8 lg:gap-16 w-full">
 
-      {/* ── Left: typewriter text ──────────────────────────────────── */}
+      {/* ── Left: typewriter text + lyrics ────────────────────────────────── */}
       <div className="flex-1 min-w-[280px] w-full">
         <p className={`mb-2 md:mb-4 text-sm md:text-base transition-all duration-300 ${
           theme === 'dark' ? 'text-white' : 'text-gray-900'
@@ -183,9 +196,12 @@ export default function HelloSection() {
             {renderGithubLine()}
           </div>
         </div>
+
+        {/* ── Lyrics ticker — shown when music is playing ── */}
+        <LyricsTicker isPlaying={musicPlaying} />
       </div>
 
-      {/* ── Right: Animated Profile Display ───────────────────────── */}
+      {/* ── Right: Animated Profile Display ───────────────────────────────── */}
       <div className={`w-full lg:w-auto flex justify-center transition-all duration-1000 ${
         typewriterComplete ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
       }`} style={{
