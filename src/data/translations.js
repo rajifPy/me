@@ -13,8 +13,8 @@ export const translations = {
     hello: {
       greeting: 'Hi all, I am',
       role: 'Data Enthusiast',
-      instruction1: '// complete the game to continue',
-      instruction2: '// you can also see it on my Github page',
+      instruction1: '// ready to collaborate with data',
+      instruction2: '// open to Work',
       githubConst: 'const',
       githubVar: 'githubLink',
     },
@@ -247,8 +247,8 @@ export const translations = {
     hello: {
       greeting: 'Halo semua, saya',
       role: 'Penggemar Data',
-      instruction1: '// selesaikan game untuk melanjutkan',
-      instruction2: '// kamu juga bisa lihat di halaman Github saya',
+      instruction1: '// siap berkolaborasi dengan data ',
+      instruction2: '// terbuka untuk Pekerjaan ',
       githubConst: 'const',
       githubVar: 'tautanGithub',
     },
