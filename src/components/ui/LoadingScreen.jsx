@@ -416,7 +416,7 @@ export default function LoadingScreen({ onComplete }) {
           paddingBottom: 10,
         }}>
           <span style={{ color: '#4D5BCE', fontSize: 11, letterSpacing: '0.12em' }}>WELCOME!</span>
-          <span style={{ color: '#607B96', fontSize: 11 }}>murfhi</span>
+          <span style={{ color: '#607B96', fontSize: 11 }}>Data Enthusiast</span>
         </div>
 
         {/* Pixel-art "PRESS START" text */}
@@ -489,7 +489,7 @@ export default function LoadingScreen({ onComplete }) {
           paddingTop: 10,
           borderTop: '1px solid #1E2D3D',
         }}>
-          <span style={{ color: '#1E2D3D', fontSize: 10, letterSpacing: '0.08em' }}>© 2024 RAJIF PORTFOLIO</span>
+          <span style={{ color: '#1E2D3D', fontSize: 10, letterSpacing: '0.08em' }}>© 2026 murfhi</span>
           <span style={{ color: '#1E2D3D', fontSize: 10, letterSpacing: '0.08em' }}>SURABAYA, ID</span>
         </div>
       </div>
