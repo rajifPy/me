@@ -66,7 +66,7 @@ export default function LyricsTicker({ isPlaying }) {
   const isDark = theme === 'dark'
 
   const [visible, setVisible] = useState(false)
-  const [activeLyric, setActiveLyric] = useState(LYRICS[0].text)
+  const [activeLyric, setActiveLyric] = useState('')
   const [mounted, setMounted] = useState(false)
 
   const tickerRef = useRef(null)
@@ -87,13 +87,13 @@ export default function LyricsTicker({ isPlaying }) {
         }
       }
     }
-    
+
     findAudio()
     const interval = setInterval(() => {
       if (!audioRef.current) findAudio()
       else clearInterval(interval)
     }, 500)
-    
+
     return () => clearInterval(interval)
   }, [])
 
@@ -137,24 +137,37 @@ export default function LyricsTicker({ isPlaying }) {
     const updateLyricByTime = () => {
       const audio = audioRef.current
       if (!audio || audio.paused) return
-      
+
       const currentTime = audio.currentTime
-      
+
+      // Detik 0-11 adalah intro instrumental, belum ada vokal
+      if (currentTime < 11.0) {
+        setActiveLyric('')
+        animationFrameRef.current = requestAnimationFrame(updateLyricByTime)
+        return
+      }
+
       // Cari lirik terakhir yang waktunya <= currentTime
-      let activeIndex = 0
+      let activeIndex = -1
       for (let i = LYRICS.length - 1; i >= 0; i--) {
         if (LYRICS[i].time <= currentTime) {
           activeIndex = i
           break
         }
       }
-      
-      setActiveLyric(LYRICS[activeIndex].text)
+
+      // Jika tidak ada lirik yang cocok, kosongkan
+      if (activeIndex === -1) {
+        setActiveLyric('')
+      } else {
+        setActiveLyric(LYRICS[activeIndex].text)
+      }
+
       animationFrameRef.current = requestAnimationFrame(updateLyricByTime)
     }
 
     animationFrameRef.current = requestAnimationFrame(updateLyricByTime)
-    
+
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
@@ -162,10 +175,11 @@ export default function LyricsTicker({ isPlaying }) {
     }
   }, [isPlaying])
 
-  // Reset ke lirik pertama saat musik mulai diputar
+  // Reset lirik saat musik berhenti
   useEffect(() => {
-    if (!isPlaying) return
-    setActiveLyric(LYRICS[0].text)
+    if (!isPlaying) {
+      setActiveLyric('')
+    }
   }, [isPlaying])
 
   if (!mounted) return null
@@ -195,7 +209,6 @@ export default function LyricsTicker({ isPlaying }) {
           to   { background-position: 200% center; }
         }
         .lt-active-lyric {
-          animation: lt-active-glow 2s ease-in-out infinite;
           background: linear-gradient(
             90deg,
             ${accent} 0%,
@@ -256,7 +269,7 @@ export default function LyricsTicker({ isPlaying }) {
           marginTop: 20,
         }}
       >
-        {/* Active lyric line */}
+        {/* Active lyric line — hanya tampil jika ada lirik */}
         <div
           style={{
             display: 'flex',
@@ -266,32 +279,34 @@ export default function LyricsTicker({ isPlaying }) {
             minHeight: 28,
           }}
         >
-          <span
-            style={{
-              display: 'inline-block',
-              width: 7,
-              height: 7,
-              borderRadius: '50%',
-              background: accent,
-              boxShadow: `0 0 8px ${accent}`,
-              flexShrink: 0,
-              animation: 'lt-pulse-dot 1.5s ease-in-out infinite',
-            }}
-          />
-
-          <span
-            key={activeLyric}
-            className="lt-active-lyric"
-            style={{
-              fontFamily: "'Fira Code', monospace",
-              fontSize: 13,
-              fontWeight: 500,
-              letterSpacing: '0.04em',
-              animation: `lt-fade-in 0.4s ease both, lt-shimmer 3s linear infinite`,
-            }}
-          >
-            {activeLyric}
-          </span>
+          {activeLyric && (
+            <>
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: 7,
+                  height: 7,
+                  borderRadius: '50%',
+                  background: accent,
+                  boxShadow: `0 0 8px ${accent}`,
+                  flexShrink: 0,
+                  animation: 'lt-pulse-dot 1.5s ease-in-out infinite',
+                }}
+              />
+              <span
+                key={activeLyric}
+                className="lt-active-lyric"
+                style={{
+                  fontFamily: "'Fira Code', monospace",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {activeLyric}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Scrolling ticker */}
