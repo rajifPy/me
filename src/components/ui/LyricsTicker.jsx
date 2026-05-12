@@ -1,47 +1,67 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '@/context/ThemeContext'
+import { MUSIC_EVENT } from './MusicToggle'
 
-// ─── On & On by Cartoon ft. Daniel Levi (NCS) lyrics ─────────────────────────
+// ─── LIRIK RESMI "On & On" - Cartoon, Jéja ft. Daniel Levi ───
 const LYRICS = [
-  { text: 'I see the light fading out',           time: 0    },
-  { text: 'A lonely satellite',                    time: 3.5  },
-  { text: 'The war inside my head',                time: 7    },
-  { text: "Won't stop, but I'll survive",          time: 10.5 },
-  { text: 'I taste the rain rushing down',         time: 14   },
-  { text: 'My throat is cracked and dry',          time: 17.5 },
-  { text: 'So help me out',                        time: 21   },
-  { text: 'I close my eyes',                       time: 24.5 },
-  { text: 'And on and on the world will turn',     time: 28   },
-  { text: "It doesn't care that you're hurting",   time: 31.5 },
-  { text: 'And on and on the sun will rise',       time: 35   },
-  { text: "It doesn't care that you're not ready", time: 38.5 },
-  { text: 'The burning starts in my chest',        time: 42   },
-  { text: 'A fire in the sky',                     time: 45.5 },
-  { text: 'The words you said',                    time: 49   },
-  { text: 'They echo through my mind',             time: 52.5 },
-  { text: 'I taste the rain rushing down',         time: 56   },
-  { text: 'My throat is cracked and dry',          time: 59.5 },
-  { text: 'So help me out',                        time: 63   },
-  { text: 'I close my eyes',                       time: 66.5 },
-  { text: 'And on and on the world will turn',     time: 70   },
-  { text: "It doesn't care that you're hurting",   time: 73.5 },
-  { text: 'And on and on the sun will rise',       time: 77   },
-  { text: "It doesn't care that you're not ready", time: 80.5 },
-  { text: 'On and on',                             time: 84   },
-  { text: 'And on and on',                         time: 87.5 },
-  { text: 'On and on',                             time: 91   },
-  { text: 'The world will turn',                   time: 94.5 },
-  { text: 'And on and on the world will turn',     time: 98   },
-  { text: "It doesn't care that you're hurting",   time: 101.5},
-  { text: 'And on and on the sun will rise',       time: 105  },
-  { text: "It doesn't care that you're not ready", time: 108.5},
-  { text: 'On and on',                             time: 112  },
-  { text: '♪  On & On — Cartoon ft. Daniel Levi  ♪', time: 116 },
+  // Verse 1
+  { time: 0.0, text: 'Hold me close \'til I get up' },
+  { time: 3.2, text: 'Time is barely on our side' },
+  { time: 6.5, text: 'I don\'t wanna waste what\'s left' },
+  { time: 9.8, text: 'The storms we chase are leading us' },
+  { time: 13.0, text: 'And love is all we\'ll ever trust, yeah' },
+  { time: 16.5, text: 'No, I don\'t wanna waste what\'s left' },
+
+  // Chorus 1
+  { time: 20.0, text: 'And on and on we\'ll go' },
+  { time: 23.5, text: 'Through the wastelands, through the highways' },
+  { time: 27.0, text: '\'Til my shadow, through the sunrays' },
+  { time: 30.5, text: 'And on and on we\'ll go' },
+  { time: 34.0, text: 'Through the wastelands, through the highways' },
+  { time: 37.5, text: 'And on and on we\'ll go' },
+
+  // Verse 2
+  { time: 41.0, text: 'On we\'ll go' },
+  { time: 43.0, text: 'Finding life along the way' },
+  { time: 46.0, text: 'Melodies we haven\'t played' },
+  { time: 49.0, text: 'No, I don\'t want no rest' },
+  { time: 52.0, text: 'Echoin\' around these walls' },
+  { time: 55.0, text: 'Fighting to create a song' },
+  { time: 58.0, text: 'I don\'t wanna miss a beat' },
+
+  // Chorus 2
+  { time: 61.5, text: 'And on and on we\'ll go' },
+  { time: 65.0, text: 'Through the wastelands, through the highways' },
+  { time: 68.5, text: '\'Til my shadow, through the sunrays' },
+  { time: 72.0, text: 'And on and on we\'ll go' },
+  { time: 75.5, text: 'Through the wastelands, through the highways' },
+  { time: 79.0, text: 'And on and on we\'ll go' },
+
+  // Bridge / Build-up
+  { time: 83.0, text: 'And we\'ll grow in number' },
+  { time: 86.5, text: 'Fueled by thunder, see the horizon' },
+  { time: 90.0, text: 'Turn us to thousands' },
+  { time: 93.5, text: 'And we\'ll grow in number' },
+  { time: 97.0, text: 'Fueled by thunder, see the horizon' },
+  { time: 100.5, text: 'Turn us to thousands' },
+
+  // Chorus 3 (final)
+  { time: 104.5, text: 'And on and on we\'ll go' },
+  { time: 108.0, text: 'Through the wastelands, through the highways' },
+  { time: 111.5, text: '\'Til my shadow, through the sunrays' },
+  { time: 115.0, text: 'And on and on we\'ll go' },
+  { time: 118.5, text: 'Through the wastelands, through the highways' },
+  { time: 122.0, text: 'And on and on we\'ll go' },
+
+  // Outro
+  { time: 125.5, text: 'On and on we\'ll go' },
+  { time: 129.0, text: 'On and on we\'ll go' },
+  { time: 132.5, text: '♪ On & On — Cartoon ft. Daniel Levi ♪' },
 ]
 
-// Flat lyrics array for the ticker — all joined for seamless loop
+// Gabungan semua lirik untuk ticker scroll
 const TICKER_CONTENT = LYRICS.map(l => l.text).join('   ·   ')
 
 export default function LyricsTicker({ isPlaying }) {
@@ -49,17 +69,38 @@ export default function LyricsTicker({ isPlaying }) {
   const isDark = theme === 'dark'
 
   const [visible, setVisible] = useState(false)
-  const [activeLine, setActiveLine] = useState(0)
+  const [activeLyric, setActiveLyric] = useState(LYRICS[0].text)
   const [mounted, setMounted] = useState(false)
 
   const tickerRef = useRef(null)
-  const innerRef  = useRef(null)
-  const posRef    = useRef(0)
-  const rafRef    = useRef(null)
-  const timeRef   = useRef(0)
-  const lyricTimerRef = useRef(null)
+  const innerRef = useRef(null)
+  const posRef = useRef(0)
+  const rafRef = useRef(null)
+  const audioRef = useRef(null)
+  const animationFrameRef = useRef(null)
 
-  // ── Fade in/out with isPlaying ───────────────────────────────────────────
+  // ── Dapatkan referensi ke elemen audio dari MusicToggle ─────────────────
+  useEffect(() => {
+    const findAudio = () => {
+      const audioElements = document.querySelectorAll('audio')
+      for (let audio of audioElements) {
+        if (audio.src && audio.src.includes('/audio/on_on.mp3')) {
+          audioRef.current = audio
+          break
+        }
+      }
+    }
+    
+    findAudio()
+    const interval = setInterval(() => {
+      if (!audioRef.current) findAudio()
+      else clearInterval(interval)
+    }, 500)
+    
+    return () => clearInterval(interval)
+  }, [])
+
+  // ── Fade in/out dengan isPlaying ────────────────────────────────────────
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -69,13 +110,12 @@ export default function LyricsTicker({ isPlaying }) {
     if (isPlaying) {
       setVisible(true)
     } else {
-      // Fade out with delay
       const t = setTimeout(() => setVisible(false), 600)
       return () => clearTimeout(t)
     }
   }, [isPlaying, mounted])
 
-  // ── Scrolling ticker animation ────────────────────────────────────────────
+  // ── Scroll ticker animation ─────────────────────────────────────────────
   useEffect(() => {
     if (!isPlaying || !innerRef.current) return
     const speed = 0.7
@@ -93,27 +133,50 @@ export default function LyricsTicker({ isPlaying }) {
     return () => cancelAnimationFrame(rafRef.current)
   }, [isPlaying])
 
-  // ── Cycle through lyric lines when playing ────────────────────────────────
+  // ── Sinkronisasi lirik berdasarkan currentTime audio ────────────────────
   useEffect(() => {
-    if (!isPlaying) {
-      clearInterval(lyricTimerRef.current)
-      return
+    if (!isPlaying || !audioRef.current) return
+
+    const updateLyricByTime = () => {
+      const audio = audioRef.current
+      if (!audio || audio.paused) return
+      
+      const currentTime = audio.currentTime
+      
+      // Cari lirik terakhir yang waktunya <= currentTime
+      let activeIndex = 0
+      for (let i = LYRICS.length - 1; i >= 0; i--) {
+        if (LYRICS[i].time <= currentTime) {
+          activeIndex = i
+          break
+        }
+      }
+      
+      setActiveLyric(LYRICS[activeIndex].text)
+      animationFrameRef.current = requestAnimationFrame(updateLyricByTime)
     }
 
-    lyricTimerRef.current = setInterval(() => {
-      setActiveLine(prev => (prev + 1) % LYRICS.length)
-    }, 3500)
+    animationFrameRef.current = requestAnimationFrame(updateLyricByTime)
+    
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+      }
+    }
+  }, [isPlaying])
 
-    return () => clearInterval(lyricTimerRef.current)
+  // Reset ke lirik pertama saat musik mulai diputar
+  useEffect(() => {
+    if (!isPlaying) return
+    setActiveLyric(LYRICS[0].text)
   }, [isPlaying])
 
   if (!mounted) return null
 
-  const accent     = isDark ? '#43D9AD' : '#0D9488'
+  const accent = isDark ? '#43D9AD' : '#0D9488'
   const accentBlue = isDark ? '#4D5BCE' : '#3B4BCA'
-  const bg         = isDark ? 'rgba(1, 18, 39, 0.75)' : 'rgba(255,255,255,0.75)'
-  const borderClr  = isDark ? 'rgba(67,217,173,0.2)'  : 'rgba(13,148,136,0.25)'
-  const activeLine_ = LYRICS[activeLine]?.text || ''
+  const bg = isDark ? 'rgba(1, 18, 39, 0.75)' : 'rgba(255,255,255,0.75)'
+  const borderClr = isDark ? 'rgba(67,217,173,0.2)' : 'rgba(13,148,136,0.25)'
 
   return (
     <>
@@ -121,10 +184,6 @@ export default function LyricsTicker({ isPlaying }) {
         @keyframes lt-fade-in {
           from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes lt-fade-out {
-          from { opacity: 1; transform: translateY(0); }
-          to   { opacity: 0; transform: translateY(8px); }
         }
         @keyframes lt-pulse-dot {
           0%,100% { opacity: 1; transform: scale(1); }
@@ -200,7 +259,7 @@ export default function LyricsTicker({ isPlaying }) {
           marginTop: 20,
         }}
       >
-        {/* ── Active lyric line ── */}
+        {/* Active lyric line */}
         <div
           style={{
             display: 'flex',
@@ -210,7 +269,6 @@ export default function LyricsTicker({ isPlaying }) {
             minHeight: 28,
           }}
         >
-          {/* Live dot */}
           <span
             style={{
               display: 'inline-block',
@@ -224,9 +282,8 @@ export default function LyricsTicker({ isPlaying }) {
             }}
           />
 
-          {/* The active lyric */}
           <span
-            key={activeLine}
+            key={activeLyric}
             className="lt-active-lyric"
             style={{
               fontFamily: "'Fira Code', monospace",
@@ -236,11 +293,11 @@ export default function LyricsTicker({ isPlaying }) {
               animation: `lt-fade-in 0.4s ease both, lt-shimmer 3s linear infinite`,
             }}
           >
-            {activeLine_}
+            {activeLyric}
           </span>
         </div>
 
-        {/* ── Scrolling ticker ── */}
+        {/* Scrolling ticker */}
         <div
           style={{
             background: bg,
@@ -253,7 +310,6 @@ export default function LyricsTicker({ isPlaying }) {
         >
           <div className="lt-ticker-track" ref={tickerRef}>
             <div className="lt-ticker-inner" ref={innerRef}>
-              {/* Duplicate for seamless loop */}
               {[TICKER_CONTENT, TICKER_CONTENT].map((content, idx) => (
                 <span
                   key={idx}
@@ -272,7 +328,6 @@ export default function LyricsTicker({ isPlaying }) {
             </div>
           </div>
 
-          {/* Song credit */}
           <div
             style={{
               display: 'flex',
@@ -290,7 +345,7 @@ export default function LyricsTicker({ isPlaying }) {
                 letterSpacing: '0.08em',
               }}
             >
-              ♪ On & On — NCS
+              ♪ On & On — Cartoon, Jéja ft. Daniel Levi
             </span>
           </div>
         </div>
