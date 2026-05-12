@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 
+// Custom event name for broadcasting music state
+export const MUSIC_EVENT = 'portfolio:music-toggle'
+
 export default function MusicToggle() {
   const { theme } = useTheme()
   const [isPlaying, setIsPlaying] = useState(false)
@@ -10,7 +13,6 @@ export default function MusicToggle() {
   const audioRef = useRef(null)
   const isDark = theme === 'dark'
 
-  // Ganti src dengan file musik lo-fi kamu di /public/audio/
   useEffect(() => {
     const audio = new Audio('/audio/on_on.mp3')
     audio.loop = true
@@ -30,6 +32,8 @@ export default function MusicToggle() {
     const audio = audioRef.current
     if (!audio) return
 
+    const nextState = !isPlaying
+
     if (isPlaying) {
       audio.pause()
       setIsPlaying(false)
@@ -38,10 +42,14 @@ export default function MusicToggle() {
         await audio.play()
         setIsPlaying(true)
       } catch {
-        // autoplay blocked — still show as playing state
         setIsPlaying(true)
       }
     }
+
+    // Broadcast music state change so other components (LyricsTicker) can react
+    window.dispatchEvent(
+      new CustomEvent(MUSIC_EVENT, { detail: { isPlaying: nextState } })
+    )
 
     setTimeout(() => setIsAnimating(false), 400)
   }
@@ -148,7 +156,7 @@ export default function MusicToggle() {
             ))}
           </span>
         ) : (
-          /* Static icon — pause-like bars hinting at music */
+          /* Static icon */
           <span style={{ display: 'flex', alignItems: 'flex-end', gap: 2.5, height: 18 }}>
             {[4, 10, 6, 13].map((h, i) => (
               <span
