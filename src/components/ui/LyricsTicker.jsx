@@ -49,11 +49,21 @@ const RAW_LYRICS = [
   { startTime: 188.0, text: "And on and on we'll go" },
 ]
 
+// ─── PERUBAHAN UTAMA ─────────────────────────────────────────────────────────
+// Setiap lirik akan tampil minimal 2 detik (selama tidak berbenturan dengan lirik berikutnya)
 const LYRICS = RAW_LYRICS.map((lyric, idx) => {
   const next = RAW_LYRICS[idx + 1]
-  const endTime = next ? next.startTime - 0.05 : lyric.startTime + 3.5
+  let endTime
+  if (next) {
+    const desiredEnd = lyric.startTime + 2.0          // target tampil 2 detik
+    // Jangan sampai overlap dengan lirik berikutnya (dikurangi 0.05 detik untuk toleransi)
+    endTime = Math.min(desiredEnd, next.startTime - 0.05)
+  } else {
+    endTime = lyric.startTime + 3.5   // lirik terakhir tampil 3.5 detik
+  }
   return { ...lyric, endTime }
 })
+// ─────────────────────────────────────────────────────────────────────────────
 
 // ─── Warna per section ────────────────────────────────────────────────────────
 function getSectionColor(text) {
@@ -103,7 +113,7 @@ function Equalizer({ color, reverse }) {
   )
 }
 
-// ─── Komponen utama ───────────────────────────────────────────────────────────
+// ─── Komponen utama (tidak ada perubahan lain, hanya data LYRICS di atas) ─────
 export default function LyricsTicker({ isPlaying }) {
   const { theme } = useTheme()
   const isDark = theme === 'dark'
@@ -115,11 +125,10 @@ export default function LyricsTicker({ isPlaying }) {
 
   const rafRef      = useRef(null)
   const prevTextRef = useRef(null)
-  const playStartRef = useRef(null) // Date.now() saat musik mulai
+  const playStartRef = useRef(null)
 
   useEffect(() => { setMounted(true) }, [])
 
-  // ── Saat musik berhenti ──────────────────────────────────────────────────
   useEffect(() => {
     if (!isPlaying) {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
@@ -135,27 +144,21 @@ export default function LyricsTicker({ isPlaying }) {
         return () => clearTimeout(t)
       }
     } else {
-      // Catat kapan musik mulai (untuk fallback hitung waktu)
       playStartRef.current = Date.now()
     }
   }, [isPlaying])
 
-  // ── RAF loop saat musik main ─────────────────────────────────────────────
   useEffect(() => {
     if (!isPlaying || !mounted) return
 
-    // Delay 200ms supaya window.__portfolioAudio sempat di-set oleh MusicToggle
     const initTimer = setTimeout(() => {
       const tick = () => {
-        // ── Cara ambil currentTime ────────────────────────────────────
         let ct = null
 
-        // 1. window.__portfolioAudio (di-set oleh MusicToggle yang sudah dimodifikasi)
         if (typeof window !== 'undefined' && window.__portfolioAudio) {
           ct = window.__portfolioAudio.currentTime
         }
 
-        // 2. Scan semua <audio> element di DOM
         if (ct === null && typeof document !== 'undefined') {
           const els = document.querySelectorAll('audio')
           for (const el of els) {
@@ -166,7 +169,6 @@ export default function LyricsTicker({ isPlaying }) {
           }
         }
 
-        // 3. Fallback: hitung dari waktu mulai play
         if (ct === null && playStartRef.current) {
           ct = (Date.now() - playStartRef.current) / 1000
         }
@@ -186,7 +188,6 @@ export default function LyricsTicker({ isPlaying }) {
 
             if (found) {
               if (prev) {
-                // Ada lirik sebelumnya → out dulu lalu in
                 setAnimPhase('out')
                 setTimeout(() => {
                   setCurrentText(found)
@@ -195,7 +196,6 @@ export default function LyricsTicker({ isPlaying }) {
                   setTimeout(() => setAnimPhase('show'), 450)
                 }, 300)
               } else {
-                // Tidak ada lirik sebelumnya → langsung in
                 setCurrentText(found)
                 setAnimKey(k => k + 1)
                 setAnimPhase('in')
@@ -304,7 +304,6 @@ export default function LyricsTicker({ isPlaying }) {
           userSelect: 'none',
         }}
       >
-        {/* Meta row */}
         <div
           style={{
             display: 'flex',
@@ -335,7 +334,6 @@ export default function LyricsTicker({ isPlaying }) {
           <Equalizer color={colors.to} reverse />
         </div>
 
-        {/* Lyric text area */}
         <div
           style={{
             position: 'relative',
@@ -360,7 +358,6 @@ export default function LyricsTicker({ isPlaying }) {
           )}
         </div>
 
-        {/* Glow bar */}
         <div
           style={{
             height: 2,
