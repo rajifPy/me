@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 
 // ─── TIMESTAMP LIRIK (dalam detik) ───────────────────────────────────────────
+// startTime = kapan lirik muncul
+// endTime   = dihitung otomatis dari startTime berikutnya (atau +3s untuk terakhir)
 const RAW_LYRICS = [
   // Verse 1
   { startTime: 11.0,  text: "Hold me close 'til I get up" },
@@ -60,7 +62,7 @@ const LYRICS = RAW_LYRICS.map((lyric, idx) => {
 // ─── WARNA GRADIEN per section ────────────────────────────────────────────────
 function getSectionColor(text) {
   const chorus = ['And on and on', "Through the wastelands", "'Til my shadow"]
-  const bridge = ['And we'll grow', 'Fueled by thunder', 'Turn us to thousands']
+  const bridge = ["And we'll grow", 'Fueled by thunder', 'Turn us to thousands']
   if (chorus.some(c => text.includes(c.replace("'", '\u2019')) || text.includes(c)))
     return { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
   if (bridge.some(b => text.includes(b)))
