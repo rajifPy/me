@@ -7,58 +7,55 @@ import { MUSIC_EVENT } from './MusicToggle'
 // ─── LIRIK RESMI "On & On" - Cartoon, Jéja ft. Daniel Levi ───
 const LYRICS = [
   // Verse 1
-  { time: 0.0, text: 'Hold me close \'til I get up' },
-  { time: 3.2, text: 'Time is barely on our side' },
-  { time: 6.5, text: 'I don\'t wanna waste what\'s left' },
-  { time: 9.8, text: 'The storms we chase are leading us' },
-  { time: 13.0, text: 'And love is all we\'ll ever trust, yeah' },
-  { time: 16.5, text: 'No, I don\'t wanna waste what\'s left' },
+  { time: 11.0, text: "Hold me close 'til I get up" },
+  { time: 14.0, text: "Time is barely on our side" },
+  { time: 18.0, text: "I don't wanna waste what's left" },
+  { time: 22.0, text: "The storms we chase are leadin' us" },
+  { time: 25.0, text: "And love is all we'll ever trust, yeah" },
+  { time: 29.0, text: "No, I don't wanna waste what's left" },
 
   // Chorus 1
-  { time: 20.0, text: 'And on and on we\'ll go' },
-  { time: 23.5, text: 'Through the wastelands, through the highways' },
-  { time: 27.0, text: '\'Til my shadow, through the sunrays' },
-  { time: 30.5, text: 'And on and on we\'ll go' },
-  { time: 34.0, text: 'Through the wastelands, through the highways' },
-  { time: 37.5, text: 'And on and on we\'ll go' },
+  { time: 33.0, text: "And on and on we'll go" },
+  { time: 38.0, text: "Through the wastelands, through the highways" },
+  { time: 40.0, text: "'Til my shadow turns to sunrays" },
+  { time: 42.0, text: "And on and on we'll go" },
+  { time: 49.0, text: "Through the wastelands, through the highways" },
+  { time: 51.0, text: "And on and on we'll go" },
 
   // Verse 2
-  { time: 41.0, text: 'On we\'ll go' },
-  { time: 43.0, text: 'Finding life along the way' },
-  { time: 46.0, text: 'Melodies we haven\'t played' },
-  { time: 49.0, text: 'No, I don\'t want no rest' },
-  { time: 52.0, text: 'Echoin\' around these walls' },
-  { time: 55.0, text: 'Fighting to create a song' },
-  { time: 58.0, text: 'I don\'t wanna miss a beat' },
+  { time: 83.0, text: "Finding life along the way" },
+  { time: 87.0, text: "Melodies we haven't played" },
+  { time: 89.0, text: "No, I don't want no rest" },
+  { time: 94.0, text: "Echoin' around these walls" },
+  { time: 97.0, text: "Fighting to create a song" },
+  { time: 100.0, text: "I don't wanna miss a beat" },
 
   // Chorus 2
-  { time: 61.5, text: 'And on and on we\'ll go' },
-  { time: 65.0, text: 'Through the wastelands, through the highways' },
-  { time: 68.5, text: '\'Til my shadow, through the sunrays' },
-  { time: 72.0, text: 'And on and on we\'ll go' },
-  { time: 75.5, text: 'Through the wastelands, through the highways' },
-  { time: 79.0, text: 'And on and on we\'ll go' },
+  { time: 104.0, text: "And on and on we'll go" },
+  { time: 110.0, text: "Through the wastelands, through the highways" },
+  { time: 111.0, text: "'Til my shadow turns to sunrays" },
+  { time: 114.0, text: "And on and on we'll go" },
+  { time: 121.0, text: "Through the wastelands, through the highways" },
+  { time: 122.0, text: "And on and on we'll go" },
 
-  // Bridge / Build-up
-  { time: 83.0, text: 'And we\'ll grow in number' },
-  { time: 86.5, text: 'Fueled by thunder, see the horizon' },
-  { time: 90.0, text: 'Turn us to thousands' },
-  { time: 93.5, text: 'And we\'ll grow in number' },
-  { time: 97.0, text: 'Fueled by thunder, see the horizon' },
-  { time: 100.5, text: 'Turn us to thousands' },
+  // Bridge
+  { time: 148.0, text: "And we'll grow in number" },
+  { time: 152.0, text: "Fueled by thunder, see the horizon" },
+  { time: 156.0, text: "Turn us to thousands" },
+  { time: 159.0, text: "And we'll grow in number" },
+  { time: 163.0, text: "Fueled by thunder, see the horizon" },
+  { time: 167.0, text: "Turn us to thousands" },
 
   // Chorus 3 (final)
-  { time: 104.5, text: 'And on and on we\'ll go' },
-  { time: 108.0, text: 'Through the wastelands, through the highways' },
-  { time: 111.5, text: '\'Til my shadow, through the sunrays' },
-  { time: 115.0, text: 'And on and on we\'ll go' },
-  { time: 118.5, text: 'Through the wastelands, through the highways' },
-  { time: 122.0, text: 'And on and on we\'ll go' },
+  { time: 173.0, text: "And on and on we'll go" },
+  { time: 176.0, text: "Through the wastelands, through the highways" },
+  { time: 177.0, text: "'Til my shadow turns to sunrays" },
+  { time: 180.0, text: "And on and on we'll go" },
+  { time: 187.0, text: "Through the wastelands, through the highways" },
+  { time: 188.0, text: "And on and on we'll go" },
 
   // Outro
-  { time: 125.5, text: 'On and on we\'ll go' },
-  { time: 129.0, text: 'On and on we\'ll go' },
-  { time: 132.5, text: '♪ On & On — Cartoon ft. Daniel Levi ♪' },
+  { time: 195.0, text: "♪ On & On — Cartoon, Jéja ft. Daniel Levi ♪" },
 ]
 
 // Gabungan semua lirik untuk ticker scroll
