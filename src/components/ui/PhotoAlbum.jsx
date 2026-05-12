@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback, WheelEvent } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, Camera, RotateCcw } from 'lucide-react'
 import { photos, photoCategories } from '@/data/photos'
 
@@ -39,13 +39,40 @@ function useZoomLens(zoomFactor = 2.5) {
 function PhotoCard({ photo, index, onOpen, theme }) {
   const { lens, imgRef, handleMouseEnter, handleMouseLeave, handleMouseMove } = useZoomLens(2.5)
   const [loaded, setLoaded] = useState(false)
+  // Track whether user has tapped/clicked (for mobile reveal)
+  const [tapped, setTapped] = useState(false)
   const isDark = theme === 'dark'
+
+  // Reset tapped state when scrolling away (optional UX nicety)
+  // We keep it simple: once tapped, stays colored until page refresh
+
+  const handleCardClick = () => {
+    if (!tapped) {
+      // First tap on mobile: reveal color, don't open lightbox yet
+      setTapped(true)
+    } else {
+      // Second tap (or desktop click): open lightbox
+      onOpen(photo)
+    }
+  }
+
+  const handleMouseEnterCard = () => {
+    handleMouseEnter()
+    // On desktop hover, we treat it as "tapped" for color reveal
+    setTapped(true)
+  }
+
+  const handleMouseLeaveCard = () => {
+    handleMouseLeave()
+    // On desktop, revert to grey when mouse leaves
+    setTapped(false)
+  }
 
   return (
     <div
-      onClick={() => onOpen(photo)}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={handleCardClick}
+      onMouseEnter={handleMouseEnterCard}
+      onMouseLeave={handleMouseLeaveCard}
       onMouseMove={handleMouseMove}
       className={`
         relative group cursor-crosshair overflow-hidden rounded-lg border-2 aspect-square
@@ -62,7 +89,10 @@ function PhotoCard({ photo, index, onOpen, theme }) {
           <Camera className="opacity-20" size={32} />
         </div>
       )}
+
+      {/* Protective overlay */}
       <div className="absolute inset-0 z-10 select-none pointer-events-none" />
+
       <img
         ref={imgRef}
         src={photo.url}
@@ -74,12 +104,56 @@ function PhotoCard({ photo, index, onOpen, theme }) {
           e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23011221" width="400" height="300"/%3E%3Ctext x="200" y="150" text-anchor="middle" fill="%2343D9AD" font-size="20" font-family="monospace"%3EImage Not Found%3C/text%3E%3C/svg%3E'
           setLoaded(true)
         }}
-        className={`w-full h-full object-cover transition-all duration-500 select-none pointer-events-none group-hover:scale-105 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
+        className={`w-full h-full object-cover select-none pointer-events-none ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        style={{
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          // Greyscale by default, full color when tapped/hovered
+          filter: tapped ? 'grayscale(0%) brightness(1.02) saturate(1.05)' : 'grayscale(100%)',
+          transform: tapped ? 'scale(1.05)' : 'scale(1)',
+          transition: 'filter 0.45s cubic-bezier(0.4, 0, 0.2, 1), transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
       />
 
-      {/* Zoom lens on thumbnail */}
-      {lens.visible && loaded && (
+      {/* Colour reveal shimmer overlay — plays once on reveal */}
+      {tapped && loaded && (
+        <div
+          className="absolute inset-0 pointer-events-none z-[5]"
+          style={{
+            background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%)',
+            animation: 'photoShimmer 0.6s ease-out forwards',
+          }}
+        />
+      )}
+
+      {/* Tap hint for mobile (shown when not yet tapped) */}
+      {!tapped && loaded && (
+        <div
+          className="absolute inset-0 z-[6] flex items-center justify-center pointer-events-none sm:hidden"
+          style={{
+            background: 'rgba(0,0,0,0.25)',
+            opacity: 0.9,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'Fira Code', monospace",
+              fontSize: 10,
+              letterSpacing: '0.08em',
+              color: 'rgba(255,255,255,0.75)',
+              background: 'rgba(0,0,0,0.45)',
+              padding: '4px 10px',
+              borderRadius: 20,
+              border: '1px solid rgba(255,255,255,0.2)',
+            }}
+          >
+            tap to reveal
+          </span>
+        </div>
+      )}
+
+      {/* Zoom lens on thumbnail (desktop only) */}
+      {lens.visible && loaded && tapped && (
         <div
           className="absolute z-20 rounded-full pointer-events-none"
           style={{
@@ -98,14 +172,17 @@ function PhotoCard({ photo, index, onOpen, theme }) {
         </div>
       )}
 
-      {/* Hover overlay */}
+      {/* Hover overlay (caption) */}
       <div className="absolute inset-0 z-30 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 pointer-events-none">
         <p className="text-white text-sm font-medium mb-1 select-none">{photo.caption}</p>
         <div className="flex items-center justify-between">
           <span className="text-teal-400 text-xs select-none">{photo.category}</span>
-          <span className="text-white/50 text-xs select-none">🔍 click to open</span>
+          {/* On mobile with tapped: show 'tap to open', else desktop shows 'click to open' */}
+          <span className="text-white/50 text-xs select-none hidden sm:block">🔍 click to open</span>
+          <span className="text-white/50 text-xs select-none sm:hidden">tap again to open</span>
         </div>
       </div>
+
       <div className="absolute top-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
         <span className="text-xs text-white/50 font-bold bg-black/40 px-2 py-1 rounded select-none">© Protected</span>
       </div>
@@ -132,7 +209,6 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
 
   const currentIndex = allPhotos.findIndex(p => p.id === photo.id)
 
-  // Reset zoom on photo change
   useEffect(() => {
     setZoom(1)
     setPosition({ x: 0, y: 0 })
@@ -161,7 +237,6 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
       setPosition({ x: 0, y: 0 })
     } else {
       setPosition(prev => {
-        // Adjust position to zoom toward origin point
         const scaleDelta = clamped / zoom
         const newPos = {
           x: originX + (prev.x - originX) * scaleDelta,
@@ -172,13 +247,12 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
     }
   }, [zoom, clampPosition])
 
-  // Scroll-to-zoom
   const handleWheel = useCallback((e) => {
     e.preventDefault()
     const rect = containerRef.current?.getBoundingClientRect()
     if (!rect) return
-    const originX = (e.clientX - rect.left - rect.width / 2)
-    const originY = (e.clientY - rect.top - rect.height / 2)
+    const originX = (e.clientX - rect.left) - rect.width / 2
+    const originY = (e.clientY - rect.top) - rect.height / 2
     const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP
     zoomTo(zoom + delta, originX / zoom, originY / zoom)
   }, [zoom, zoomTo])
@@ -190,7 +264,6 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
     return () => el.removeEventListener('wheel', handleWheel)
   }, [handleWheel])
 
-  // Drag to pan
   const handleMouseDown = useCallback((e) => {
     if (zoom <= 1) return
     e.preventDefault()
@@ -210,7 +283,6 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
 
   const handleMouseUp = useCallback(() => setIsDragging(false), [])
 
-  // Double-click to zoom in/out at cursor
   const handleDoubleClick = useCallback((e) => {
     const rect = containerRef.current?.getBoundingClientRect()
     if (!rect) return
@@ -224,7 +296,6 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
     }
   }, [zoom, zoomTo])
 
-  // Keyboard
   useEffect(() => {
     const handler = (e) => {
       if (e.key === 'Escape') onClose()
@@ -238,7 +309,6 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
     return () => window.removeEventListener('keydown', handler)
   }, [onClose, onNavigate, zoom, zoomTo])
 
-  // Prevent right-click
   useEffect(() => {
     const block = (e) => { if (e.target.tagName === 'IMG') e.preventDefault() }
     document.addEventListener('contextmenu', block)
@@ -326,38 +396,24 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
             {photo.category}
           </span>
         </div>
-        <button
-          onClick={onClose}
-          className="zoom-btn"
-          aria-label="Close"
-        >
+        <button onClick={onClose} className="zoom-btn" aria-label="Close">
           <X size={16} />
         </button>
       </div>
 
       {/* ── Main image area ──────────────────────────────────────────── */}
       <div className="flex-1 flex items-center justify-center min-h-0 relative px-16">
-        {/* Nav buttons */}
         {allPhotos.length > 1 && (
           <>
-            <button
-              onClick={() => onNavigate('prev')}
-              className="nav-btn absolute left-4"
-              aria-label="Previous photo"
-            >
+            <button onClick={() => onNavigate('prev')} className="nav-btn absolute left-4" aria-label="Previous photo">
               <ChevronLeft size={20} />
             </button>
-            <button
-              onClick={() => onNavigate('next')}
-              className="nav-btn absolute right-4"
-              aria-label="Next photo"
-            >
+            <button onClick={() => onNavigate('next')} className="nav-btn absolute right-4" aria-label="Next photo">
               <ChevronRight size={20} />
             </button>
           </>
         )}
 
-        {/* Image container */}
         <div
           ref={containerRef}
           className={`relative flex items-center justify-center w-full h-full overflow-hidden
@@ -367,42 +423,28 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
           onDoubleClick={handleDoubleClick}
           style={{ userSelect: 'none' }}
         >
-          {/* Protective overlay */}
-          <div
-            className="absolute inset-0 z-20 pointer-events-none select-none"
-            onContextMenu={e => e.preventDefault()}
-          />
+          <div className="absolute inset-0 z-20 pointer-events-none select-none" onContextMenu={e => e.preventDefault()} />
 
-          {/* Watermark */}
-          <div
-            className="absolute top-4 right-4 z-30 pointer-events-none select-none text-xs font-bold px-3 py-1 rounded"
-            style={{ color: 'rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.3)' }}
-          >
+          <div className="absolute top-4 right-4 z-30 pointer-events-none select-none text-xs font-bold px-3 py-1 rounded"
+            style={{ color: 'rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.3)' }}>
             © Muhammad Rajif Al Farikhi
           </div>
 
-          {/* Zoom hint overlay — shows briefly */}
           {isAnimating && (
             <div
               className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none"
               style={{
                 animation: 'lb-fade 0.3s ease both',
-                background: 'rgba(0,0,0,0.6)',
-                backdropFilter: 'blur(8px)',
-                color: 'rgba(255,255,255,0.6)',
-                fontSize: 11,
-                padding: '6px 14px',
-                borderRadius: 20,
-                border: '1px solid rgba(255,255,255,0.1)',
-                whiteSpace: 'nowrap',
-                fontFamily: 'monospace',
+                background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)',
+                color: 'rgba(255,255,255,0.6)', fontSize: 11, padding: '6px 14px',
+                borderRadius: 20, border: '1px solid rgba(255,255,255,0.1)',
+                whiteSpace: 'nowrap', fontFamily: 'monospace',
               }}
             >
               scroll to zoom · double-click to zoom in · drag to pan
             </div>
           )}
 
-          {/* Zoom grid lines — visible when zoomed */}
           {isZoomed && (
             <div
               className="absolute inset-0 z-10 pointer-events-none"
@@ -417,7 +459,6 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
             />
           )}
 
-          {/* The image */}
           <img
             ref={imgRef}
             src={photo.url}
@@ -428,8 +469,7 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
             style={{
               transform: `scale(${zoom}) translate(${position.x / zoom}px, ${position.y / zoom}px)`,
               transition: isDragging ? 'none' : 'transform 0.18s cubic-bezier(0.4,0,0.2,1)',
-              userSelect: 'none',
-              WebkitUserSelect: 'none',
+              userSelect: 'none', WebkitUserSelect: 'none',
               pointerEvents: 'none',
               maxHeight: 'calc(100vh - 180px)',
             }}
@@ -442,7 +482,6 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
         className="flex items-center justify-between px-5 py-3 flex-shrink-0"
         style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.06)' }}
       >
-        {/* Keyboard hints */}
         <div className="hidden sm:flex items-center gap-4 text-white/25 text-xs font-mono">
           <span>← → navigate</span>
           <span>scroll / +- zoom</span>
@@ -451,59 +490,31 @@ function Lightbox({ photo, allPhotos, onClose, onNavigate, theme }) {
           <span>ESC close</span>
         </div>
 
-        {/* Zoom controls */}
         <div className="flex items-center gap-2 mx-auto sm:mx-0">
-          <button
-            className="zoom-btn"
-            onClick={() => zoomTo(zoom - ZOOM_STEP)}
-            disabled={zoom <= MIN_ZOOM}
-            aria-label="Zoom out"
-          >
+          <button className="zoom-btn" onClick={() => zoomTo(zoom - ZOOM_STEP)} disabled={zoom <= MIN_ZOOM} aria-label="Zoom out">
             <ZoomOut size={15} />
           </button>
 
-          {/* Zoom bar + percentage */}
           <div className="flex items-center gap-2 px-2">
             <div className="zoom-bar-track">
-              <div
-                className="zoom-bar-fill"
-                style={{ width: `${((zoom - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)) * 100}%` }}
-              />
+              <div className="zoom-bar-fill" style={{ width: `${((zoom - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)) * 100}%` }} />
             </div>
-            <span
-              className="zoom-pill text-xs tabular-nums font-mono w-10 text-center"
-              style={{ color: isZoomed ? '#43D9AD' : 'rgba(255,255,255,0.4)' }}
-            >
+            <span className="zoom-pill text-xs tabular-nums font-mono w-10 text-center"
+              style={{ color: isZoomed ? '#43D9AD' : 'rgba(255,255,255,0.4)' }}>
               {zoomPercent}%
             </span>
           </div>
 
-          <button
-            className="zoom-btn"
-            onClick={() => zoomTo(zoom + ZOOM_STEP)}
-            disabled={zoom >= MAX_ZOOM}
-            aria-label="Zoom in"
-          >
+          <button className="zoom-btn" onClick={() => zoomTo(zoom + ZOOM_STEP)} disabled={zoom >= MAX_ZOOM} aria-label="Zoom in">
             <ZoomIn size={15} />
           </button>
 
-          {/* Reset */}
-          <button
-            className="zoom-btn"
-            onClick={() => { setZoom(1); setPosition({ x: 0, y: 0 }) }}
-            disabled={zoom === 1 && position.x === 0 && position.y === 0}
-            aria-label="Reset zoom"
-          >
+          <button className="zoom-btn" onClick={() => { setZoom(1); setPosition({ x: 0, y: 0 }) }}
+            disabled={zoom === 1 && position.x === 0 && position.y === 0} aria-label="Reset zoom">
             <RotateCcw size={14} />
           </button>
 
-          {/* Fit to screen (max non-crop zoom) */}
-          <button
-            className="zoom-btn"
-            onClick={() => zoomTo(MAX_ZOOM)}
-            disabled={zoom >= MAX_ZOOM}
-            aria-label="Max zoom"
-          >
+          <button className="zoom-btn" onClick={() => zoomTo(MAX_ZOOM)} disabled={zoom >= MAX_ZOOM} aria-label="Max zoom">
             <Maximize2 size={14} />
           </button>
         </div>
@@ -552,6 +563,10 @@ export default function PhotoAlbum({ theme = 'dark' }) {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
         }
+        @keyframes photoShimmer {
+          from { opacity: 1; transform: translateX(-100%); }
+          to   { opacity: 0; transform: translateX(100%); }
+        }
       `}</style>
 
       {/* Header */}
@@ -561,7 +576,8 @@ export default function PhotoAlbum({ theme = 'dark' }) {
           <h3 className={`text-xl font-bold ${textClass}`}>Photo Album</h3>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-teal-400/60 hidden sm:block">// hover to zoom · click to open</span>
+          <span className="text-xs text-teal-400/60 hidden sm:block">// hover to reveal · click to open</span>
+          <span className="text-xs text-teal-400/60 sm:hidden">// tap to reveal · tap again to open</span>
           <span className={`text-sm ${isDark ? 'text-[#607B96]' : 'text-gray-400'}`}>
             {filteredPhotos.length} {filteredPhotos.length === 1 ? 'photo' : 'photos'}
           </span>
