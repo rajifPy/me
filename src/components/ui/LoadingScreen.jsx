@@ -465,13 +465,13 @@ export default function LoadingScreen({ onComplete }) {
           {phase === 'ready' && (
             <div className="glitch-wrap press-blink">
               <span style={{ color: '#43D9AD', fontSize: 13, letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 500 }}>
-                — PRESS ANY KEY TO ENTER —
+                — PRESS ANY KEY TO OPEN —
               </span>
               <span className="glitch-a" style={{ fontSize: 13, letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 500 }}>
-                — PRESS ANY KEY TO ENTER —
+                — PRESS ANY KEY TO OPEN —
               </span>
               <span className="glitch-b" style={{ fontSize: 13, letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 500 }}>
-                — PRESS ANY KEY TO ENTER —
+                — PRESS ANY KEY TO OPEN —
               </span>
             </div>
           )}
