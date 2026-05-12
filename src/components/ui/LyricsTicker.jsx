@@ -4,8 +4,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 
 // ─── TIMESTAMP LIRIK (dalam detik) ───────────────────────────────────────────
-// startTime = kapan lirik muncul
-// endTime   = dihitung otomatis dari startTime berikutnya (atau +3s untuk terakhir)
 const RAW_LYRICS = [
   // Verse 1
   { startTime: 11.0,  text: "Hold me close 'til I get up" },
