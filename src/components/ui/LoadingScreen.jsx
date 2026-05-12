@@ -415,7 +415,7 @@ export default function LoadingScreen({ onComplete }) {
           borderBottom: '1px solid #1E2D3D',
           paddingBottom: 10,
         }}>
-          <span style={{ color: '#4D5BCE', fontSize: 11, letterSpacing: '0.12em' }}>PORTFOLIO_OS v1.0.0</span>
+          <span style={{ color: '#4D5BCE', fontSize: 11, letterSpacing: '0.12em' }}>WELCOME!</span>
           <span style={{ color: '#607B96', fontSize: 11 }}>murfhi</span>
         </div>
 
