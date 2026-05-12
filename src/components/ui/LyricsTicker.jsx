@@ -3,44 +3,46 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 
-// ─── LIRIK DENGAN TIMESTAMP (muncul dan hilang seperti Spotify) ───
-// Setiap objek: startTime (detik), text (lirik), endTime akan dihitung otomatis
+// ─── TIMESTAMP LIRIK (dalam detik) ───────────────────────────────────────────
+// startTime = kapan lirik muncul
+// endTime   = dihitung otomatis dari startTime berikutnya (atau +3s untuk terakhir)
 const RAW_LYRICS = [
-  { startTime: 11.0, text: "Hold me close 'til I get up" },
-  { startTime: 14.0, text: "Time is barely on our side" },
-  { startTime: 18.0, text: "I don't wanna waste what's left" },
-  { startTime: 22.0, text: "The storms we chase are leadin' us" },
-  { startTime: 25.0, text: "And love is all we'll ever trust, yeah" },
-  { startTime: 29.0, text: "No, I don't wanna waste what's left" },
+  // Verse 1
+  { startTime: 11.0,  text: "Hold me close 'til I get up" },
+  { startTime: 14.0,  text: "Time is barely on our side" },
+  { startTime: 18.0,  text: "I don't wanna waste what's left" },
+  { startTime: 22.0,  text: "The storms we chase are leadin' us" },
+  { startTime: 25.0,  text: "And love is all we'll ever trust, yeah" },
+  { startTime: 29.0,  text: "No, I don't wanna waste what's left" },
   // Chorus 1
-  { startTime: 33.0, text: "And on and on we'll go" },
-  { startTime: 38.0, text: "Through the wastelands, through the highways" },
-  { startTime: 40.0, text: "'Til my shadow turns to sunrays" },
-  { startTime: 42.0, text: "And on and on we'll go" },
-  { startTime: 49.0, text: "Through the wastelands, through the highways" },
-  { startTime: 51.0, text: "And on and on we'll go" },
-  // Verse 2 (setelah jeda instrumental sampai 1:23)
-  { startTime: 83.0, text: "Finding life along the way" },
-  { startTime: 87.0, text: "Melodies we haven't played" },
-  { startTime: 89.0, text: "No, I don't want no rest" },
-  { startTime: 94.0, text: "Echoin' around these walls" },
-  { startTime: 97.0, text: "Fighting to create a song" },
+  { startTime: 33.0,  text: "And on and on we'll go" },
+  { startTime: 38.0,  text: "Through the wastelands, through the highways" },
+  { startTime: 40.0,  text: "'Til my shadow turns to sunrays" },
+  { startTime: 42.0,  text: "And on and on we'll go" },
+  { startTime: 49.0,  text: "Through the wastelands, through the highways" },
+  { startTime: 51.0,  text: "And on and on we'll go" },
+  // Verse 2 — mulai 1:23 = 83s
+  { startTime: 83.0,  text: "Finding life along the way" },
+  { startTime: 87.0,  text: "Melodies we haven't played" },
+  { startTime: 89.0,  text: "No, I don't want no rest" },
+  { startTime: 94.0,  text: "Echoin' around these walls" },
+  { startTime: 97.0,  text: "Fighting to create a song" },
   { startTime: 100.0, text: "I don't wanna miss a beat" },
-  // Chorus 2
+  // Chorus 2 — 1:44 = 104s
   { startTime: 104.0, text: "And on and on we'll go" },
   { startTime: 110.0, text: "Through the wastelands, through the highways" },
   { startTime: 111.0, text: "'Til my shadow turns to sunrays" },
   { startTime: 114.0, text: "And on and on we'll go" },
   { startTime: 121.0, text: "Through the wastelands, through the highways" },
   { startTime: 122.0, text: "And on and on we'll go" },
-  // Bridge
+  // Bridge — 2:28 = 148s
   { startTime: 148.0, text: "And we'll grow in number" },
   { startTime: 152.0, text: "Fueled by thunder, see the horizon" },
   { startTime: 156.0, text: "Turn us to thousands" },
   { startTime: 159.0, text: "And we'll grow in number" },
   { startTime: 163.0, text: "Fueled by thunder, see the horizon" },
   { startTime: 167.0, text: "Turn us to thousands" },
-  // Chorus 3 (penutup)
+  // Chorus penutup — 2:53 = 173s
   { startTime: 173.0, text: "And on and on we'll go" },
   { startTime: 176.0, text: "Through the wastelands, through the highways" },
   { startTime: 177.0, text: "'Til my shadow turns to sunrays" },
@@ -49,245 +51,301 @@ const RAW_LYRICS = [
   { startTime: 188.0, text: "And on and on we'll go" },
 ]
 
-// Hitung endTime untuk setiap lirik (durasi tampil sampai startTime berikutnya)
-// Baris terakhir: tampil 3 detik lalu hilang
-const LYRICS_WITH_END = RAW_LYRICS.map((lyric, idx) => {
-  const nextStart = RAW_LYRICS[idx + 1]?.startTime
-  const endTime = nextStart ? nextStart : lyric.startTime + 3.0
+// Hitung endTime otomatis
+const LYRICS = RAW_LYRICS.map((lyric, idx) => {
+  const next = RAW_LYRICS[idx + 1]
+  // Kasih sedikit overlap supaya transisi smooth (hilang 0.3s sebelum next muncul)
+  const endTime = next ? next.startTime - 0.1 : lyric.startTime + 3.5
   return { ...lyric, endTime }
 })
+
+// ─── WARNA GRADIEN per section ────────────────────────────────────────────────
+function getSectionColor(text) {
+  const chorus = ['And on and on', "Through the wastelands", "'Til my shadow"]
+  const bridge = ['And we'll grow', 'Fueled by thunder', 'Turn us to thousands']
+  if (chorus.some(c => text.includes(c.replace("'", '\u2019')) || text.includes(c)))
+    return { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
+  if (bridge.some(b => text.includes(b)))
+    return { from: '#FEA55F', to: '#E99287', glow: '#FEA55F' }
+  return { from: '#E5E9F0', to: '#43D9AD', glow: '#4D5BCE' }
+}
 
 export default function LyricsTicker({ isPlaying }) {
   const { theme } = useTheme()
   const isDark = theme === 'dark'
 
-  const [visible, setVisible] = useState(false)
-  const [currentLyric, setCurrentLyric] = useState(null) // null = tidak ada lirik
-  const [mounted, setMounted] = useState(false)
+  const [lyricState, setLyricState] = useState(null)
+  // lyricState: { text, key, phase } — phase: 'in' | 'show' | 'out'
 
-  const audioRef = useRef(null)
-  const animationFrameRef = useRef(null)
+  const audioRef      = useRef(null)
+  const rafRef        = useRef(null)
+  const lastLyricRef  = useRef(null)
+  const phaseTimerRef = useRef(null)
 
-  // ── Cari elemen audio dari MusicToggle ─────────────────────────────────
+  // Cari elemen <audio> dari MusicToggle
   useEffect(() => {
-    const findAudio = () => {
-      const audioElements = document.querySelectorAll('audio')
-      for (let audio of audioElements) {
-        if (audio.src && audio.src.includes('/audio/on_on.mp3')) {
-          audioRef.current = audio
-          break
+    const find = () => {
+      for (const el of document.querySelectorAll('audio')) {
+        if (el.src?.includes('/audio/on_on.mp3')) {
+          audioRef.current = el
+          return true
         }
       }
+      return false
     }
-    findAudio()
-    const interval = setInterval(() => {
-      if (!audioRef.current) findAudio()
-      else clearInterval(interval)
-    }, 500)
-    return () => clearInterval(interval)
+    if (!find()) {
+      const id = setInterval(() => { if (find()) clearInterval(id) }, 400)
+      return () => clearInterval(id)
+    }
   }, [])
 
-  // ── Fade in/out container berdasarkan isPlaying ────────────────────────
+  // Clear lyric saat musik berhenti
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!mounted) return
-    if (isPlaying) {
-      setVisible(true)
-    } else {
-      const t = setTimeout(() => setVisible(false), 500)
+    if (!isPlaying) {
+      clearTimeout(phaseTimerRef.current)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      setLyricState(prev => prev ? { ...prev, phase: 'out' } : null)
+      lastLyricRef.current = null
+      const t = setTimeout(() => setLyricState(null), 500)
       return () => clearTimeout(t)
     }
-  }, [isPlaying, mounted])
+  }, [isPlaying])
 
-  // ── Sinkronisasi lirik berdasarkan currentTime audio ──────────────────
+  // Loop RAF sinkronisasi lirik
   useEffect(() => {
-    if (!isPlaying || !audioRef.current) {
-      // Jika berhenti, kosongkan lirik
-      setCurrentLyric(null)
-      return
-    }
+    if (!isPlaying) return
 
-    const updateLyric = () => {
+    const tick = () => {
       const audio = audioRef.current
       if (!audio || audio.paused) {
-        setCurrentLyric(null)
-        animationFrameRef.current = requestAnimationFrame(updateLyric)
+        rafRef.current = requestAnimationFrame(tick)
         return
       }
 
-      const currentTime = audio.currentTime
-      let foundLyric = null
-
-      for (const lyric of LYRICS_WITH_END) {
-        if (currentTime >= lyric.startTime && currentTime < lyric.endTime) {
-          foundLyric = lyric.text
+      const ct = audio.currentTime
+      let found = null
+      for (const lyric of LYRICS) {
+        if (ct >= lyric.startTime && ct < lyric.endTime) {
+          found = lyric
           break
         }
       }
 
-      setCurrentLyric(foundLyric)
-      animationFrameRef.current = requestAnimationFrame(updateLyric)
-    }
+      const foundText = found?.text ?? null
 
-    animationFrameRef.current = requestAnimationFrame(updateLyric)
+      if (foundText !== lastLyricRef.current) {
+        lastLyricRef.current = foundText
+        clearTimeout(phaseTimerRef.current)
 
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
+        if (foundText) {
+          // Fase: out (prev) → in (next)
+          setLyricState(prev => {
+            if (prev?.text) {
+              // Animasikan keluar dulu lalu masuk
+              return { text: prev.text, key: prev.key, phase: 'out', next: foundText }
+            }
+            return { text: foundText, key: foundText + ct, phase: 'in' }
+          })
+        } else {
+          // Tidak ada lirik → animasikan keluar
+          setLyricState(prev => prev ? { ...prev, phase: 'out' } : null)
+          phaseTimerRef.current = setTimeout(() => setLyricState(null), 450)
+        }
       }
+
+      rafRef.current = requestAnimationFrame(tick)
+    }
+
+    rafRef.current = requestAnimationFrame(tick)
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
   }, [isPlaying])
 
-  // Reset lirik saat isPlaying berubah dari false ke true (lagu mulai ulang)
+  // Transisi out → in (setelah animasi keluar selesai, tampilkan lirik berikutnya)
   useEffect(() => {
-    if (isPlaying) {
-      setCurrentLyric(null)
+    if (lyricState?.phase === 'out' && lyricState?.next) {
+      const t = setTimeout(() => {
+        setLyricState({ text: lyricState.next, key: lyricState.next, phase: 'in' })
+      }, 350)
+      return () => clearTimeout(t)
     }
-  }, [isPlaying])
+    // Setelah fase 'in', masuk ke fase 'show'
+    if (lyricState?.phase === 'in') {
+      const t = setTimeout(() => {
+        setLyricState(prev => prev ? { ...prev, phase: 'show' } : null)
+      }, 500)
+      return () => clearTimeout(t)
+    }
+  }, [lyricState?.phase, lyricState?.next])
 
-  if (!mounted) return null
+  if (!lyricState && !isPlaying) return null
 
-  const accent = isDark ? '#43D9AD' : '#0D9488'
-  const bg = isDark ? 'rgba(1, 18, 39, 0.8)' : 'rgba(255, 255, 255, 0.8)'
-  const textColor = isDark ? '#E5E9F0' : '#1E293B'
+  const colors = lyricState ? getSectionColor(lyricState.text) : { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
+  const phase  = lyricState?.phase ?? 'out'
+  const text   = lyricState?.text ?? ''
 
   return (
     <>
       <style>{`
-        @keyframes lyricFadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(12px) scale(0.96);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
+        @keyframes lyricsSlideUp {
+          0%   { opacity: 0; transform: translateY(22px) scale(0.92); filter: blur(8px); }
+          60%  { opacity: 1; filter: blur(0); }
+          100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
         }
-        @keyframes lyricFadeOut {
-          from {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-          to {
-            opacity: 0;
-            transform: translateY(-8px) scale(0.98);
-          }
+        @keyframes lyricsSlideDown {
+          0%   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+          100% { opacity: 0; transform: translateY(-18px) scale(0.94); filter: blur(6px); }
         }
-        @keyframes glowPulse {
-          0% {
-            text-shadow: 0 0 0px ${accent}, 0 0 0px ${accent}40;
-          }
-          100% {
-            text-shadow: 0 0 12px ${accent}, 0 0 24px ${accent}60;
-          }
+        @keyframes lyricsShimmer {
+          0%   { background-position: 200% center; }
+          100% { background-position: -200% center; }
         }
-        .lyric-text {
-          animation: lyricFadeIn 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards,
-                     lyricFadeOut 0.35s ease-in forwards 2.5s;
-          animation-fill-mode: forwards;
+        @keyframes lyricsGlow {
+          0%, 100% { opacity: 0.4; transform: scaleX(0.7); }
+          50%       { opacity: 0.9; transform: scaleX(1); }
         }
-        .lyric-container {
-          transition: opacity 0.4s ease, transform 0.4s ease;
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+        @keyframes noteFloat {
+          0%   { opacity: 0; transform: translate(0, 0) scale(0.8); }
+          30%  { opacity: 1; }
+          100% { opacity: 0; transform: translate(var(--nx), var(--ny)) scale(0.4) rotate(var(--nr)); }
         }
-        .lyric-container.hidden {
-          opacity: 0;
+        @keyframes barBounce {
+          0%, 100% { transform: scaleY(0.3); }
+          50%       { transform: scaleY(1); }
+        }
+
+        .lyrics-wrap {
+          position: relative;
+          display: inline-flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
           pointer-events: none;
-          transform: translateY(8px);
+          user-select: none;
+          width: 100%;
+          max-width: 560px;
+          margin-top: 16px;
         }
-        .lyric-container.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        @keyframes shimmer {
-          0% { background-position: -100% 0; }
-          100% { background-position: 200% 0; }
-        }
-        .lyric-glow {
+
+        .lyrics-text-el {
+          font-family: 'Fira Code', monospace;
+          font-weight: 700;
+          font-size: clamp(1.05rem, 4.5vw, 1.7rem);
+          letter-spacing: 0.01em;
+          line-height: 1.3;
+          text-align: center;
+          white-space: pre-wrap;
+          word-break: break-word;
           background: linear-gradient(
             120deg,
-            ${accent} 0%,
-            ${isDark ? '#4D5BCE' : '#3B4BCA'} 40%,
-            ${accent} 60%,
-            ${isDark ? '#4D5BCE' : '#3B4BCA'} 100%
+            var(--lyric-from) 0%,
+            var(--lyric-to) 40%,
+            var(--lyric-from) 60%,
+            var(--lyric-to) 100%
           );
-          background-size: 200% auto;
+          background-size: 300% auto;
           -webkit-background-clip: text;
           background-clip: text;
+          -webkit-text-fill-color: transparent;
           color: transparent;
-          animation: shimmer 3s linear infinite;
+          animation: lyricsShimmer 4s linear infinite;
+          padding: 0 8px;
+        }
+
+        .lyrics-in  { animation: lyricsSlideUp   0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .lyrics-out { animation: lyricsSlideDown  0.38s cubic-bezier(0.55, 0, 1, 0.45) forwards; }
+        .lyrics-show { opacity: 1; transform: translateY(0) scale(1); }
+
+        .lyrics-glow-bar {
+          width: 80px;
+          height: 2px;
+          border-radius: 99px;
+          animation: lyricsGlow 2.2s ease-in-out infinite;
+        }
+
+        .lyrics-eq {
+          display: flex;
+          align-items: flex-end;
+          gap: 3px;
+          height: 14px;
+        }
+        .lyrics-eq span {
+          width: 3px;
+          border-radius: 2px;
+          transform-origin: bottom;
+        }
+        .lyrics-eq span:nth-child(1) { animation: barBounce 0.6s ease-in-out 0.00s infinite; height: 10px; }
+        .lyrics-eq span:nth-child(2) { animation: barBounce 0.6s ease-in-out 0.10s infinite; height: 14px; }
+        .lyrics-eq span:nth-child(3) { animation: barBounce 0.6s ease-in-out 0.20s infinite; height: 8px; }
+        .lyrics-eq span:nth-child(4) { animation: barBounce 0.6s ease-in-out 0.05s infinite; height: 12px; }
+        .lyrics-eq span:nth-child(5) { animation: barBounce 0.6s ease-in-out 0.15s infinite; height: 6px; }
+
+        .note-particle {
+          position: absolute;
+          font-size: 13px;
+          animation: noteFloat 1.8s ease-out forwards;
+          pointer-events: none;
         }
       `}</style>
 
-      <div
-        className={`lyric-container ${visible ? 'visible' : 'hidden'}`}
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: 560,
-          marginTop: 20,
-          marginBottom: 8,
-          padding: '16px 20px',
-          borderRadius: 20,
-          background: bg,
-          border: `1px solid ${accent}30`,
-          boxShadow: `0 8px 20px rgba(0,0,0,0.2), 0 0 0 1px ${accent}10 inset`,
-          textAlign: 'center',
-          minHeight: 100,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {currentLyric ? (
-          <p
-            key={currentLyric}
-            className="lyric-text lyric-glow"
-            style={{
-              fontFamily: "'Fira Code', monospace",
-              fontSize: 'clamp(1rem, 5vw, 1.6rem)',
-              fontWeight: 600,
-              letterSpacing: '0.02em',
-              lineHeight: 1.4,
-              margin: 0,
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-            }}
-          >
-            {currentLyric}
-          </p>
-        ) : (
-          <p
-            style={{
-              fontFamily: "'Fira Code', monospace",
-              fontSize: '0.85rem',
-              color: isDark ? 'rgba(96,123,150,0.6)' : 'rgba(74,85,104,0.6)',
-              letterSpacing: '0.05em',
-              margin: 0,
-            }}
-          >
-            ♪ ~ ♪
-          </p>
-        )}
-      </div>
+      <div className="lyrics-wrap">
+        {/* Equalizer bars kiri + kanan */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, opacity: isPlaying ? 1 : 0, transition: 'opacity 0.4s' }}>
+          <div className="lyrics-eq">
+            {[1,2,3,4,5].map(i => (
+              <span key={i} style={{ background: colors.from, animationDelay: `${i * 0.08}s` }} />
+            ))}
+          </div>
 
-      {/* Optional: kecil penanda lagu */}
-      <div
-        style={{
-          textAlign: 'center',
-          marginTop: 4,
-          fontSize: 10,
-          fontFamily: "'Fira Code', monospace",
-          color: isDark ? 'rgba(67,217,173,0.4)' : 'rgba(13,148,136,0.5)',
-          letterSpacing: '0.08em',
-        }}
-      >
-        On & On — Cartoon, Jéja ft. Daniel Levi
+          {/* Song info pill */}
+          <div style={{
+            fontFamily: "'Fira Code', monospace",
+            fontSize: 10,
+            color: isDark ? 'rgba(67,217,173,0.5)' : 'rgba(13,148,136,0.6)',
+            letterSpacing: '0.1em',
+            padding: '2px 10px',
+            borderRadius: 99,
+            border: `1px solid ${colors.glow}30`,
+            background: isDark ? `${colors.glow}08` : `${colors.glow}10`,
+            whiteSpace: 'nowrap',
+          }}>
+            ♪ On &amp; On — Cartoon
+          </div>
+
+          <div className="lyrics-eq" style={{ transform: 'scaleX(-1)' }}>
+            {[1,2,3,4,5].map(i => (
+              <span key={i} style={{ background: colors.to, animationDelay: `${i * 0.08}s` }} />
+            ))}
+          </div>
+        </div>
+
+        {/* Lyric text */}
+        <div style={{ position: 'relative', minHeight: '2.4em', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+          {text ? (
+            <p
+              key={lyricState?.key}
+              className={`lyrics-text-el ${phase === 'in' ? 'lyrics-in' : phase === 'out' ? 'lyrics-out' : 'lyrics-show'}`}
+              style={{
+                '--lyric-from': colors.from,
+                '--lyric-to':   colors.to,
+              }}
+            >
+              {text}
+            </p>
+          ) : null}
+        </div>
+
+        {/* Glow bar bawah lirik */}
+        {(phase === 'in' || phase === 'show') && text && (
+          <div
+            className="lyrics-glow-bar"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${colors.glow}, transparent)`,
+              boxShadow: `0 0 12px ${colors.glow}80`,
+            }}
+          />
+        )}
       </div>
     </>
   )
