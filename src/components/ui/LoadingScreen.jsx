@@ -42,7 +42,7 @@ const PixelTextSVG = () => (
   </svg>
 )
 
-// ── Pixel-art character SVG — two groups alternating like the Cobp button ──────
+// ── Pixel-art character SVG — dua grup bergantian (tidak dihapus) ──────────────
 const PixelCharSVG = () => (
   <svg
     fill="none"
@@ -150,6 +150,7 @@ const PixelButton = ({ pressed }) => (
     xmlns="http://www.w3.org/2000/svg"
     className={`pixel-button-svg ${pressed ? 'pressed' : ''}`}
   >
+    {/* SVG paths for button */}
     <g className="button-start" style={{ transform: pressed ? 'translateY(2px)' : 'none', transition: 'transform 0.1s ease' }}>
       <path fill="#2D2D2D" d="M9 1H10H11H12H13H14H15H16H17H18H19H20H21H22H23H24H25H26H27H28H29H30H31H32V2H33V3H34V4V5V6V7V8V9V10V11V12V13V14V15H35V14V13V12V11V10V9V8V7V6V5V4V3V2H34V1H33V0H32H31H30H29H28H27H26H25H24H23H22H21H20H19H18H17H16H15H14H13H12H11H10H9H8H7H6H5V1H4V2H3V3V4V5V6V7V8V9V10V11V12V13V14V15H4V14V13V12V11V10V9V8V7V6V5V4V3H5V2H6V1H7H8H9Z" />
       <path fill="#26B87C" d="M5 10V9H4V8V7V6V5V4V3H5V2H6V1H7H8H9H10H11H12H13H14H15H16H17H18H19H20H21H22H23H24H25H26H27H28H29H30H31H32V2H33V3H34V4V5V6V7V8V9H33V10H32H31H30H29H28H27H26H25H24H23H22H21H20H19H18H17H16H15H14H13H12H11H10H9H8H7H6H5Z" />
@@ -178,26 +179,24 @@ const PixelButton = ({ pressed }) => (
 )
 
 export default function LoadingScreen({ onComplete }) {
-  const [phase, setPhase] = useState('boot')
-  const [bootLines, setBootLines] = useState([])
+  const [phase, setPhase] = useState('boot')      // boot -> ready -> exit
   const [cursorVisible, setCursorVisible] = useState(true)
   const [clicked, setClicked] = useState(false)
   const [pressed, setPressed] = useState(false)
   const [lightUp, setLightUp] = useState(false)
-  const intervalRef = useRef(null)
-  
+
+  // Boot phase: tunggu 3 detik (durasi loading bar) lalu pindah ke ready
   useEffect(() => {
-    const timeouts = []
-    BOOT_SEQUENCE.forEach(({ text, delay }) => {
-      timeouts.push(setTimeout(() => setBootLines(p => [...p, text]), delay))
-    })
-    timeouts.push(setTimeout(() => setPhase('ready'), 3200))
-    return () => timeouts.forEach(clearTimeout)
+    const timer = setTimeout(() => {
+      setPhase('ready')
+    }, 3000)
+    return () => clearTimeout(timer)
   }, [])
 
+  // Blinking cursor (opsional, bisa dipertahankan untuk efek)
   useEffect(() => {
-    intervalRef.current = setInterval(() => setCursorVisible(v => !v), 530)
-    return () => clearInterval(intervalRef.current)
+    const interval = setInterval(() => setCursorVisible(v => !v), 530)
+    return () => clearInterval(interval)
   }, [])
 
   const handleClick = () => {
@@ -260,8 +259,6 @@ export default function LoadingScreen({ onComplete }) {
         }
 
         /* ── EXACT COBP ANIMATIONS ────────────────────────────── */
-
-        /* pixels inside the SVG text — same as Cobp */
         .pixels {
           animation: text-color 4s calc(var(--delay) * 0.025s) infinite;
         }
@@ -271,7 +268,6 @@ export default function LoadingScreen({ onComplete }) {
           100%{ color: #ff0000; }
         }
 
-        /* The whole text wrapper blinks like opacity-text */
         .pixel-text-wrapper {
           animation: opacity-text 2s infinite steps(1, end);
         }
@@ -279,7 +275,6 @@ export default function LoadingScreen({ onComplete }) {
           50%, 100% { opacity: 0.12; filter: none; }
         }
 
-        /* Pixel text SVG sizing */
         .pixel-text-svg {
           width: 192px;
           height: 36px;
@@ -291,22 +286,12 @@ export default function LoadingScreen({ onComplete }) {
             drop-shadow(0 0 18px #ff0000);
         }
 
-        /* ── Pixel character alternates group-1 / group-2 ───── */
-        .char-group { opacity: 0; }
-        .char-group-1 { animation: toggleVisibility 2s infinite steps(1, end); }
-        .char-group-2 { animation: toggleVisibility 2s 1s infinite steps(1, end); }
-        @keyframes toggleVisibility {
-          0%   { opacity: 1; }
-          50%, 100% { opacity: 0; }
-        }
-
         .pixel-char-svg {
           width: 48px;
           height: 62px;
           image-rendering: pixelated;
         }
 
-        /* ── Button SVG ──────────────────────────────────────── */
         .pixel-button-svg {
           width: 228px;
           height: 120px;
@@ -316,7 +301,6 @@ export default function LoadingScreen({ onComplete }) {
           transform: translateY(3px);
         }
 
-        /* ── Light-up effect (same as Cobp .light-up) ─────────── */
         .light-up-overlay {
           position: absolute;
           inset: 0;
@@ -339,23 +323,23 @@ export default function LoadingScreen({ onComplete }) {
           background-color: rgba(38,184,124,0.3);
         }
 
-        /* ── Boot line appear ────────────────────────────────── */
-        .boot-line {
-          opacity: 0;
-          transform: translateX(-5px);
-          animation: line-in 0.25s ease forwards;
-        }
-        @keyframes line-in {
-          to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* ── Loading bar ─────────────────────────────────────── */
+        /* Loading bar fill animation */
         @keyframes bar-fill {
           from { width: 0%; }
           to   { width: 100%; }
         }
+        .bar-fill-animation {
+          animation: bar-fill 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
 
-        /* ── "PRESS ANY KEY" glitch effect when ready ─────────── */
+        .char-group { opacity: 0; }
+        .char-group-1 { animation: toggleVisibility 2s infinite steps(1, end); }
+        .char-group-2 { animation: toggleVisibility 2s 1s infinite steps(1, end); }
+        @keyframes toggleVisibility {
+          0%   { opacity: 1; }
+          50%, 100% { opacity: 0; }
+        }
+
         .glitch-wrap { position: relative; display: inline-block; }
         .glitch-a, .glitch-b {
           position: absolute;
@@ -389,7 +373,6 @@ export default function LoadingScreen({ onComplete }) {
           100% { clip-path: inset(18% 0 73% 0); transform: translate(-4px,0); }
         }
 
-        /* ── Press-start blink ───────────────────────────────── */
         .press-blink {
           animation: press-blink 1s step-end infinite;
         }
@@ -402,12 +385,12 @@ export default function LoadingScreen({ onComplete }) {
       {/* Scanlines + vignette layer */}
       <div className="ls-scanlines" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
 
-      {/* Light-up overlay (like Cobp .light-up) */}
+      {/* Light-up overlay */}
       <div className="light-up-overlay" style={{ opacity: lightUp ? 1 : 0 }}>
         <span />
       </div>
 
-      {/* ── Main content ─────────────────────────────────────────── */}
+      {/* Main content */}
       <div
         className={phase === 'ready' ? 'ls-ready' : ''}
         style={{
@@ -436,16 +419,15 @@ export default function LoadingScreen({ onComplete }) {
           <span style={{ color: '#607B96', fontSize: 11 }}>murfhi</span>
         </div>
 
-        {/* ── Pixel-art "PRESS START" text — COBP STYLE ─────────── */}
+        {/* Pixel-art "PRESS START" text */}
         <div className="pixel-text-wrapper" style={{ marginBottom: 28, display: 'flex', justifyContent: 'center' }}>
           <PixelTextSVG />
         </div>
 
-        {/* ── Pixel button (the green Cobp-style button) ─────────── */}
+        {/* Pixel button + karakter di atasnya */}
         <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center', position: 'relative' }}>
           <PixelButton pressed={pressed} />
-
-          {/* Pixel character sits on top of / next to the button — like the Cobp .link */}
+          {/* Karakter pixel art - posisi di atas tombol */}
           <div style={{
             position: 'absolute',
             bottom: '110%',
@@ -458,41 +440,7 @@ export default function LoadingScreen({ onComplete }) {
           </div>
         </div>
 
-        {/* ── Boot terminal lines ────────────────────────────────── */}
-        <div style={{
-          width: '100%',
-          minHeight: 148,
-          marginBottom: 20,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
-          alignSelf: 'flex-start',
-        }}>
-          {bootLines.map((line, i) => (
-            <div
-              key={i}
-              className="boot-line"
-              style={{
-                color: i === bootLines.length - 1 && phase !== 'ready' ? '#43D9AD' : '#607B96',
-                fontSize: 12,
-                letterSpacing: '0.03em',
-                transition: 'color 0.3s',
-              }}
-            >
-              {line}
-              {i === bootLines.length - 1 && phase !== 'ready' && (
-                <span style={{ opacity: cursorVisible ? 1 : 0, marginLeft: 2 }}>█</span>
-              )}
-            </div>
-          ))}
-          {phase === 'boot' && bootLines.length === 0 && (
-            <div style={{ color: '#43D9AD', fontSize: 12 }}>
-              <span style={{ opacity: cursorVisible ? 1 : 0 }}>█</span>
-            </div>
-          )}
-        </div>
-
-        {/* ── Loading bar ───────────────────────────────────────── */}
+        {/* Loading bar dengan animasi fill */}
         <div style={{
           width: '100%',
           height: 4,
@@ -501,16 +449,18 @@ export default function LoadingScreen({ onComplete }) {
           overflow: 'hidden',
           marginBottom: 24,
         }}>
-          <div style={{
-            height: '100%',
-            background: 'linear-gradient(90deg, #4D5BCE, #43D9AD)',
-            borderRadius: 2,
-            width: (phase === 'ready' || phase === 'exit') ? '100%' : '0%',
-            animation: bootLines.length > 0 ? `bar-fill 3s cubic-bezier(0.4,0,0.2,1) forwards` : 'none',
-          }} />
+          <div
+            className={phase === 'boot' ? 'bar-fill-animation' : ''}
+            style={{
+              height: '100%',
+              background: 'linear-gradient(90deg, #4D5BCE, #43D9AD)',
+              borderRadius: 2,
+              width: phase === 'ready' ? '100%' : '0%',
+            }}
+          />
         </div>
 
-        {/* ── PRESS ANY KEY / status ─────────────────────────────── */}
+        {/* Status: hanya "loading..." saat boot, lalu "PRESS ANY KEY" saat ready */}
         <div style={{ textAlign: 'center', height: 28 }}>
           {phase === 'ready' && (
             <div className="glitch-wrap press-blink">
