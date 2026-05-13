@@ -3,9 +3,9 @@
 export const photos = [
   {
     id: 1,
-    url: '/images/12358.png', // ✅ Path yang benar
-    caption: 'Working on data projects',
-    category: 'Work'
+    url: '/images/projekIAK.jpeg', // 
+    caption: 'project enterprise application integration',
+    category: 'Education'
   },
   {
     id: 2,
