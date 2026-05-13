@@ -39,7 +39,7 @@ export const photos = [
   },
   {
     id: 7,
-    url: '/images/album.jpg',
+    url: '/images/coding.png',
     caption: 'Coffee and coding session',
     category: 'Lifestyle'
   },
