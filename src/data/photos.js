@@ -45,8 +45,8 @@ export const photos = [
   },
   {
     id: 8,
-    url: '/images/12358.png',
-    caption: 'My workspace setup',
+    url: '/images/tenis_meja.png',
+    caption: 'My Hobby',
     category: 'Lifestyle'
   },
   {
