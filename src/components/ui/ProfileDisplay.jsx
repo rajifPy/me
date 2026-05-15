@@ -17,14 +17,39 @@ const PARTICLES = [
 
 // ── Icon images dari public/images/icon/ ──────────────────────────────────
 const ORBIT_ICONS = [
-  '/images/icon/clown.png',
-  '/images/icon/eye-glasses.png',
-  '/images/icon/love.png',
-  '/images/icon/sad-face.png',
+  { src: '/images/icon/clown.png',      label: 'Clown',      emoji: '🤡' },
+  { src: '/images/icon/eye-glasses.png',label: 'Cool',       emoji: '😎' },
+  { src: '/images/icon/love.png',       label: 'Love',       emoji: '😍' },
+  { src: '/images/icon/sad-face.png',   label: 'Sad',        emoji: '😢' },
 ]
 
 // Posisi horizontal masing-masing icon (dalam %)
 const ICON_POSITIONS = [12, 37, 63, 88]
+
+// ── Floating reaction particle yang melayang ke atas ──────────────────────
+function FloatingReaction({ emoji, x, y, id, onDone }) {
+  useEffect(() => {
+    const t = setTimeout(() => onDone(id), 1000)
+    return () => clearTimeout(t)
+  }, [id, onDone])
+
+  return (
+    <span
+      style={{
+        position: 'fixed',
+        left: x,
+        top: y,
+        fontSize: 32,
+        pointerEvents: 'none',
+        zIndex: 99999,
+        userSelect: 'none',
+        animation: 'reactionFly 1s cubic-bezier(0.2, 0, 0.3, 1) forwards',
+      }}
+    >
+      {emoji}
+    </span>
+  )
+}
 
 export default function ProfileDisplay() {
   const { theme } = useTheme()
@@ -38,6 +63,17 @@ export default function ProfileDisplay() {
   const [cursorOn, setCursorOn]     = useState(true)
   const glitchTimer                 = useRef(null)
 
+  // ── Reaction state ────────────────────────────────────────────────────
+  // counts: { 0: 3, 1: 7, ... } per icon index
+  const [reactionCounts, setReactionCounts] = useState({ 0: 0, 1: 0, 2: 0, 3: 0 })
+  // which icon user clicked (index or null)
+  const [userReaction, setUserReaction]     = useState(null)
+  // actively "bursting" icon index
+  const [burstIdx, setBurstIdx]             = useState(null)
+  // floating emoji particles
+  const [particles, setParticles]           = useState([])
+  const particleIdRef = useRef(0)
+
   const CODE_SNIPPET = `def analyze(data):
   clean = data.dropna()
   return clean.describe()`
@@ -46,6 +82,16 @@ export default function ProfileDisplay() {
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 200)
     return () => clearTimeout(t)
+  }, [])
+
+  // ── Load saved reactions from localStorage ────────────────────────────
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('profile_reactions')
+      if (saved) setReactionCounts(JSON.parse(saved))
+      const myR = localStorage.getItem('profile_my_reaction')
+      if (myR !== null) setUserReaction(parseInt(myR, 10))
+    } catch {}
   }, [])
 
   // ── Cursor blink ──────────────────────────────────────────────────────
@@ -90,6 +136,65 @@ export default function ProfileDisplay() {
     scheduleGlitch()
     return () => clearTimeout(glitchTimer.current)
   }, [])
+
+  // ── Handle icon click (reaction) ──────────────────────────────────────
+  const handleIconClick = (e, idx) => {
+    e.stopPropagation()
+
+    // Determine new counts
+    let newCounts = { ...reactionCounts }
+    let newUserReaction = userReaction
+
+    if (userReaction === idx) {
+      // Un-react
+      newCounts[idx] = Math.max(0, newCounts[idx] - 1)
+      newUserReaction = null
+    } else {
+      // Remove old reaction
+      if (userReaction !== null) {
+        newCounts[userReaction] = Math.max(0, newCounts[userReaction] - 1)
+      }
+      // Add new reaction
+      newCounts[idx] = (newCounts[idx] || 0) + 1
+      newUserReaction = idx
+    }
+
+    setReactionCounts(newCounts)
+    setUserReaction(newUserReaction)
+
+    // Persist
+    try {
+      localStorage.setItem('profile_reactions', JSON.stringify(newCounts))
+      if (newUserReaction !== null) {
+        localStorage.setItem('profile_my_reaction', String(newUserReaction))
+      } else {
+        localStorage.removeItem('profile_my_reaction')
+      }
+    } catch {}
+
+    // Burst animation
+    if (newUserReaction === idx) {
+      setBurstIdx(idx)
+      setTimeout(() => setBurstIdx(null), 600)
+
+      // Spawn floating particle
+      const rect = e.currentTarget.getBoundingClientRect()
+      const pid = ++particleIdRef.current
+      setParticles(prev => [
+        ...prev,
+        {
+          id: pid,
+          emoji: ORBIT_ICONS[idx].emoji,
+          x: rect.left + rect.width / 2 - 16,
+          y: rect.top - 8,
+        },
+      ])
+    }
+  }
+
+  const removeParticle = (id) => {
+    setParticles(prev => prev.filter(p => p.id !== id))
+  }
 
   const accent     = isDark ? '#43D9AD' : '#0D9488'
   const accentBlue = isDark ? '#4D5BCE' : '#3B4BCA'
@@ -143,10 +248,30 @@ export default function ProfileDisplay() {
           0%,100% { transform: translateX(-50%) translateY(0px);  }
           50%      { transform: translateX(-50%) translateY(-7px); }
         }
-        @keyframes pb-icon-spin-in {
-          0%   { transform: translateX(-50%) translateY(0px) rotate(-15deg) scale(0.6); opacity:0; }
-          60%  { transform: translateX(-50%) translateY(-5px) rotate(5deg) scale(1.15); opacity:1; }
-          100% { transform: translateX(-50%) translateY(0px) rotate(0deg) scale(1); opacity:1; }
+
+        /* ── REACTION: burst scale + fly up ── */
+        @keyframes iconBurst {
+          0%   { transform: translateX(-50%) scale(1); }
+          30%  { transform: translateX(-50%) scale(1.8) translateY(-6px); }
+          60%  { transform: translateX(-50%) scale(1.4) translateY(-3px); }
+          100% { transform: translateX(-50%) scale(1) translateY(0px); }
+        }
+
+        @keyframes reactionFly {
+          0%   { transform: translateY(0)  scale(1);   opacity: 1; }
+          50%  { transform: translateY(-60px) scale(1.5); opacity: 1; }
+          100% { transform: translateY(-110px) scale(0.7); opacity: 0; }
+        }
+
+        @keyframes countPop {
+          0%   { transform: scale(1); }
+          40%  { transform: scale(1.6); }
+          100% { transform: scale(1); }
+        }
+
+        @keyframes rippleOut {
+          0%   { transform: translateX(-50%) scale(0.8); opacity: 0.8; }
+          100% { transform: translateX(-50%) scale(2.4); opacity: 0; }
         }
 
         .pb-photo-wrap {
@@ -170,21 +295,22 @@ export default function ProfileDisplay() {
           animation: pb-data-stream 1.8s linear infinite;
         }
 
-        /* Icon wrapper — transisi naik/turun saat hover */
+        /* Icon wrapper */
         .pb-icon-wrap {
           position: absolute;
           transform: translateX(-50%);
           transition:
             bottom   0.5s cubic-bezier(0.34,1.56,0.64,1),
             opacity  0.4s ease;
+          cursor: pointer;
         }
-
-        /* Float setelah muncul */
         .pb-icon-wrap.is-visible {
           animation: pb-icon-float 2.8s ease-in-out infinite;
         }
+        .pb-icon-wrap.is-bursting {
+          animation: iconBurst 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards !important;
+        }
 
-        /* Spin-in saat pertama muncul — ditimpa float sesudahnya */
         .pb-icon-img {
           display: block;
           object-fit: contain;
@@ -193,15 +319,94 @@ export default function ProfileDisplay() {
           box-shadow:
             0 0 10px rgba(67,217,173,0.45),
             0 4px 14px rgba(0,0,0,0.55);
-          transition: box-shadow 0.3s ease, transform 0.3s ease;
+          transition: box-shadow 0.3s ease, transform 0.2s ease, filter 0.2s ease;
+          user-select: none;
+          -webkit-user-drag: none;
         }
         .pb-icon-img:hover {
           box-shadow:
-            0 0 18px rgba(67,217,173,0.7),
+            0 0 20px rgba(67,217,173,0.8),
             0 6px 20px rgba(0,0,0,0.6);
           transform: scale(1.15);
         }
+        .pb-icon-wrap.is-reacted .pb-icon-img {
+          box-shadow:
+            0 0 24px rgba(67,217,173,1),
+            0 0 40px rgba(67,217,173,0.5),
+            0 6px 20px rgba(0,0,0,0.6);
+          filter: brightness(1.2) saturate(1.3);
+        }
+
+        /* Reaction count badge */
+        .pb-reaction-count {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          min-width: 18px;
+          height: 18px;
+          background: #43D9AD;
+          color: #011627;
+          font-size: 10px;
+          font-weight: 700;
+          font-family: 'Fira Code', monospace;
+          border-radius: 9px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 4px;
+          border: 2px solid #011221;
+          box-shadow: 0 2px 8px rgba(67,217,173,0.5);
+          pointer-events: none;
+          z-index: 10;
+        }
+        .pb-reaction-count.popping {
+          animation: countPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        /* Ripple ring on click */
+        .pb-ripple {
+          position: absolute;
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          border: 2px solid rgba(67,217,173,0.7);
+          top: 50%;
+          left: 50%;
+          margin-top: -24px;
+          margin-left: -24px;
+          pointer-events: none;
+          animation: rippleOut 0.6s ease-out forwards;
+        }
+
+        /* Tooltip on hover */
+        .pb-icon-tooltip {
+          position: absolute;
+          bottom: calc(100% + 6px);
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(1,18,39,0.9);
+          color: #43D9AD;
+          font-size: 10px;
+          font-family: 'Fira Code', monospace;
+          padding: 3px 8px;
+          border-radius: 6px;
+          white-space: nowrap;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.15s ease;
+          border: 1px solid rgba(67,217,173,0.3);
+          backdrop-filter: blur(4px);
+          z-index: 20;
+        }
+        .pb-icon-wrap:hover .pb-icon-tooltip {
+          opacity: 1;
+        }
       `}</style>
+
+      {/* Floating emoji particles (global fixed) */}
+      {particles.map(p => (
+        <FloatingReaction key={p.id} {...p} onDone={removeParticle} />
+      ))}
 
       <div
         style={{
@@ -433,45 +638,104 @@ export default function ProfileDisplay() {
                 pointerEvents: 'none',
               }} />
 
-              {/* ── Icons muncul dari bawah satu persatu ─────────────── */}
+              {/* ── Clickable Reaction Icons ──────────────────────────── */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 zIndex: 6,
-                pointerEvents: 'none',
               }}>
+                {/* Hint text — shown when visible but not yet clicked */}
+                {hovered && userReaction === null && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '28%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontFamily: "'Fira Code', monospace",
+                    fontSize: 9,
+                    color: 'rgba(255,255,255,0.5)',
+                    background: 'rgba(0,0,0,0.4)',
+                    padding: '3px 10px',
+                    borderRadius: 20,
+                    whiteSpace: 'nowrap',
+                    pointerEvents: 'none',
+                    backdropFilter: 'blur(4px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    animation: 'pb-appear 0.4s ease forwards',
+                    zIndex: 10,
+                  }}>
+                    click to react
+                  </div>
+                )}
+
                 {ORBIT_ICONS.map((icon, i) => {
                   const left = ICON_POSITIONS[i]
-                  const delay = i * 90 // ms antar icon
+                  const delay = i * 90
+                  const isReacted = userReaction === i
+                  const isBursting = burstIdx === i
+                  const count = reactionCounts[i] || 0
 
                   return (
                     <div
                       key={i}
-                      className={hovered ? 'pb-icon-wrap is-visible' : 'pb-icon-wrap'}
+                      className={[
+                        'pb-icon-wrap',
+                        hovered ? 'is-visible' : '',
+                        isBursting ? 'is-bursting' : '',
+                        isReacted ? 'is-reacted' : '',
+                      ].join(' ')}
                       style={{
                         left: `${left}%`,
                         bottom: hovered ? '10%' : '-25%',
                         opacity: hovered ? 1 : 0,
-                        transition: `
+                        transition: isBursting ? 'none' : `
                           bottom  0.55s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms,
                           opacity 0.4s  ease                            ${delay}ms
                         `,
-                        animationDelay: hovered ? `${i * 0.35}s` : '0s',
+                        animationDelay: (hovered && !isBursting) ? `${i * 0.35}s` : '0s',
                       }}
+                      onClick={(e) => handleIconClick(e, i)}
                     >
+                      {/* Tooltip */}
+                      <div className="pb-icon-tooltip">
+                        {isReacted ? `unreact ${icon.label}` : `react: ${icon.label}`}
+                      </div>
+
+                      {/* Ripple effect when bursting */}
+                      {isBursting && <div className="pb-ripple" />}
+
+                      {/* The icon image */}
                       <img
-                        src={icon}
-                        alt=""
+                        src={icon.src}
+                        alt={icon.label}
                         width={40}
                         height={40}
                         draggable={false}
+                        onContextMenu={e => e.preventDefault()}
                         className="pb-icon-img"
                         style={{
                           background: isDark
                             ? 'rgba(1,18,39,0.80)'
                             : 'rgba(245,245,245,0.90)',
+                          outline: isReacted
+                            ? `2px solid ${accent}`
+                            : '2px solid transparent',
+                          outlineOffset: 2,
+                          transition: 'outline-color 0.2s ease, filter 0.2s ease, box-shadow 0.3s ease',
                         }}
                       />
+
+                      {/* Reaction count badge */}
+                      {count > 0 && (
+                        <div
+                          className={`pb-reaction-count ${isBursting ? 'popping' : ''}`}
+                          style={{
+                            background: isReacted ? accent : 'rgba(67,217,173,0.7)',
+                          }}
+                        >
+                          {count}
+                        </div>
+                      )}
                     </div>
                   )
                 })}
@@ -610,6 +874,48 @@ export default function ProfileDisplay() {
                   </span>
                 ))}
               </div>
+
+              {/* ── Total reactions summary ───────────────────────────── */}
+              {Object.values(reactionCounts).some(c => c > 0) && (
+                <div style={{
+                  marginTop: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '5px 10px',
+                  borderRadius: 20,
+                  background: isDark ? 'rgba(67,217,173,0.06)' : 'rgba(13,148,136,0.06)',
+                  border: `1px solid ${accent}25`,
+                }}>
+                  <div style={{ display: 'flex', gap: 4 }}>
+                    {ORBIT_ICONS.map((icon, i) =>
+                      reactionCounts[i] > 0 ? (
+                        <span key={i} title={`${reactionCounts[i]} ${icon.label}`} style={{ fontSize: 14 }}>
+                          {icon.emoji}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                  <span style={{
+                    fontFamily: "'Fira Code', monospace",
+                    fontSize: 10,
+                    color: isDark ? '#607B96' : '#9CA3AF',
+                  }}>
+                    {Object.values(reactionCounts).reduce((a, b) => a + b, 0)} reaction
+                    {Object.values(reactionCounts).reduce((a, b) => a + b, 0) !== 1 ? 's' : ''}
+                  </span>
+                  {userReaction !== null && (
+                    <span style={{
+                      fontFamily: "'Fira Code', monospace",
+                      fontSize: 9,
+                      color: accent,
+                      marginLeft: 'auto',
+                    }}>
+                      ✓ you reacted
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* ── Bottom bar ───────────────────────────────────────── */}
