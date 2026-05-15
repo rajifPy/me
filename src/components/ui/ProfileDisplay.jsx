@@ -15,15 +15,16 @@ const PARTICLES = [
   { x: 45, y: 95, size: 2, delay: 1.8,  dur: 3.9, label: 'NLP'     },
 ]
 
-// ── Orbit icon rings ──────────────────────────────────────────────────────
+// ── Icon images dari public/images/icon/ ──────────────────────────────────
 const ORBIT_ICONS = [
   '/images/icon/clown.png',
   '/images/icon/eye-glasses.png',
   '/images/icon/love.png',
   '/images/icon/sad-face.png',
-  '/images/icon/clown.png',
-  '/images/icon/eye-glasses.png',
 ]
+
+// Posisi horizontal masing-masing icon (dalam %)
+const ICON_POSITIONS = [12, 37, 63, 88]
 
 export default function ProfileDisplay() {
   const { theme } = useTheme()
@@ -35,8 +36,6 @@ export default function ProfileDisplay() {
   const [scanLine, setScanLine]     = useState(0)
   const [typedCode, setTypedCode]   = useState('')
   const [cursorOn, setCursorOn]     = useState(true)
-  const [orbAngle, setOrbAngle]     = useState(0)
-  const rafRef                      = useRef(null)
   const glitchTimer                 = useRef(null)
 
   const CODE_SNIPPET = `def analyze(data):
@@ -92,18 +91,6 @@ export default function ProfileDisplay() {
     return () => clearTimeout(glitchTimer.current)
   }, [])
 
-  // ── Orbit animation ───────────────────────────────────────────────────
-  useEffect(() => {
-    let angle = 0
-    const tick = () => {
-      angle += 0.4
-      setOrbAngle(angle)
-      rafRef.current = requestAnimationFrame(tick)
-    }
-    rafRef.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafRef.current)
-  }, [])
-
   const accent     = isDark ? '#43D9AD' : '#0D9488'
   const accentBlue = isDark ? '#4D5BCE' : '#3B4BCA'
   const borderClr  = isDark ? '#1E2D3D' : '#E0E0E0'
@@ -150,6 +137,18 @@ export default function ProfileDisplay() {
           from { opacity:0; transform: translateY(-100%); }
           to   { opacity:0.15; transform: translateY(100%); }
         }
+
+        /* ── Icon pop up from bottom ── */
+        @keyframes pb-icon-float {
+          0%,100% { transform: translateX(-50%) translateY(0px);  }
+          50%      { transform: translateX(-50%) translateY(-7px); }
+        }
+        @keyframes pb-icon-spin-in {
+          0%   { transform: translateX(-50%) translateY(0px) rotate(-15deg) scale(0.6); opacity:0; }
+          60%  { transform: translateX(-50%) translateY(-5px) rotate(5deg) scale(1.15); opacity:1; }
+          100% { transform: translateX(-50%) translateY(0px) rotate(0deg) scale(1); opacity:1; }
+        }
+
         .pb-photo-wrap {
           animation: pb-appear 0.9s cubic-bezier(0.34,1.56,0.64,1) forwards,
                      pb-float 5s ease-in-out 1s infinite;
@@ -169,6 +168,38 @@ export default function ProfileDisplay() {
         }
         .pb-data-col {
           animation: pb-data-stream 1.8s linear infinite;
+        }
+
+        /* Icon wrapper — transisi naik/turun saat hover */
+        .pb-icon-wrap {
+          position: absolute;
+          transform: translateX(-50%);
+          transition:
+            bottom   0.5s cubic-bezier(0.34,1.56,0.64,1),
+            opacity  0.4s ease;
+        }
+
+        /* Float setelah muncul */
+        .pb-icon-wrap.is-visible {
+          animation: pb-icon-float 2.8s ease-in-out infinite;
+        }
+
+        /* Spin-in saat pertama muncul — ditimpa float sesudahnya */
+        .pb-icon-img {
+          display: block;
+          object-fit: contain;
+          border-radius: 50%;
+          padding: 4px;
+          box-shadow:
+            0 0 10px rgba(67,217,173,0.45),
+            0 4px 14px rgba(0,0,0,0.55);
+          transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .pb-icon-img:hover {
+          box-shadow:
+            0 0 18px rgba(67,217,173,0.7),
+            0 6px 20px rgba(0,0,0,0.6);
+          transform: scale(1.15);
         }
       `}</style>
 
@@ -402,46 +433,50 @@ export default function ProfileDisplay() {
                 pointerEvents: 'none',
               }} />
 
-              {/* Orbit ring — visible only on hover */}
+              {/* ── Icons muncul dari bawah satu persatu ─────────────── */}
               <div style={{
-                position: 'absolute', inset: 0, zIndex: 4,
-                opacity: hovered ? 1 : 0,
-                transition: 'opacity 0.4s ease',
+                position: 'absolute',
+                inset: 0,
+                zIndex: 6,
                 pointerEvents: 'none',
               }}>
                 {ORBIT_ICONS.map((icon, i) => {
-                  const angle = ((orbAngle + i * 60) * Math.PI) / 180
-                  const rx = 46, ry = 44
-                  const cx = 50, cy = 50
-                  const px = cx + rx * Math.cos(angle)
-                  const py = cy + ry * Math.sin(angle)
-                  // SESUDAH
+                  const left = ICON_POSITIONS[i]
+                  const delay = i * 90 // ms antar icon
+
                   return (
-                    <div key={i} style={{
-                      position: 'absolute',
-                      left: `${px}%`,
-                      top: `${py}%`,
-                      transform: 'translate(-50%, -50%)',
-                      filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.5))',
-                    }}>
+                    <div
+                      key={i}
+                      className={hovered ? 'pb-icon-wrap is-visible' : 'pb-icon-wrap'}
+                      style={{
+                        left: `${left}%`,
+                        bottom: hovered ? '10%' : '-25%',
+                        opacity: hovered ? 1 : 0,
+                        transition: `
+                          bottom  0.55s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms,
+                          opacity 0.4s  ease                            ${delay}ms
+                        `,
+                        animationDelay: hovered ? `${i * 0.35}s` : '0s',
+                      }}
+                    >
                       <img
                         src={icon}
                         alt=""
-                        width={28}
-                        height={28}
+                        width={40}
+                        height={40}
                         draggable={false}
+                        className="pb-icon-img"
                         style={{
-                          objectFit: 'contain',
-                          borderRadius: '50%',
-                          background: 'rgba(1,18,39,0.7)',
-                          padding: 3,
-                          boxShadow: '0 0 8px rgba(67,217,173,0.3)',
+                          background: isDark
+                            ? 'rgba(1,18,39,0.80)'
+                            : 'rgba(245,245,245,0.90)',
                         }}
                       />
                     </div>
                   )
                 })}
               </div>
+
             </div>
 
             {/* ── Info panel ───────────────────────────────────────── */}
