@@ -16,7 +16,14 @@ const PARTICLES = [
 ]
 
 // ── Orbit icon rings ──────────────────────────────────────────────────────
-const ORBIT_ICONS = ['🐍', '💾', '🤖', '📊', '🐼', '📈']
+const ORBIT_ICONS = [
+  '/images/icon/clown.png',
+  '/images/icon/eye-glasses.png',
+  '/images/icon/love.png',
+  '/images/icon/sad-face.png',
+  '/images/icon/clown.png',
+  '/images/icon/eye-glasses.png',
+]
 
 export default function ProfileDisplay() {
   const { theme } = useTheme()
@@ -408,16 +415,29 @@ export default function ProfileDisplay() {
                   const cx = 50, cy = 50
                   const px = cx + rx * Math.cos(angle)
                   const py = cy + ry * Math.sin(angle)
+                  // SESUDAH
                   return (
                     <div key={i} style={{
                       position: 'absolute',
                       left: `${px}%`,
                       top: `${py}%`,
                       transform: 'translate(-50%, -50%)',
-                      fontSize: 16,
-                      filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.4))',
+                      filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.5))',
                     }}>
-                      {icon}
+                      <img
+                        src={icon}
+                        alt=""
+                        width={28}
+                        height={28}
+                        draggable={false}
+                        style={{
+                          objectFit: 'contain',
+                          borderRadius: '50%',
+                          background: 'rgba(1,18,39,0.7)',
+                          padding: 3,
+                          boxShadow: '0 0 8px rgba(67,217,173,0.3)',
+                        }}
+                      />
                     </div>
                   )
                 })}
