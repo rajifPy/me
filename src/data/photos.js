@@ -69,8 +69,8 @@ export const photos = [
   },
   {
     id: 12,
-    url: '/images/12358.png',
-    caption: 'Final year project presentation',
+    url: '/images/dataminig.jpeg',
+    caption: 'Data Mining Project - Klasifikasi Image',
     category: 'Education'
   }
 ]
