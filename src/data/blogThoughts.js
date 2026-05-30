@@ -480,6 +480,111 @@ Saya tidak bermaksud meremehkan anak desa atau membandingkan mereka dengan anak 
     tags: ['Motivation', 'Society', 'Youth', 'Change'],
     category: 'Insights',
   },
+
+  {
+  id: 5,
+  date: '2025-05-30',
+
+  // ── English ──────────────────────────────────────────────────────────────
+  title: 'Dreams Like Thanos',
+  content: `Have you ever watched Avengers: Infinity War, specifically the scene on Titan? There's one conversation between Doctor Strange and Thanos that I find quite interesting.
+
+Thanos said that after completing all his tasks, he would retire. He said:
+"I am retired."
+Then?
+"Watch the sunrise on a grateful universe."
+
+And yes, I have to admit, Thanos is pretty cool in my opinion.
+
+I myself have a dream that's somewhat similar. Of course, not about power or wiping out half the universe's population. I just want one day, after all my dreams are achieved, to live peacefully and enjoy the rest of the life God has given me.
+
+However, if we look at the next movie, Avengers: Endgame, Thanos couldn't actually retire happily. His enemies came back to the place he dreamed of and beheaded him.
+
+From there, I learned that life doesn't always go the way we want it to.
+
+Who doesn't want to realize all their dreams and then rest peacefully afterward? I'm currently trying to do just that.
+
+I'm grateful to be born in Indonesia with its God-blessed natural beauty, but not so much with its government. But, as the Solo man said:
+"I Will Fight."
+
+No, I'm not interested in fighting this broken government system (I'm already tired). Let that be God's business. What I want to fight first is my own unstable self, my fears, doubts, and other negative things.
+
+I just want to realize simple dreams: get a decent job, get married, have children, and achieve financial freedom. Then retire like Thanos — "Watch the sunrise on a grateful universe." Maybe some of you have the same dream?
+
+Perhaps someone reading this will ask in their heart, "Your dream is too selfish. Don't you care about other people? About the suffering around you? About the problems of this nation?" Meanwhile, my roof is still leaking.
+
+"I Will Fight."
+
+But remember, life doesn't always go according to our wishes. Sometimes the surrounding environment becomes its own challenge. It could be neighbors reading this, toxic friends or circles, government cronies, or even our own family who don't understand our dreams. That's why life teaches us to be careful. Not all dreams should be shared with everyone.
+
+"Such is Life."
+
+As legal philosophy says:
+"Homo Homini Lupus" (Man is a wolf to man).
+
+However, honestly, I don't care.
+"I WILL FIGHT." I will pursue my dreams, even if the price to pay is very expensive. Thanos once said:
+"The hardest choices require the strongest wills."
+
+He even sacrificed everything he had to realize his vision of universal balance. According to his calculation, resources are limited while the population keeps growing, so he chose to destroy half of all life.
+
+Of course, God would not agree with such a method. God, who is Almighty, certainly has His own way to maintain the balance of life.
+
+And me?
+So, if there happens to be an angel reading this, please convey it to God. There is a human child from the village who is struggling with his simple dreams. He doesn't ask for abundant wealth, nor power. He just wants one day to be able to "retire" peacefully, watching the sunrise on this beautiful earth, while whispering "Alhamdulillah."`,
+
+  // ── Indonesian ────────────────────────────────────────────────────────────
+  title_id: 'Impian seperti Thanos',
+  content_id: `Pernakah anda menonton film Avengers Infinity War, saat di planet Titan. Percakapan antara Dokter Strange dan Thanos?
+
+Ada satu percakapan yang menurut saya cukup menarik, yaitu saat Thanos berbicara dengan Dokter Strange. Thanos mengatakan bahwa setelah semua tugasnya selesai dia akan pensiun. Ia berkata:
+‘I am retired’
+then?
+“Watch the sunrise on a grateful universe”
+
+Dan ya, harus saya akui Thanos memang keren menurut saya.
+
+Saya sendiri punya impian yang kurang lebih mirip seperti itu. Tentu saja bukan tentang kekuasaan atau memusnahkan setengah populasi di alam semesta. Saya hanya ingin suatu hari nanti semua impian saya tercapai, lalu bisa hidup tenang menikmati sisa umur yang diberikan Tuhan.
+
+Namun kalau kita melihat film berikutnya, Avengers End Game, ternyata Thanos tidak bisa benar-benar pensiun dengan bahagia. Musuhnya datang kembali ke tempat yang ia impikan lalu memenggalnya.
+
+Dari sana saya belajar bahwa hidup memang tidak selalu berjalan dengan apa yang kita inginkan.
+
+Siapa yang tidak ingin mewujudkan semua impiannya, lalu beristirahat dengan tenang setelah semuanya tercapai? Saya sendiri sedang mencobanya.
+
+Saya bersyukur lahir di Indonesia dengan keindahan alamnya yang diberkati Tuhan, Namun tidak dengan pemerintahnya. Tapi, seperti kata pria solo:
+##“Saya Akan Lawan”
+
+Bukan, saya tidak tertarik melawan pemerintah yang sistemnya sudah rusak ini (saya sudah capek), biarlah itu menjadi urusan Tuhan. Yang ingin saya lawan terlebih dahulu adalah versi diri saya sendiri yang masih belum stabil, rasa takut dan penuh keraguan serta hal-hal negatifnya lainnya.
+
+Saya hanya ingin mewujudkan impian yang sederhana, memperoleh pekerjaan yang layak, menikah, punya anak dan financial freedom. Lalu pensiun seperti Thanos. “Watch the sunrise on the grateful universe”. Mungkin dari sebagian kalian juga memiliki impian yang sama?
+
+Mungkin ada yang membaca tulisan ini lalu bertanya dalam hati, “Impianmu terlalu egois. Tidakkah kamu peduli dengan orang lain? Dengan penderitaan di sekitarmu? Dengan masalah bangsa ini?”. Sebentar atap saya masih ada yang bocor.
+
+“Saya Akan Lawan”.
+
+Namun perlu diingat hidup tidak selalu berjalan dengan keinginan kita. Kadang lingkungan sekitar justru menjadi tantangan tersendiri. Bisa saja tetangga yang membaca tulisan ini, teman atau circle yang toxic, antek-antek asing pemerintah atau bahkan keluarga sendiri yang tidak memahami mimpi kita. Karena itu hidup mengajarkan bahwa kita juga harus berhati-hati. Tidak semua impian harus diumbar kepada semua orang.
+
+“Such is Life”
+
+Seperti kata filsafat Hukum:
+“Homo Homini Lupus”
+
+Namun, jujur saya tidak peduli.
+“SAYA AKAN LAWAN”. Saya akan mengejar mimpi saya, meskipun harga yang harus dibayar sangat mahal. Thanos pernah berkata:
+“The hardest choice require strongest wills”
+
+Ia bahkan mengorbankan segalanya yang dimiliki demi mewujudkan visi nya tentang keseimbangan alam semesta. Menurut kalkulasinya, sumber daya terbatas sementara populasi terus bertambah, sehingga ia memilih memusnahkan separuh kehidupan.
+
+Tentu saja, Tuhan tidak akan setuju dengan cara seperti itu. Tuhan yang Maha Segalanya pasti memiliki cara-Nya sendiri untuk menjaga keseimbangan kehidupan.
+
+Dan saya?
+
+Jadi, kalau ada malaikat yang kebetulan membaca tulisan ini, tolong sampaikan ke Tuhan. Ada seorang anak manusia dari desa yang sedang berjuang dengan impian sederhananya. Dia tidak minta kekayaan berlimpah, tidak minta kekuasaan. Dia hanya ingin suatu hari bisa “pensiun” dengan tenang, melihat matahari terbit di bumi yang indah ini, sambil berbisik “Alhamdulillah”.`,
+
+  tags: ['Motivation', 'Personal', 'Life', 'Dreams'],
+  category: 'Personal',
+},
 ]
 
 export const blogCategories = ['All', 'Insights', 'Technical', 'Personal']
