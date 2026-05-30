@@ -505,7 +505,8 @@ From there, I learned that life doesn't always go the way we want it to.
 Who doesn't want to realize all their dreams and then rest peacefully afterward? I'm currently trying to do just that.
 
 I'm grateful to be born in Indonesia with its God-blessed natural beauty, but not so much with its government. But, as the Solo man said:
-"I Will Fight."
+
+## "I Will Fight."
 
 No, I'm not interested in fighting this broken government system (I'm already tired). Let that be God's business. What I want to fight first is my own unstable self, my fears, doubts, and other negative things.
 
@@ -553,7 +554,8 @@ Dari sana saya belajar bahwa hidup memang tidak selalu berjalan dengan apa yang 
 Siapa yang tidak ingin mewujudkan semua impiannya, lalu beristirahat dengan tenang setelah semuanya tercapai? Saya sendiri sedang mencobanya.
 
 Saya bersyukur lahir di Indonesia dengan keindahan alamnya yang diberkati Tuhan, Namun tidak dengan pemerintahnya. Tapi, seperti kata pria solo:
-##“Saya Akan Lawan”
+
+## “Saya Akan Lawan”
 
 Bukan, saya tidak tertarik melawan pemerintah yang sistemnya sudah rusak ini (saya sudah capek), biarlah itu menjadi urusan Tuhan. Yang ingin saya lawan terlebih dahulu adalah versi diri saya sendiri yang masih belum stabil, rasa takut dan penuh keraguan serta hal-hal negatifnya lainnya.
 
