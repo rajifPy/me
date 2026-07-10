@@ -21,8 +21,8 @@ const KB = {
   cvFile: 'Muhammad_Rajif_Al_Farikhi_CV.pdf',
   cvPath: '/cv/rajif-cv.pdf',
   education: [
-    { school: 'Universitas Airlangga', degree: { en: 'Bachelor of Information Systems', id: 'Sarjana Sistem Informasi' }, period: '2020–2024', gpa: '3.3/4.0' },
-    { school: "MAS Hasyim Asy'ari", degree: { en: 'Science Major', id: 'Jurusan IPA' }, period: '2017–2020' },
+    { school: 'Universitas Airlangga', degree: { en: 'Bachelor of Data Science Tech', id: 'Sarjana Teknologi Sains Data' }, period: '2021–206', gpa: '3.3/4.0' },
+    { school: "MAS Hasyim Asy'ari", degree: { en: 'Science Major', id: 'Jurusan IPA' }, period: '2018–2021' },
   ],
   experience: {
     en: [
