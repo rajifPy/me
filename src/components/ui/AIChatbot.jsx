@@ -205,7 +205,7 @@ function getResponse(raw, lang = 'en', triggerCvDownload) {
       'Juga menyelesaikan program ML Bangkit Academy — didukung Google, Tokopedia, Gojek, dan Traveloka.',
     ] : [
       `Rajif studied at **${KB.education[0].school}** — ${KB.education[0].degree.en}, graduating in 2024. 🎓`,
-      `GPA: ${KB.education[0].gpa}. Focus: Data Analytics & Information Systems.`,
+      `GPA: ${KB.education[0].gpa}. Focus: Data Science Tech.`,
       "Also completed Bangkit Academy's ML program — backed by Google, Tokopedia, Gojek, and Traveloka.",
     ]
   }
