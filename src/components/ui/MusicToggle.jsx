@@ -14,7 +14,7 @@ export default function MusicToggle() {
   const isDark = theme === 'dark'
 
   useEffect(() => {
-    const audio = new Audio('/audio/on_on.mp3')
+    const audio = new Audio('/audio/THE JEBLOGS - Sambutlah (chord&lyric).mp3')
     audio.loop = true
     audio.volume = 0.35
     audioRef.current = audio
