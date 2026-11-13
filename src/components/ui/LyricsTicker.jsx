@@ -1,292 +1,324 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 
-// ─── Sparks by Coldplay lyrics ───────────────────────────────────────────────
-const LYRICS = [
-  { text: 'Did I drive you away?',              time: 32.43  },
-  { text: "I know what you'll say",             time: 38.17  },
-  { text: 'You say, "Oh, sing one you know"',   time: 41.32  },
-  { text: 'But I promise you this',             time: 53.80  },
-  { text: "I'll always look out for you",       time: 59.10  },
-  { text: "Yeah, that's what I'll do",          time: 66.95  },
-  { text: 'I say, oh',                          time: 72.91  },
-  { text: 'I say, oh',                          time: 83.19  },
-  { text: 'My heart is yours',                  time: 116.61 },
-  { text: "It's you that I hold on to",         time: 121.73 },
-  { text: "Yeah, that's what I do",             time: 129.57 },
-  { text: 'And I know I was wrong',             time: 137.24 },
-  { text: "But I won't let you down",           time: 142.56 },
-  { text: 'Oh yeah, I will, yeah',              time: 146.52 },
-  { text: 'I will, yes, I will, yeah',          time: 149.18 },
-  { text: 'I said, oh',                         time: 156.27 },
-  { text: 'I cry, oh',                          time: 166.71 },
-  { text: 'Yeah, I saw sparks',                 time: 176.36 },
-  { text: 'Yeah, I saw sparks',                 time: 181.66 },
-  { text: 'And I saw sparks',                   time: 186.96 },
-  { text: 'Yeah, I saw sparks',                 time: 192.21 },
-  { text: 'Sing it out',                        time: 197.88 },
-  { text: 'La, la, la, la, oh',                 time: 200.17 },
-  { text: 'La, la, la, la, oh',                 time: 205.39 },
-  { text: 'La, la, la, la, oh',                 time: 210.58 },
-  { text: 'La, la, la, la, oh',                 time: 215.85 },
-  { text: '♪  Sparks — Coldplay  ♪',            time: 221.50 },
+// ─── TIMESTAMP LIRIK (dalam detik) ───────────────────────────────────────────
+const RAW_LYRICS = [
+  { startTime: 32.43,  text: "Did I drive you away?" },
+  { startTime: 38.17,  text: "I know what you'll say" },
+  { startTime: 41.32,  text: "You say, \"Oh, sing one you know\"" },
+  { startTime: 53.80,  text: "But I promise you this" },
+  { startTime: 59.10,  text: "I'll always look out for you" },
+  { startTime: 66.95,  text: "Yeah, that's what I'll do" },
+  { startTime: 72.91,  text: "I say, oh" },
+  { startTime: 83.19,  text: "I say, oh" },
+  { startTime: 116.61, text: "My heart is yours" },
+  { startTime: 121.73, text: "It's you that I hold on to" },
+  { startTime: 129.57, text: "Yeah, that's what I do" },
+  { startTime: 137.24, text: "And I know I was wrong" },
+  { startTime: 142.56, text: "But I won't let you down" },
+  { startTime: 146.52, text: "Oh yeah, I will, yeah" },
+  { startTime: 149.18, text: "I will, yes, I will, yeah" },
+  { startTime: 156.27, text: "I said, oh" },
+  { startTime: 166.71, text: "I cry, oh" },
+  { startTime: 176.36, text: "Yeah, I saw sparks" },
+  { startTime: 181.66, text: "Yeah, I saw sparks" },
+  { startTime: 186.96, text: "And I saw sparks" },
+  { startTime: 192.21, text: "Yeah, I saw sparks" },
+  { startTime: 197.88, text: "Sing it out" },
+  { startTime: 200.17, text: "La, la, la, la, oh" },
+  { startTime: 205.39, text: "La, la, la, la, oh" },
+  { startTime: 210.58, text: "La, la, la, la, oh" },
+  { startTime: 215.85, text: "La, la, la, la, oh" },
 ]
 
-// Flat lyrics array for the ticker — all joined for seamless loop
-const TICKER_CONTENT = LYRICS.map(l => l.text).join('   ·   ')
+// ─── endTime persis di startTime lirik berikutnya ─────────────────────────────
+const LYRICS = RAW_LYRICS.map((lyric, idx) => {
+  const next = RAW_LYRICS[idx + 1]
+  const endTime = next ? next.startTime : lyric.startTime + 3.5
+  return { ...lyric, endTime }
+})
+
+function getSectionColor(text) {
+  if (!text) return { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
+
+  // Bagian "sparks" dibuat lebih hangat/oranye
+  if (text.includes('I saw sparks')) {
+    return { from: '#FEA55F', to: '#E99287', glow: '#FEA55F' }
+  }
+
+  // Chorus / hook ringan
+  if (
+    text.includes('I say, oh') ||
+    text.includes('I cry, oh') ||
+    text.includes('I said, oh') ||
+    text.includes('Sing it out') ||
+    text.includes('La, la')
+  ) {
+    return { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
+  }
+
+  // Bagian "my heart" / holding on
+  if (
+    text.includes('My heart is yours') ||
+    text.includes('hold on to') ||
+    text.includes("that's what I do")
+  ) {
+    return { from: '#C5D3E0', to: '#43D9AD', glow: '#4D5BCE' }
+  }
+
+  // Bagian permintaan maaf / janji
+  if (
+    text.includes('I was wrong') ||
+    text.includes("won't let you down") ||
+    text.includes('I will')
+  ) {
+    return { from: '#FEA55F', to: '#E99287', glow: '#FEA55F' }
+  }
+
+  // Default / verse
+  return { from: '#C5D3E0', to: '#43D9AD', glow: '#4D5BCE' }
+}
+
+function Equalizer({ color, reverse }) {
+  const heights = [8, 13, 6, 11, 5]
+  const delays  = [0, 0.1, 0.2, 0.05, 0.15]
+  const bars    = reverse ? [...heights].reverse() : heights
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'flex-end',
+        gap: 2.5,
+        height: 14,
+        transform: reverse ? 'scaleX(-1)' : 'none',
+      }}
+    >
+      {bars.map((h, i) => (
+        <div
+          key={i}
+          style={{
+            width: 2.5,
+            height: h,
+            borderRadius: 2,
+            background: color,
+            transformOrigin: 'bottom',
+            animation: `ltEqBar 0.55s ease-in-out ${delays[i]}s infinite`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 export default function LyricsTicker({ isPlaying }) {
   const { theme } = useTheme()
-  const isDark = theme === 'dark'
-
-  const [visible, setVisible] = useState(false)
-  const [activeLine, setActiveLine] = useState(0)
+  const [currentText, setCurrentText] = useState(null)
+  const [animKey, setAnimKey] = useState(0)
   const [mounted, setMounted] = useState(false)
+  const rafRef = useRef(null)
+  const prevTextRef = useRef(null)
+  const playStartRef = useRef(null)
 
-  const tickerRef = useRef(null)
-  const innerRef  = useRef(null)
-  const posRef    = useRef(0)
-  const rafRef    = useRef(null)
-  const timeRef   = useRef(0)
-  const lyricTimerRef = useRef(null)
-
-  // ── Fade in/out with isPlaying ───────────────────────────────────────────
   useEffect(() => {
     setMounted(true)
   }, [])
 
   useEffect(() => {
-    if (!mounted) return
-    if (isPlaying) {
-      setVisible(true)
+    if (!isPlaying) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+      setCurrentText(null)
+      prevTextRef.current = null
     } else {
-      // Fade out with delay
-      const t = setTimeout(() => setVisible(false), 600)
-      return () => clearTimeout(t)
+      playStartRef.current = Date.now()
     }
-  }, [isPlaying, mounted])
+  }, [isPlaying])
 
-  // ── Scrolling ticker animation ────────────────────────────────────────────
   useEffect(() => {
-    if (!isPlaying || !innerRef.current) return
-    const speed = 0.7
+    if (!isPlaying || !mounted) return
 
     const tick = () => {
-      if (!innerRef.current) return
-      posRef.current -= speed
-      const totalW = innerRef.current.scrollWidth / 2
-      if (Math.abs(posRef.current) >= totalW) posRef.current = 0
-      innerRef.current.style.transform = `translateX(${posRef.current}px)`
+      let ct = null
+
+      if (typeof window !== 'undefined' && window.__portfolioAudio) {
+        ct = window.__portfolioAudio.currentTime
+      }
+
+      if (ct === null && typeof document !== 'undefined') {
+        const els = document.querySelectorAll('audio')
+        for (const el of els) {
+          if (el.currentTime > 0) {
+            ct = el.currentTime
+            break
+          }
+        }
+      }
+
+      if (ct === null && playStartRef.current) {
+        ct = (Date.now() - playStartRef.current) / 1000
+      }
+
+      if (ct !== null) {
+        let found = null
+        for (const lyric of LYRICS) {
+          if (ct >= lyric.startTime && ct < lyric.endTime) {
+            found = lyric.text
+            break
+          }
+        }
+
+        if (found !== prevTextRef.current) {
+          prevTextRef.current = found
+          setCurrentText(found)
+          setAnimKey(k => k + 1) // memicu ulang animasi
+        }
+      }
+
       rafRef.current = requestAnimationFrame(tick)
     }
 
     rafRef.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafRef.current)
-  }, [isPlaying])
 
-  // ── Cycle through lyric lines when playing ────────────────────────────────
-  useEffect(() => {
-    if (!isPlaying) {
-      clearInterval(lyricTimerRef.current)
-      return
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-
-    lyricTimerRef.current = setInterval(() => {
-      setActiveLine(prev => (prev + 1) % LYRICS.length)
-    }, 3500)
-
-    return () => clearInterval(lyricTimerRef.current)
-  }, [isPlaying])
+  }, [isPlaying, mounted])
 
   if (!mounted) return null
+  if (!isPlaying && !currentText) return null
 
-  const accent     = isDark ? '#43D9AD' : '#0D9488'
-  const accentBlue = isDark ? '#4D5BCE' : '#3B4BCA'
-  const bg         = isDark ? 'rgba(1, 18, 39, 0.75)' : 'rgba(255,255,255,0.75)'
-  const borderClr  = isDark ? 'rgba(67,217,173,0.2)'  : 'rgba(13,148,136,0.25)'
-  const activeLine_ = LYRICS[activeLine]?.text || ''
+  const colors = getSectionColor(currentText)
 
   return (
     <>
       <style>{`
-        @keyframes lt-fade-in {
-          from { opacity: 0; transform: translateY(8px); }
-          to   { opacity: 1; transform: translateY(0); }
+        @keyframes ltIn {
+          0%   { opacity: 0; transform: translateY(16px) scale(0.96); filter: blur(4px); }
+          100% { opacity: 1; transform: translateY(0)    scale(1);    filter: blur(0);   }
         }
-        @keyframes lt-fade-out {
-          from { opacity: 1; transform: translateY(0); }
-          to   { opacity: 0; transform: translateY(8px); }
+        @keyframes ltShimmer {
+          0%   { background-position: 200% center; }
+          100% { background-position: -200% center; }
         }
-        @keyframes lt-pulse-dot {
-          0%,100% { opacity: 1; transform: scale(1); }
-          50%     { opacity: 0.4; transform: scale(0.75); }
+        @keyframes ltGlow {
+          0%, 100% { opacity: 0.2; transform: scaleX(0.6); }
+          50%       { opacity: 0.6; transform: scaleX(1.1); }
         }
-        @keyframes lt-active-glow {
-          0%,100% { text-shadow: 0 0 8px ${accent}40; }
-          50%     { text-shadow: 0 0 20px ${accent}80, 0 0 40px ${accent}30; }
+        @keyframes ltEqBar {
+          0%, 100% { transform: scaleY(0.2); }
+          50%       { transform: scaleY(1);   }
         }
-        @keyframes lt-shimmer {
-          from { background-position: -200% center; }
-          to   { background-position: 200% center; }
+        @keyframes ltMetaIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0);   }
         }
-        .lt-active-lyric {
-          animation: lt-active-glow 2s ease-in-out infinite;
+
+        .lt-lyric-text {
+          font-family: 'Fira Code', monospace;
+          font-weight: 700;
+          font-size: clamp(1rem, 4.5vw, 1.65rem);
+          letter-spacing: 0.015em;
+          line-height: 1.35;
+          text-align: center;
+          white-space: pre-wrap;
+          word-break: break-word;
+          padding: 0 16px;
+          margin: 0;
           background: linear-gradient(
-            90deg,
-            ${accent} 0%,
-            ${accentBlue} 40%,
-            ${accent} 60%,
-            ${accentBlue} 100%
+            120deg,
+            var(--lt-from) 0%,
+            var(--lt-to)   35%,
+            var(--lt-from) 55%,
+            var(--lt-to)   100%
           );
-          background-size: 200% auto;
+          background-size: 300% auto;
           -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
           background-clip: text;
-          animation: lt-active-glow 2s ease-in-out infinite,
-                     lt-shimmer 3s linear infinite;
-        }
-        .lt-ticker-track {
-          overflow: hidden;
-          mask-image: linear-gradient(
-            90deg,
-            transparent 0%,
-            black 6%,
-            black 94%,
-            transparent 100%
-          );
-          -webkit-mask-image: linear-gradient(
-            90deg,
-            transparent 0%,
-            black 6%,
-            black 94%,
-            transparent 100%
-          );
-        }
-        .lt-ticker-inner {
-          display: inline-flex;
-          align-items: center;
-          white-space: nowrap;
-          will-change: transform;
-        }
-        .lt-wrapper {
-          transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .lt-wrapper.hidden {
-          opacity: 0 !important;
-          pointer-events: none;
-          transform: translateY(8px);
-        }
-        .lt-wrapper.visible {
-          opacity: 1;
-          transform: translateY(0);
+          -webkit-text-fill-color: transparent;
+          color: transparent;
+          animation: ltIn 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1), ltShimmer 4s linear infinite;
         }
       `}</style>
 
       <div
-        className={`lt-wrapper ${visible ? 'visible' : 'hidden'}`}
         style={{
-          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 10,
           width: '100%',
-          maxWidth: 580,
+          maxWidth: 560,
           marginTop: 20,
+          pointerEvents: 'none',
+          userSelect: 'none',
         }}
       >
-        {/* ── Active lyric line ── */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
-            marginBottom: 8,
-            minHeight: 28,
+            gap: 10,
+            opacity: isPlaying ? 1 : 0,
+            transition: 'opacity 0.5s ease',
+            animation: isPlaying ? 'ltMetaIn 0.5s ease forwards' : 'none',
           }}
         >
-          {/* Live dot */}
+          <Equalizer color={colors.from} />
           <span
-            style={{
-              display: 'inline-block',
-              width: 7,
-              height: 7,
-              borderRadius: '50%',
-              background: accent,
-              boxShadow: `0 0 8px ${accent}`,
-              flexShrink: 0,
-              animation: 'lt-pulse-dot 1.5s ease-in-out infinite',
-            }}
-          />
-
-          {/* The active lyric */}
-          <span
-            key={activeLine}
-            className="lt-active-lyric"
             style={{
               fontFamily: "'Fira Code', monospace",
-              fontSize: 13,
-              fontWeight: 500,
-              letterSpacing: '0.04em',
-              animation: `lt-fade-in 0.4s ease both, lt-shimmer 3s linear infinite`,
+              fontSize: 10,
+              letterSpacing: '0.1em',
+              padding: '2px 12px',
+              borderRadius: 99,
+              whiteSpace: 'nowrap',
+              color: colors.glow,
+              border: `1px solid ${colors.glow}35`,
+              background: `${colors.glow}10`,
             }}
           >
-            {activeLine_}
+            ♪ Sparks — Coldplay
           </span>
+          <Equalizer color={colors.to} reverse />
         </div>
 
-        {/* ── Scrolling ticker ── */}
         <div
           style={{
-            background: bg,
-            border: `1px solid ${borderClr}`,
-            borderRadius: 8,
-            padding: '6px 0',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
+            position: 'relative',
+            minHeight: '2.4em',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
           }}
         >
-          <div className="lt-ticker-track" ref={tickerRef}>
-            <div className="lt-ticker-inner" ref={innerRef}>
-              {/* Duplicate for seamless loop */}
-              {[TICKER_CONTENT, TICKER_CONTENT].map((content, idx) => (
-                <span
-                  key={idx}
-                  style={{
-                    fontFamily: "'Fira Code', monospace",
-                    fontSize: 11,
-                    color: isDark ? 'rgba(96,123,150,0.7)' : 'rgba(74,85,104,0.6)',
-                    padding: '0 24px',
-                    letterSpacing: '0.03em',
-                    userSelect: 'none',
-                  }}
-                >
-                  {content}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Song credit */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              paddingRight: 10,
-              marginTop: 3,
-            }}
-          >
-            <span
+          {currentText && (
+            <p
+              key={animKey}
+              className="lt-lyric-text"
               style={{
-                fontFamily: "'Fira Code', monospace",
-                fontSize: 9,
-                color: isDark ? 'rgba(67,217,173,0.4)' : 'rgba(13,148,136,0.5)',
-                letterSpacing: '0.08em',
+                '--lt-from': colors.from,
+                '--lt-to':   colors.to,
               }}
             >
-              ♪ Sparks — Coldplay
-            </span>
-          </div>
+              {currentText}
+            </p>
+          )}
         </div>
+
+        <div
+          style={{
+            height: 2,
+            borderRadius: 99,
+            background: `linear-gradient(90deg, transparent, ${colors.glow}, transparent)`,
+            boxShadow: `0 0 12px ${colors.glow}80`,
+            animation: currentText ? 'ltGlow 2s ease-in-out infinite' : 'none',
+            opacity: currentText ? 1 : 0,
+            transition: 'opacity 0.2s ease',
+          }}
+        />
       </div>
     </>
   )
