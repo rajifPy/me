@@ -72,7 +72,14 @@ export const photos = [
     url: '/images/datamining.jpeg',
     caption: 'Data Mining Project - Image Classification',
     category: 'Education'
+  },
+  {
+    id: 13,
+    url: '/images/GT_9941 copy 2.jpg',
+    caption: 'Graduation',
+    category: 'Education'
   }
+  
 ]
 
 export const photoCategories = [
