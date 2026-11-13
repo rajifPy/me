@@ -5,64 +5,85 @@ import { useTheme } from '@/context/ThemeContext'
 
 // ─── TIMESTAMP LIRIK (dalam detik) ───────────────────────────────────────────
 const RAW_LYRICS = [
-  { startTime: 11.0,  text: "Hold me close 'til I get up" },
-  { startTime: 14.0,  text: "Time is barely on our side" },
-  { startTime: 18.0,  text: "I don't wanna waste what's left" },
-  { startTime: 22.0,  text: "The storms we chase are leadin' us" },
-  { startTime: 25.0,  text: "And love is all we'll ever trust, yeah" },
-  { startTime: 29.0,  text: "No, I don't wanna waste what's left" },
-  { startTime: 33.0,  text: "And on and on we'll go" },
-  { startTime: 38.0,  text: "Through the wastelands, through the highways" },
-  { startTime: 40.0,  text: "'Til my shadow turns to sunrays" },
-  { startTime: 42.0,  text: "And on and on we'll go" },
-  { startTime: 49.0,  text: "Through the wastelands, through the highways" },
-  { startTime: 51.0,  text: "And on and on we'll go" },
-  { startTime: 83.0,  text: "Finding life along the way" },
-  { startTime: 87.0,  text: "Melodies we haven't played" },
-  { startTime: 89.0,  text: "No, I don't want no rest" },
-  { startTime: 94.0,  text: "Echoin' around these walls" },
-  { startTime: 97.0,  text: "Fighting to create a song" },
-  { startTime: 100.0, text: "I don't wanna miss a beat" },
-  { startTime: 104.0, text: "And on and on we'll go" },
-  { startTime: 110.0, text: "Through the wastelands, through the highways" },
-  { startTime: 111.0, text: "'Til my shadow turns to sunrays" },
-  { startTime: 114.0, text: "And on and on we'll go" },
-  { startTime: 121.0, text: "Through the wastelands, through the highways" },
-  { startTime: 122.0, text: "And on and on we'll go" },
-  { startTime: 148.0, text: "And we'll grow in number" },
-  { startTime: 152.0, text: "Fueled by thunder, see the horizon" },
-  { startTime: 156.0, text: "Turn us to thousands" },
-  { startTime: 159.0, text: "And we'll grow in number" },
-  { startTime: 163.0, text: "Fueled by thunder, see the horizon" },
-  { startTime: 167.0, text: "Turn us to thousands" },
-  { startTime: 173.0, text: "And on and on we'll go" },
-  { startTime: 176.0, text: "Through the wastelands, through the highways" },
-  { startTime: 177.0, text: "'Til my shadow turns to sunrays" },
-  { startTime: 180.0, text: "And on and on we'll go" },
-  { startTime: 187.0, text: "Through the wastelands, through the highways" },
-  { startTime: 188.0, text: "And on and on we'll go" },
+  { startTime: 8.0,   text: "Sambutlah matahari yang terbit di ufuk" },
+  { startTime: 15.0,  text: "Timur membelah gelap hangat merambat" },
+  { startTime: 19.0,  text: "Membangunkan lelap" },
+  { startTime: 24.0,  text: "Sampaikan salam kami kepada bulan dan bintang" },
+  { startTime: 33.0,  text: "Oh tenang saja generasi baru telah tiba" },
+  { startTime: 49.0,  text: "Malam yang memuatkan harus diakhiri" },
+  { startTime: 56.0,  text: "Gelapnya membungkam suara" },
+  { startTime: 104.0, text: "Jiwa baru yang putih serupa" },
+  { startTime: 110.0, text: "Lilil bakarlah kedua sisinya" },
+  { startTime: 131.0, text: "Beni-beni bertumbuh di sela puring harapan" },
+  { startTime: 141.0, text: "Mencari jalannya" },
+  { startTime: 145.0, text: "Orang-orang muda berkobar menjelma cahaya" },
+  { startTime: 151.0, text: "Lajunya tak terbendung jadi bersiaplah" },
+  { startTime: 158.0, text: "Maka rayakanlah" },
+  { startTime: 201.0, text: "Tuuh genderangnya, tiup terompetnya" },
+  { startTime: 209.0, text: "Nyalakan api di dadanya" },
+  { startTime: 214.0, text: "Sambutlah matahari yang terbit di ufuk" },
+  { startTime: 220.0, text: "Timur membelah gelap hangat merambat" },
+  { startTime: 224.0, text: "Membangunkan lelap" },
+  { startTime: 231.0, text: "Sampaikan salam kami kepada bulan dan bintang" },
+  { startTime: 239.0, text: "Oh tenang saja generasi baru telah tiba" },
+  { startTime: 323.0, text: "Mungkin kita sampai, mungkin saja tidak" },
+  { startTime: 329.0, text: "Tugas kita hanyalah berjalan" },
+  { startTime: 339.0, text: "Sambutlah matahari yang terbit di ufuk" },
+  { startTime: 343.0, text: "Timur membelah gelap hangat merambat" },
+  { startTime: 348.0, text: "Membangunkan lelap" },
+  { startTime: 353.0, text: "Sampaikan salam kami kepada bulan dan bintang" },
+  { startTime: 400.0, text: "Generasi baru telah tiba" },
+  { startTime: 404.0, text: "Sambutlah matahari yang terbit di ufuk" },
+  { startTime: 411.0, text: "Timur membelah gelap hangat merambat" },
+  { startTime: 416.0, text: "Membangunkan lelap" },
+  { startTime: 421.0, text: "Sampaikan salam kami kepada bulan dan bintang" },
+  { startTime: 429.0, text: "Oh tenang saja generasi baru telah tiba" },
 ]
 
-// ─── endTime persis di startTime lirik berikutnya ─────────────────────────────
+// Durasi maksimum satu baris tampil. Lagu ini punya banyak bagian instrumental
+// (mis. 56s → 104s), jadi tanpa batas ini satu baris akan nempel puluhan detik.
+const MAX_LINE_DURATION = 8
+
+// ─── endTime = startTime lirik berikutnya, tapi dibatasi MAX_LINE_DURATION ───
 const LYRICS = RAW_LYRICS.map((lyric, idx) => {
   const next = RAW_LYRICS[idx + 1]
-  const endTime = next ? next.startTime : lyric.startTime + 3.5
+  const naturalEnd = next ? next.startTime : lyric.startTime + 3.5
+  const endTime = Math.min(naturalEnd, lyric.startTime + MAX_LINE_DURATION)
   return { ...lyric, endTime }
 })
 
+// ─── Warna per bagian lagu (tema matahari terbit) ────────────────────────────
 function getSectionColor(text) {
-  if (!text) return { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
+  if (!text) return { from: '#FFB35C', to: '#FF6B6B', glow: '#FFB35C' }
+  const t = text.toLowerCase()
+
+  // Reff utama: fajar — emas ke koral
   if (
-    text.includes('And on and on') ||
-    text.includes('Through the wastelands') ||
-    text.includes("'Til my shadow")
-  ) return { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
+    t.includes('sambutlah') ||
+    t.includes('timur membelah') ||
+    t.includes('membangunkan lelap') ||
+    t.includes('sampaikan salam') ||
+    t.includes('generasi baru')
+  ) return { from: '#FFB35C', to: '#FF6B6B', glow: '#FFB35C' }
+
+  // Klimaks: api & genderang — merah ke oranye
   if (
-    text.includes("And we'll grow") ||
-    text.includes('Fueled by thunder') ||
-    text.includes('Turn us to thousands')
-  ) return { from: '#FEA55F', to: '#E99287', glow: '#FEA55F' }
-  return { from: '#C5D3E0', to: '#43D9AD', glow: '#4D5BCE' }
+    t.includes('genderang') ||
+    t.includes('nyalakan api') ||
+    t.includes('berkobar') ||
+    t.includes('maka rayakanlah') ||
+    t.includes('bakarlah')
+  ) return { from: '#FF5E5B', to: '#FFD166', glow: '#FF5E5B' }
+
+  // Bagian tenang/reflektif — teal ke ungu senja
+  if (
+    t.includes('mungkin kita') ||
+    t.includes('tugas kita') ||
+    t.includes('malam') ||
+    t.includes('gelapnya')
+  ) return { from: '#7FDBCA', to: '#7B6CF6', glow: '#7B6CF6' }
+
+  return { from: '#F6E7CB', to: '#FFB35C', glow: '#FF8A5B' }
 }
 
 function Equalizer({ color, reverse }) {
@@ -249,7 +270,7 @@ export default function LyricsTicker({ isPlaying }) {
               background: `${colors.glow}10`,
             }}
           >
-            ♪ On &amp; On — Cartoon, Jéja ft. Daniel Levi
+            ♪ Sambutlah — The Jeblogs
           </span>
           <Equalizer color={colors.to} reverse />
         </div>
