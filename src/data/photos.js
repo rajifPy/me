@@ -75,7 +75,7 @@ export const photos = [
   },
   {
     id: 13,
-    url: '/images/GT_9941 copy 2.jpg',
+    url: '/images/wisuda.jpg',
     caption: 'Graduation',
     category: 'Education'
   }
