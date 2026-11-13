@@ -14,7 +14,7 @@ export default function MusicToggle() {
   const isDark = theme === 'dark'
 
   useEffect(() => {
-    const audio = new Audio('/audio/sparks.mp3')
+    const audio = new Audio('/audio/Taylor_Swift_Everything_Has_Changed.mp3')
     audio.loop = true
     audio.volume = 0.35
     audioRef.current = audio
