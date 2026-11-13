@@ -5,32 +5,64 @@ import { useTheme } from '@/context/ThemeContext'
 
 // ─── TIMESTAMP LIRIK (dalam detik) ───────────────────────────────────────────
 const RAW_LYRICS = [
-  { startTime: 32.43,  text: "Did I drive you away?" },
-  { startTime: 38.17,  text: "I know what you'll say" },
-  { startTime: 41.32,  text: "You say, \"Oh, sing one you know\"" },
-  { startTime: 53.80,  text: "But I promise you this" },
-  { startTime: 59.10,  text: "I'll always look out for you" },
-  { startTime: 66.95,  text: "Yeah, that's what I'll do" },
-  { startTime: 72.91,  text: "I say, oh" },
-  { startTime: 83.19,  text: "I say, oh" },
-  { startTime: 116.61, text: "My heart is yours" },
-  { startTime: 121.73, text: "It's you that I hold on to" },
-  { startTime: 129.57, text: "Yeah, that's what I do" },
-  { startTime: 137.24, text: "And I know I was wrong" },
-  { startTime: 142.56, text: "But I won't let you down" },
-  { startTime: 146.52, text: "Oh yeah, I will, yeah" },
-  { startTime: 149.18, text: "I will, yes, I will, yeah" },
-  { startTime: 156.27, text: "I said, oh" },
-  { startTime: 166.71, text: "I cry, oh" },
-  { startTime: 176.36, text: "Yeah, I saw sparks" },
-  { startTime: 181.66, text: "Yeah, I saw sparks" },
-  { startTime: 186.96, text: "And I saw sparks" },
-  { startTime: 192.21, text: "Yeah, I saw sparks" },
-  { startTime: 197.88, text: "Sing it out" },
-  { startTime: 200.17, text: "La, la, la, la, oh" },
-  { startTime: 205.39, text: "La, la, la, la, oh" },
-  { startTime: 210.58, text: "La, la, la, la, oh" },
-  { startTime: 215.85, text: "La, la, la, la, oh" },
+  { startTime: 9.89,   text: "All I knew this morning when I woke" },
+  { startTime: 15.68,  text: "Is I know something now, know something now" },
+  { startTime: 19.23,  text: "I didn't before" },
+  { startTime: 21.61,  text: "And all I've seen since eighteen hours ago" },
+  { startTime: 26.63,  text: "Is green eyes and freckles and your smile" },
+  { startTime: 29.03,  text: "In the back of my mind making me feel like" },
+  { startTime: 33.01,  text: "I just want to know you better, know you better, know you better now" },
+  { startTime: 39.12,  text: "I just want to know you better, know you better, know you better now" },
+  { startTime: 45.14,  text: "I just want to know you better, know you better, know you better now" },
+  { startTime: 51.14,  text: "I just want to know you, know you, know you" },
+  { startTime: 56.12,  text: "'Cause all I know is we said hello" },
+  { startTime: 59.16,  text: "And your eyes look like coming home" },
+  { startTime: 62.02,  text: "All I know is a simple name" },
+  { startTime: 66.05,  text: "Everything has changed" },
+  { startTime: 68.40,  text: "All I know is you held the door" },
+  { startTime: 71.32,  text: "You'll be mine and I'll be yours" },
+  { startTime: 74.07,  text: "All I know since yesterday" },
+  { startTime: 77.83,  text: "Is everything has changed" },
+  { startTime: 87.62,  text: "And all my walls stood tall, painted blue" },
+  { startTime: 94.03,  text: "But I'll take 'em down, take 'em down" },
+  { startTime: 96.70,  text: "And open up the door for you" },
+  { startTime: 99.66,  text: "And all I feel in my stomach is butterflies" },
+  { startTime: 104.53, text: "The beautiful kind, makin' up for lost time" },
+  { startTime: 107.31, text: "Taking flight, making me feel like" },
+  { startTime: 111.04, text: "I just want to know you better, know you better, know you better now" },
+  { startTime: 117.10, text: "I just want to know you better, know you better, know you better now" },
+  { startTime: 123.09, text: "I just want to know you better, know you better, know you better now" },
+  { startTime: 129.05, text: "I just want to know you, know you, know you" },
+  { startTime: 134.12, text: "'Cause all I know is we said hello" },
+  { startTime: 137.04, text: "And your eyes look like coming home" },
+  { startTime: 139.96, text: "All I know is a simple name" },
+  { startTime: 144.12, text: "Everything has changed" },
+  { startTime: 146.45, text: "All I know is you held the door" },
+  { startTime: 149.33, text: "You'll be mine and I'll be yours" },
+  { startTime: 152.03, text: "All I know since yesterday" },
+  { startTime: 155.82, text: "Is everything has changed" },
+  { startTime: 159.41, text: "Come back and tell me why" },
+  { startTime: 162.52, text: "I'm feeling like I've missed you all this time" },
+  { startTime: 171.54, text: "And meet me there tonight" },
+  { startTime: 174.66, text: "And let me know that it's not all in my mind" },
+  { startTime: 180.59, text: "I, I, I just want to know you better, know you better, know you better now" },
+  { startTime: 189.12, text: "I just want to know you, know you, know you" },
+  { startTime: 194.34, text: "All I know is we said hello" },
+  { startTime: 197.14, text: "And your eyes look like coming home" },
+  { startTime: 200.02, text: "All I know is a simple name" },
+  { startTime: 204.12, text: "Everything has changed" },
+  { startTime: 206.42, text: "All I know is you held the door" },
+  { startTime: 209.32, text: "You'll be mine and I'll be yours" },
+  { startTime: 211.95, text: "All I know since yesterday" },
+  { startTime: 215.88, text: "Is everything has changed" },
+  { startTime: 218.40, text: "All I know is we said hello" },
+  { startTime: 221.80, text: "Dust off your highest hopes" },
+  { startTime: 224.36, text: "All I know is pouring rain" },
+  { startTime: 227.84, text: "And everything has changed" },
+  { startTime: 230.32, text: "All I know is a newfound grace" },
+  { startTime: 233.38, text: "All my days I'll know your face" },
+  { startTime: 236.33, text: "All I know since yesterday" },
+  { startTime: 239.91, text: "Is everything has changed" },
 ]
 
 // ─── endTime persis di startTime lirik berikutnya ─────────────────────────────
@@ -43,41 +75,40 @@ const LYRICS = RAW_LYRICS.map((lyric, idx) => {
 function getSectionColor(text) {
   if (!text) return { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
 
-  // Bagian "sparks" dibuat lebih hangat/oranye
-  if (text.includes('I saw sparks')) {
+  const t = text.toLowerCase()
+
+  // Hook utama / perubahan besar
+  if (t.includes('everything has changed')) {
     return { from: '#FEA55F', to: '#E99287', glow: '#FEA55F' }
   }
 
-  // Chorus / hook ringan
-  if (
-    text.includes('I say, oh') ||
-    text.includes('I cry, oh') ||
-    text.includes('I said, oh') ||
-    text.includes('Sing it out') ||
-    text.includes('La, la')
-  ) {
+  // "I just want to know you..."
+  if (t.includes('know you better') || t.includes('just want to know you')) {
     return { from: '#43D9AD', to: '#4D5BCE', glow: '#43D9AD' }
   }
 
-  // Bagian "my heart" / holding on
+  // Bridge / renungan
   if (
-    text.includes('My heart is yours') ||
-    text.includes('hold on to') ||
-    text.includes("that's what I do")
+    t.includes('come back') ||
+    t.includes('meet me') ||
+    t.includes('missed you') ||
+    t.includes('in my mind')
   ) {
     return { from: '#C5D3E0', to: '#43D9AD', glow: '#4D5BCE' }
   }
 
-  // Bagian permintaan maaf / janji
+  // Bagian "All I know..." / chorus
   if (
-    text.includes('I was wrong') ||
-    text.includes("won't let you down") ||
-    text.includes('I will')
+    t.includes('all i know') ||
+    t.includes('eyes look like') ||
+    t.includes('held the door') ||
+    t.includes("mine and i'll be yours") ||
+    t.includes('since yesterday')
   ) {
     return { from: '#FEA55F', to: '#E99287', glow: '#FEA55F' }
   }
 
-  // Default / verse
+  // Verse / default
   return { from: '#C5D3E0', to: '#43D9AD', glow: '#4D5BCE' }
 }
 
@@ -85,6 +116,7 @@ function Equalizer({ color, reverse }) {
   const heights = [8, 13, 6, 11, 5]
   const delays  = [0, 0.1, 0.2, 0.05, 0.15]
   const bars    = reverse ? [...heights].reverse() : heights
+
   return (
     <div
       style={{
@@ -114,9 +146,12 @@ function Equalizer({ color, reverse }) {
 
 export default function LyricsTicker({ isPlaying }) {
   const { theme } = useTheme()
+  void theme // tetap dipertahankan sesuai permintaan, tanpa mengubah UI
+
   const [currentText, setCurrentText] = useState(null)
   const [animKey, setAnimKey] = useState(0)
   const [mounted, setMounted] = useState(false)
+
   const rafRef = useRef(null)
   const prevTextRef = useRef(null)
   const playStartRef = useRef(null)
@@ -162,6 +197,7 @@ export default function LyricsTicker({ isPlaying }) {
 
       if (ct !== null) {
         let found = null
+
         for (const lyric of LYRICS) {
           if (ct >= lyric.startTime && ct < lyric.endTime) {
             found = lyric.text
@@ -172,7 +208,7 @@ export default function LyricsTicker({ isPlaying }) {
         if (found !== prevTextRef.current) {
           prevTextRef.current = found
           setCurrentText(found)
-          setAnimKey(k => k + 1) // memicu ulang animasi
+          setAnimKey(k => k + 1)
         }
       }
 
@@ -279,7 +315,7 @@ export default function LyricsTicker({ isPlaying }) {
               background: `${colors.glow}10`,
             }}
           >
-            ♪ Sparks — Coldplay
+            ♪ Everything Has Changed — Taylor Swift ft. Ed Sheeran
           </span>
           <Equalizer color={colors.to} reverse />
         </div>
